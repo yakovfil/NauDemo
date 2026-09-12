@@ -1,0 +1,178 @@
+BSD 3-Clause License
+
+Copyright (c) 2024 N-GINN LLС
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Third-party components
+
+Nau Engine employs a multitude of third-party libraries and code, which are distributed under their own license and copyright statements. All such components are compatible with the terms of Nau Engine's license. For a comprehensive overview of all third-party components used in Nau Engine and their respective licenses, please refer to this list.
+
+DagorEngine
+Upstream: https://github.com/GaijinEntertainment/DagorEngine.git
+License: BSD 3-Clause License
+
+cocos2d-x
+Upstream: https://github.com/cocos2d/cocos2d-x.git
+License: MIT
+
+DirectX-Headers
+Upstream: https://github.com/microsoft/DirectX-Headers.git
+License: MIT
+
+EABase
+Upstream: https://github.com/electronicarts/EABase.git
+License: BSD 3-Clause License
+
+EASTL
+Upstream: https://github.com/electronicarts/EASTL.git
+License: BSD 3-Clause License
+
+GameNetworkingSockets
+Upstream: https://github.com/ValveSoftware/GameNetworkingSockets.git
+License: BSD 3-Clause License
+
+JoltPhysics
+Upstream: https://github.com/jrouwe/JoltPhysics.git
+License: MIT
+
+ModifiedSonyMath
+Upstream: https://github.com/ConfettiFX/The-Forge/tree/master/Common_3/Utilities/ThirdParty/OpenSource/ModifiedSonyMath
+License: BSD 3-Clause License
+
+renderdoc
+Upstream: https://github.com/baldurk/renderdoc.git
+License: MIT
+
+AMD Display Library SDK
+Upstream: https://github.com/GPUOpen-LibrariesAndSDKs/display-library.git
+License: https://github.com/GPUOpen-LibrariesAndSDKs/display-library/blob/master/Public-Documents/ADL%20SDK%20EULA.pdf
+
+ASIO
+Upstream: https://github.com/chriskohlhoff/asio/
+License: Boost Software License 1.0
+
+binPack2D
+Upstream: https://github.com/InfinityTools/binpack2d.git
+License: MIT
+
+brotli
+Upstream: https://github.com/google/brotli.git
+License: MIT
+
+dxc
+Upstream: https://github.com/microsoft/DirectXShaderCompiler.git
+License: University of Illinois Open Source License
+
+fast_float
+Upstream: https://github.com/fastfloat/fast_float.git
+License: MIT, Apache 2.0, Boost Software License 1.0
+
+fmt
+Upstream: https://github.com/fmtlib/fmt.git
+License: MIT
+
+fsr2
+Upstream: https://github.com/GPUOpen-Effects/FidelityFX-FSR2.git
+License: MIT
+
+gainput
+Upstream: https://github.com/jkuhlmann/gainput.git
+License: MIT
+
+googletest
+Upstream: https://github.com/google/googletest.git
+License: BSD 3-Clause License
+
+imgui
+Upstream: https://github.com/ocornut/imgui.git
+License: MIT
+
+ispc_texcomp
+Upstream: https://github.com/GameTechDev/ISPCTextureCompressor.git
+License: MIT
+
+jsoncpp
+Upstream: https://github.com/open-source-parsers/jsoncpp.git
+License: MIT
+
+libpng-libpng16
+Upstream: https://github.com/pnggroup/libpng.git
+License: PNG Reference Library License version 2
+
+luau
+Upstream: https://github.com/luau-lang/luau.git
+License: MIT
+
+lzma-9.20
+Upstream: 
+License: LZMA SDK is written and placed in the public domain by Igor Pavlov.
+Some code in LZMA SDK is based on public domain code from another developers:
+  1) PPMd var.H (2001): Dmitry Shkarin
+  2) SHA-256: Wei Dai (Crypto++ library)
+
+md5
+Upstream: 
+License: Apache 2.0, MIT
+
+miniaudio
+Upstream: https://github.com/mackron/miniaudio.git
+License: MIT
+
+ozz-animation
+Upstream: https://github.com/guillaumeblanc/ozz-animation.git
+License: MIT
+
+ska_hash_map
+Upstream: https://github.com/skarupke/flat_hash_map.git
+License: Boost Software License 1.0
+
+stb
+Upstream: https://github.com/nothings/stb.git
+License: MIT
+
+tiny-utf8
+Upstream: https://github.com/DuffsDevice/tiny-utf8.git
+License: BSD 3-Clause License
+
+tinygltf
+Upstream: https://github.com/syoyo/tinygltf.git
+License: MIT
+
+tinyimageformat
+Upstream: https://github.com/DeanoC/tiny_imageformat.git
+License: MIT
+
+tracy
+Upstream: https://github.com/wolfpld/tracy.git
+License: BSD 3-Clause License
+
+uriparser
+Upstream: https://github.com/uriparser/uriparser.git
+License: BSD 3-Clause License
+
+utfcpp
+Upstream: https://github.com/nemtrif/utfcpp.git
+License: Boost Software License 1.0
+
+wyhash
+Upstream: https://github.com/wangyi-fudan/wyhash.git
+License: The Unlicense
+
+xxHash
+Upstream: https://github.com/Cyan4973/xxHash.git
+License: BSD 2-Clause License
+
+zlib-ng
+Upstream: https://github.com/zlib-ng/zlib-ng.git
+License: zlib License
+
+zstd
+Upstream: https://github.com/Cyan4973/zstd.git
+License: BSD 3-Clause License

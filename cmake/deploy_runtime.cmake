@@ -1,0 +1,4 @@
+file(GLOB RUNTIME_DLLS "${ENGINE_BIN}/*.dll")
+if(RUNTIME_DLLS)
+    file(COPY ${RUNTIME_DLLS} DESTINATION "${DEMO_BIN}")
+endif()
