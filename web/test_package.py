@@ -31,7 +31,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
 
 def assert_scene_pixel(path, frame, package):
-    """Reference the nearest real asset triangle at the center pixel, not a golden GPU image."""
+    """Check nearest asset triangles at interior pixels, away from moving edges."""
     image = Image.open(path).convert('RGB')
     asset = json.loads((package/'cube.gltf').read_text())
     binary = (package/'cube.bin').read_bytes()
@@ -52,25 +52,38 @@ def assert_scene_pixel(path, frame, package):
         for key in ('model','view','projection'):
             p=multiply(frame[key],p)
         projected.append([(p[0]/p[3]+1)*image.width/2,(1-p[1]/p[3])*image.height/2,p[2]/p[3]])
-    x,y=image.width//2+.5,image.height//2+.5
-    nearest=None
-    for i in range(0,len(indices),3):
-        a,b,c=[projected[index] for index in indices[i:i+3]]
-        d=(b[1]-c[1])*(a[0]-c[0])+(c[0]-b[0])*(a[1]-c[1])
-        if abs(d)<1e-8: continue
-        u=((b[1]-c[1])*(x-c[0])+(c[0]-b[0])*(y-c[1]))/d
-        v=((c[1]-a[1])*(x-c[0])+(a[0]-c[0])*(y-c[1]))/d
-        w=1-u-v
-        if min(u,v,w)<0: continue
-        depth=u*a[2]+v*b[2]+w*c[2]
-        if nearest is None or depth<nearest[0]: nearest=(depth,indices[i])
-    assert nearest is not None,'Scene matrices do not project the cube at the sampled pixel'
-    normal=multiply(frame['model'],[*normals[nearest[1]],0])[:3]
-    light=[-.5,.8,.6]
-    diffuse=max(0,sum(a*b for a,b in zip(normal,light))/math.sqrt(sum(a*a for a in normal)*sum(a*a for a in light)))
-    expected=[round(c*(.25+.75*diffuse)*255) for c in [.06,.32,.95]]
-    actual=image.getpixel((int(x),int(y)))
-    assert max(abs(a-b) for a,b in zip(actual,expected))<=22, f'Nearest-face/depth shading mismatch: {actual} vs {expected}'
+    left,right=min(p[0] for p in projected),max(p[0] for p in projected)
+    top,bottom=min(p[1] for p in projected),max(p[1] for p in projected)
+    checks=[]
+    for row in range(1,10):
+      for column in range(1,10):
+        x,y=int(left+(right-left)*column/10)+.5,int(top+(bottom-top)*row/10)+.5
+        if not (0<=x<image.width and 0<=y<image.height): continue
+        nearest=None
+        for i in range(0,len(indices),3):
+            a,b,c=[projected[index] for index in indices[i:i+3]]
+            d=(b[1]-c[1])*(a[0]-c[0])+(c[0]-b[0])*(a[1]-c[1])
+            if abs(d)<1e-8: continue
+            u=((b[1]-c[1])*(x-c[0])+(c[0]-b[0])*(y-c[1]))/d
+            v=((c[1]-a[1])*(x-c[0])+(a[0]-c[0])*(y-c[1]))/d
+            w=1-u-v
+            if min(u,v,w)<0: continue
+            depth=u*a[2]+v*b[2]+w*c[2]
+            margin=min(weight*abs(d)/math.hypot(p[0]-q[0],p[1]-q[1])
+                       for weight,p,q in ((u,b,c),(v,c,a),(w,a,b)))
+            if nearest is None or depth<nearest[0]: nearest=(depth,indices[i],margin)
+        # Choose pixels geometrically, before looking at screenshot colors.
+        # A compositor frame may lag the submitted frame around a moving edge.
+        if nearest is None or nearest[2]<12: continue
+        normal=multiply(frame['model'],[*normals[nearest[1]],0])[:3]
+        light=[-.5,.8,.6]
+        diffuse=max(0,sum(a*b for a,b in zip(normal,light))/math.sqrt(sum(a*a for a in normal)*sum(a*a for a in light)))
+        expected=[round(c*(.25+.75*diffuse)*255) for c in [.06,.32,.95]]
+        actual=image.getpixel((int(x),int(y)))
+        checks.append({'pixel':[int(x),int(y)],'actual':actual,'expected':expected,'edgeMargin':nearest[2]})
+    assert len(checks)>=4,'Too few interior pixels to validate scene/depth provenance'
+    assert all(max(abs(a-b) for a,b in zip(check['actual'],check['expected']))<=22 for check in checks), f'Nearest-face/depth shading mismatch: {checks}'
+    return checks
 
 
 def capture_frame(page, path):
@@ -256,9 +269,12 @@ def main():
                     return
                 wait("Module.nauRender?.frames >= 3")
                 first = capture_frame(page,args.output/'cube-first.png')
-                assert_scene_pixel(args.output/'cube-first.png',first,args.package)
+                result['first']=first
+                result['firstPixels']=assert_scene_pixel(args.output/'cube-first.png',first,args.package)
                 wait(f"Module.nauRender.frames >= {first['frames'] + 11}")
                 second = capture_frame(page,args.output/'cube-rotated.png')
+                result['second']=second
+                result['secondPixels']=assert_scene_pixel(args.output/'cube-rotated.png',second,args.package)
                 for name in ("cube-first.png", "cube-rotated.png"):
                     image = Image.open(args.output / name).convert("RGB")
                     blue = sum(b > 40 and b > r * 2 and b > g * 1.5 for r, g, b in image.getdata())

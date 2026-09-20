@@ -88,8 +88,8 @@ Pop-Location
 
 This builds the engine and `SceneBaseSample` dependencies, including shared shader
 caches. The executable is still written to `NauDemo/bin/Debug/`, and runtime DLLs
-are copied there automatically. The CMake route now builds Debug and Release from current sources. Native visual
-confirmation after this integration is tracked separately from compilation.
+are copied there automatically. Both configurations have passed native visual acceptance
+with the external NauSamples integration.
 
 ## Files and customization
 
@@ -106,7 +106,7 @@ Logs are written to `%LOCALAPPDATA%/nau/NauDemo/logs/`. The engine's Debug rende
 currently emits DirectX 12 resource-initialization validation messages during
 environment processing; these were observed during the visual check. If assets
 are missing, verify the sibling engine checkout and its compiled
-`samples/sceneBase/resources/shaders/cache/shader_cache.nsbc` before launching.
+`../NauSamples/sceneBase/resources/shaders/cache/shader_cache.nsbc` before launching.
 
 The material and application setup follow Nau's sample implementation. Nau's
 license is retained in `NAU-LICENSE.txt`; engine assets and third-party components

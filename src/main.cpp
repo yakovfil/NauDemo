@@ -34,7 +34,7 @@ namespace
             auto& properties = nau::getServiceProvider().get<nau::GlobalProperties>();
             properties
                 .setValue("sampleProjectDir",
-                          eastl::string(NAU_ENGINE_DIR "/samples/sceneBase"))
+                          eastl::string(NAU_SAMPLES_DIR "/sceneBase"))
                 .ignore();
             properties.setValue("demoProjectDir", eastl::string(NAU_DEMO_DIR)).ignore();
             NauCheckResult(nau::mergePropertiesFromFile(

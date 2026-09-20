@@ -29,7 +29,7 @@ def main():
             subprocess.run(list(map(str,command)),cwd=cwd,stdout=log,stderr=subprocess.STDOUT,check=True,timeout=1800)
         print(name,flush=True)
     try:
-        for name in ('root','NauEngineLite','NauDemo'):
+        for name in ('root','NauEngineLite','NauSamples','NauDemo'):
             original = source if name=='root' else source/name
             target = destination if name=='root' else destination/name
             revision = subprocess.check_output(['git','rev-parse','HEAD'],cwd=original,text=True).strip()
@@ -51,10 +51,16 @@ def main():
                 files[relative]=hashlib.sha256(input_file.read_bytes()).hexdigest()
             report['repositories'][name]={'base':revision,'patchSha256':hashlib.sha256(patch).hexdigest(),'untrackedSha256':files}
         before = {name:subprocess.check_output(['git','diff','--binary','--ignore-submodules=all','HEAD'],cwd=destination/name)
-                  for name in ('NauEngineLite','NauDemo')}
+                  for name in ('NauEngineLite','NauSamples','NauDemo')}
         for executable in ('git','cmake','ninja','em++'):
             run([executable,'--version'],destination,'tool-'+executable.replace('+','p'))
         for configuration in ('debug','release'):
+            run(['cmake', '--preset', 'web-minimal-'+configuration], destination/'NauEngineLite', configuration+'-minimal-configure')
+            run(['cmake', '--build', '--preset', 'web-minimal-'+configuration, '-j', '8'], destination/'NauEngineLite', configuration+'-minimal-build')
+            run([sys.executable, destination/'NauEngineLite/cmake/probes/minimal_web_delivery/run.py',
+                 '--build', destination/f'NauEngineLite/build/web-minimal-{configuration}'], destination, configuration+'-minimal-chrome')
+            shutil.copytree(destination/f'NauEngineLite/build/web-minimal-{configuration}/delivery-evidence',
+                            evidence/(configuration+'-minimal'), dirs_exist_ok=True)
             run(['cmake','--preset','web-demo-'+configuration,'-DNAU_DEMO_TEST_HOOKS=OFF'],destination/'NauEngineLite',configuration+'-configure')
             run(['cmake','--build','--preset','web-demo-'+configuration,'-j','8'],destination/'NauEngineLite',configuration+'-build')
             run([sys.executable,destination/'NauDemo/web/test_package.py','--package',destination/f'NauEngineLite/build/web-demo-{configuration}/package',

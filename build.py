@@ -12,6 +12,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--engine", type=Path, default=Path(__file__).resolve().parent.parent / "NauEngineLite")
     parser.add_argument("--engine-build", type=Path)
+    parser.add_argument("--samples", type=Path, help="NauSamples checkout; defaults to the configured engine cache")
     parser.add_argument("--config", choices=["Debug", "Release"], default="Debug")
     args = parser.parse_args()
     demo = Path(__file__).resolve().parent
@@ -40,9 +41,14 @@ def main():
     cache = (engine_build / "CMakeCache.txt").read_text(encoding="utf-8")
     old_root = next(line.split("=", 1)[1] for line in cache.splitlines()
                     if line.startswith("CMAKE_HOME_DIRECTORY:INTERNAL="))
+    old_samples = next((line.split("=", 1)[1] for line in cache.splitlines()
+                        if line.startswith("NAU_SAMPLES_SOURCE_DIR:PATH=")), str(engine.parent / "NauSamples"))
+    samples = (args.samples or Path(old_samples)).resolve()
+    if not (samples / "sceneBase/CMakeLists.txt").is_file():
+        parser.error(f"Missing NauSamples checkout: {samples}. Initialize it or pass --samples.")
 
     def relocate(value):
-        return value.replace(old_root.replace("/", "\\"), str(engine)).replace(old_root, engine.as_posix())
+        return value.replace(old_samples.replace("/", "\\"), str(samples)).replace(old_samples, samples.as_posix()).replace(old_root.replace("/", "\\"), str(engine)).replace(old_root, engine.as_posix())
 
     for node in definition.iter():
         if node.text:
@@ -58,7 +64,7 @@ def main():
             compile_settings.remove(node)
     ET.SubElement(compile_settings, tag("PrecompiledHeader")).text = "NotUsing"
     defines = compile_settings.find(tag("PreprocessorDefinitions"))
-    defines.text += f';NAU_DEMO_DIR="{demo.as_posix()}";NAU_ENGINE_DIR="{engine.as_posix()}"'
+    defines.text += f';NAU_DEMO_DIR="{demo.as_posix()}";NAU_ENGINE_DIR="{engine.as_posix()}";NAU_SAMPLES_DIR="{samples.as_posix()}"'
 
     link = definition.find(tag("Link"))
     libraries = link.find(tag("AdditionalDependencies"))
