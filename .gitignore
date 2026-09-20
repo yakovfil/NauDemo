@@ -2,3 +2,4 @@
 /bin/
 /logs/
 __pycache__/
+/imgui.ini

@@ -1,5 +1,46 @@
 cmake_minimum_required(VERSION 3.24)
 
+if(EMSCRIPTEN AND NAU_RUNTIME_PROFILE STREQUAL "demo")
+    add_executable(NauDemo src/web_main.cpp)
+    option(NAU_DEMO_TEST_HOOKS "Compile controlled pending-scene acceptance fixture" OFF)
+    if(NAU_DEMO_TEST_HOOKS)
+        target_compile_definitions(NauDemo PRIVATE NAU_DEMO_TEST_HOOKS=1)
+    endif()
+    target_link_libraries(NauDemo PRIVATE NauFrameworkDemo NauBrowserRenderer PlatformAppApi)
+    nau_target_link_modules(NauDemo PlatformApp CoreAssets CoreScene CoreAssetsCpu)
+    nau_add_compile_options(NauDemo)
+    set(packageAssets "${CMAKE_CURRENT_BINARY_DIR}/assets")
+    file(MAKE_DIRECTORY "${packageAssets}")
+    foreach(input IN ITEMS cube.gltf cube.bin)
+        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/assets/${input}" "${packageAssets}/${input}" COPYONLY)
+    endforeach()
+    foreach(input IN ITEMS cube.vert cube.frag cube.web.json app.json)
+        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/web/${input}" "${packageAssets}/${input}" COPYONLY)
+    endforeach()
+    target_link_options(NauDemo PRIVATE -sEXIT_RUNTIME=1 -sPTHREAD_POOL_SIZE=12
+        -sINITIAL_MEMORY=67108864 -sALLOW_BLOCKING_ON_MAIN_THREAD=0
+        -sOFFSCREENCANVAS_SUPPORT=1 "-sOFFSCREENCANVASES_TO_PTHREAD=#canvas"
+        -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2
+        "SHELL:--preload-file ${packageAssets}@/demo-package")
+    set_property(TARGET NauDemo APPEND PROPERTY LINK_DEPENDS
+        "${packageAssets}/cube.gltf" "${packageAssets}/cube.bin"
+        "${packageAssets}/cube.vert" "${packageAssets}/cube.frag"
+        "${packageAssets}/cube.web.json" "${packageAssets}/app.json")
+    add_custom_target(NauDemoWebPackage ALL
+        COMMAND ${CMAKE_COMMAND}
+            "-DBUILD_ROOT=${CMAKE_BINARY_DIR}"
+            "-DDESTINATION=${CMAKE_BINARY_DIR}/package"
+            "-DLOADER=$<TARGET_FILE:NauDemo>"
+            "-DWASM=$<TARGET_FILE_DIR:NauDemo>/NauDemo.wasm"
+            "-DDATA=$<TARGET_FILE_DIR:NauDemo>/NauDemo.data"
+            "-DASSETS=${CMAKE_CURRENT_SOURCE_DIR}/web"
+            "-DMESH_ASSETS=${CMAKE_CURRENT_SOURCE_DIR}/assets"
+            "-DCONFIGURATION=$<CONFIG>"
+            -P "${CMAKE_CURRENT_SOURCE_DIR}/web/stage.cmake"
+        DEPENDS NauDemo VERBATIM)
+    return()
+endif()
+
 # Added to the engine build by cmake/attach_demo.cmake after its targets exist.
 if(NOT TARGET SampleCommonLib)
     message(FATAL_ERROR "Configure the engine with -DCMAKE_PROJECT_NauEngine_INCLUDE=<NauDemo>/cmake/attach_demo.cmake. See README.md.")

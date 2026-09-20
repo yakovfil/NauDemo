@@ -1,18 +1,39 @@
 # Nau Demo: Rotating Cube
 
+## Browser build
+
+The separate web profile runs the real rotating cube with a simplified blue
+material in Chrome. From `NauEngineLite/`, after activating SDK 6.0.9:
+
+```powershell
+. "$HOME/emsdk/emsdk_env.ps1"
+cmake --preset web-demo-debug
+cmake --build --preset web-demo-debug --parallel 8
+cmake --preset web-demo-release
+cmake --build --preset web-demo-release --parallel 8
+python build/web-demo-debug/package/serve.py --port 8000
+```
+
+Open the printed URL. Stop waits for cleanup; reload to retry. Copy the entire
+package to serve elsewhere. Rendering follows the approximately ten updates per
+second simulation cadence, with no 60 FPS claim. See the
+[complete browser guide](../NauEngineLite/doc/naudemo_web.md) for prerequisites,
+package inventory, tests, failure behavior and the fresh-checkout walkthrough.
+
+## Native application
+
 A native Nau Engine application showing a lit blue cube rotating around the
 vertical **Y axis** at **45 degrees per second** (one revolution every eight
 seconds). A fixed perspective camera and the engine's sample environment provide
 a clear view of the motion. Close the window to exit.
 
-![Running demo](preview.png)
+![Native demo baseline before web integration](preview.png)
 
 ## Run
 
 The Debug executable has been built in this checkout. From PowerShell:
 
 ```powershell
-Set-Location D:/Programming/github/Nau/NauDemo
 ./run.ps1
 ```
 
@@ -53,7 +74,7 @@ static Visual Studio preset; it deliberately rejects DLL builds.
 
 For a fresh checkout, follow the prerequisites in [the repository build guide](../build.md).
 The supplied CMake hook adds the demo after the engine targets are defined,
-without editing engine source files. From `NauDemo/`, in a configured development
+using the engine's optional `NAU_DEMO_SOURCE_DIR` integration. From `NauDemo/`, in a configured development
 shell with `VCPKG_ROOT`, Python, `cymbal`, and `clang` available:
 
 ```powershell
@@ -67,12 +88,13 @@ Pop-Location
 
 This builds the engine and `SceneBaseSample` dependencies, including shared shader
 caches. The executable is still written to `NauDemo/bin/Debug/`, and runtime DLLs
-are copied there automatically. The CMake route is provided for fresh builds; the
-existing-library route was the one compiled and visually checked in this workspace.
+are copied there automatically. The CMake route now builds Debug and Release from current sources. Native visual
+confirmation after this integration is tracked separately from compilation.
 
 ## Files and customization
 
-- `src/main.cpp`: application startup, cube, camera, light, and elapsed-time rotation.
+- `src/main.cpp`: native application, material, light and environment setup.
+- `src/demo_scene.h`: shared cube/camera construction and elapsed-time rotation.
   Change `radiansPerSecond` to adjust rotation speed or direction.
 - `assets/cube.gltf` and `cube.bin`: a centered 2 × 2 × 2 cube with six hard-edged
   faces, normals, UVs, and tangents; no external modeling tool is needed.
