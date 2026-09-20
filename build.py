@@ -1,4 +1,4 @@
-"""Build just the demo against an existing VS2022 static SceneBaseSample build."""
+"""Build just the demo against an existing VS2026/v145 static SceneBaseSample build."""
 import argparse
 import copy
 import os
@@ -6,6 +6,33 @@ from pathlib import Path
 import shutil
 import subprocess
 import xml.etree.ElementTree as ET
+
+
+def validate_engine_toolchain(cache, source):
+    values = {line.split(':', 1)[0]: line.split('=', 1)[1]
+              for line in cache.splitlines() if ':' in line and '=' in line and not line.startswith('//')}
+    toolset = values.get('CMAKE_GENERATOR_TOOLSET', '').split(',')[0]
+    projects = {node.text for node in source.iter() if node.tag.endswith('}PlatformToolset')}
+    if (values.get('CMAKE_GENERATOR') != 'Visual Studio 18 2026' or toolset != 'v145'
+            or values.get('CMAKE_GENERATOR_PLATFORM', '').split(',')[0] != 'x64'
+            or projects != {'v145'}):
+        raise ValueError('This fast build requires a VS 2026/v145 x64 engine build. '
+                         'Configure win_vs2026_x64 in a clean directory and build SceneBaseSample; '
+                         f"detected {values.get('CMAKE_GENERATOR')}, {toolset}, project toolsets {projects}.")
+
+
+def find_msbuild():
+    vswhere = Path(os.environ.get('ProgramFiles(x86)', 'C:/Program Files (x86)')) / 'Microsoft Visual Studio/Installer/vswhere.exe'
+    try:
+        matches = subprocess.check_output([str(vswhere), '-latest', '-version', '[18.0,19.0)',
+            '-products', '*', '-requires', 'Microsoft.Component.MSBuild',
+            'Microsoft.VisualStudio.Component.VC.Tools.x86.x64',
+            '-find', 'MSBuild/**/Bin/MSBuild.exe'], text=True).splitlines()
+    except (OSError, subprocess.CalledProcessError) as error:
+        raise ValueError('Unable to discover VS 2026. Install VS 2026 C++ tools and v145.') from error
+    if not matches:
+        raise ValueError('No VS 2026 MSBuild with C++ tools found. Install VS 2026 C++ tools and v145.')
+    return matches[0]
 
 
 def main():
@@ -17,7 +44,7 @@ def main():
     args = parser.parse_args()
     demo = Path(__file__).resolve().parent
     engine = args.engine.resolve()
-    engine_build = (args.engine_build or engine / "build/win_vs2022_x64").resolve()
+    engine_build = (args.engine_build or engine / "build/win_vs2026_x64").resolve()
     sample = engine_build / "samples/sceneBase"
     project_file = sample / "SceneBaseSample.vcxproj"
     if not project_file.exists():
@@ -29,6 +56,12 @@ def main():
     ET.register_namespace("", ns)
     tag = lambda name: f"{{{ns}}}{name}"
     source = ET.parse(project_file).getroot()
+    cache = (engine_build / "CMakeCache.txt").read_text(encoding="utf-8")
+    try:
+        validate_engine_toolchain(cache, source)
+        msbuild = find_msbuild()
+    except ValueError as error:
+        parser.error(str(error))
     definition = next((node for node in source.findall(tag("ItemDefinitionGroup"))
                        if f"'{args.config}|x64'" in node.get("Condition", "")), None)
     if definition is None:
@@ -38,7 +71,6 @@ def main():
     if "NAU_STATIC_RUNTIME=1" not in definitions:
         parser.error("This fast build needs a static engine build, not the DLL preset.")
 
-    cache = (engine_build / "CMakeCache.txt").read_text(encoding="utf-8")
     old_root = next(line.split("=", 1)[1] for line in cache.splitlines()
                     if line.startswith("CMAKE_HOME_DIRECTORY:INTERNAL="))
     old_samples = next((line.split("=", 1)[1] for line in cache.splitlines()
@@ -89,7 +121,7 @@ def main():
         for node in definition.findall(tag(name)):
             definition.remove(node)
 
-    project = ET.Element(tag("Project"), DefaultTargets="Build", ToolsVersion="17.0")
+    project = ET.Element(tag("Project"), DefaultTargets="Build", ToolsVersion="Current")
     group = ET.SubElement(project, tag("ItemGroup"), Label="ProjectConfigurations")
     conf = ET.SubElement(group, tag("ProjectConfiguration"), Include=f"{args.config}|x64")
     ET.SubElement(conf, tag("Configuration")).text = args.config
@@ -98,7 +130,7 @@ def main():
     ET.SubElement(group, tag("WindowsTargetPlatformVersion")).text = "10.0"
     ET.SubElement(project, tag("Import"), Project="$(VCTargetsPath)\\Microsoft.Cpp.Default.props")
     group = ET.SubElement(project, tag("PropertyGroup"), Label="Configuration")
-    for key, value in {"ConfigurationType": "Application", "PlatformToolset": "v143",
+    for key, value in {"ConfigurationType": "Application", "PlatformToolset": "v145",
                        "UseDebugLibraries": str(args.config == "Debug").lower()}.items():
         ET.SubElement(group, tag(key)).text = value
     ET.SubElement(project, tag("Import"), Project="$(VCTargetsPath)\\Microsoft.Cpp.props")
@@ -115,9 +147,6 @@ def main():
     ET.indent(project)
     ET.ElementTree(project).write(generated, encoding="utf-8", xml_declaration=True)
 
-    vswhere = Path(os.environ.get("ProgramFiles(x86)", "C:/Program Files (x86)")) / "Microsoft Visual Studio/Installer/vswhere.exe"
-    msbuild = subprocess.check_output([str(vswhere), "-latest", "-products", "*", "-requires",
-                                      "Microsoft.Component.MSBuild", "-find", "MSBuild/**/Bin/MSBuild.exe"], text=True).splitlines()[0]
     subprocess.run([msbuild, str(generated), f"/p:Configuration={args.config}", "/p:Platform=x64", "/m", "/verbosity:minimal"], check=True)
     for dll in (engine_build / "bin" / args.config).glob("*.dll"):
         shutil.copy2(dll, output / dll.name)

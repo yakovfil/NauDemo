@@ -44,8 +44,8 @@ are required.
 
 ## Rebuild using the existing engine libraries
 
-Requires Python, Visual Studio with MSVC v143, and a successfully built static
-`SceneBaseSample` in `../NauEngineLite/build/win_vs2022_x64`.
+Requires Python, Visual Studio with MSVC v145, and a successfully built static
+`SceneBaseSample` in `../NauEngineLite/build/win_vs2026_x64`.
 
 ```powershell
 python ./build.py
@@ -63,7 +63,7 @@ first to keep its libraries and headers consistent.
 For another engine build location or configuration:
 
 ```powershell
-python ./build.py --engine ../NauEngineLite --engine-build ../NauEngineLite/build/win_vs2022_x64 --config Release
+python ./build.py --engine ../NauEngineLite --engine-build ../NauEngineLite/build/win_vs2026_x64 --config Release
 ./run.ps1 -Configuration Release
 ```
 
@@ -80,7 +80,7 @@ shell with `VCPKG_ROOT`, Python, `cymbal`, and `clang` available:
 ```powershell
 $demoPath = (Get-Location).Path.Replace('\', '/')
 Push-Location ../NauEngineLite
-cmake --preset win_vs2022_x64 -B "$demoPath/build/engine" "-DCMAKE_PROJECT_NauEngine_INCLUDE=$demoPath/cmake/attach_demo.cmake"
+cmake --preset win_vs2026_x64 -B "$demoPath/build/engine" "-DCMAKE_PROJECT_NauEngine_INCLUDE=$demoPath/cmake/attach_demo.cmake"
 cmake --build "$demoPath/build/engine" --config Debug --target NauDemo
 Pop-Location
 ./run.ps1
