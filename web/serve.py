@@ -5,6 +5,7 @@ import pathlib
 import socket
 import sys
 import urllib.parse
+import webbrowser
 
 
 class PackageServer(http.server.ThreadingHTTPServer):
@@ -61,6 +62,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--port', type=int, default=8000)
     parser.add_argument('--base-path', default='/')
+    parser.add_argument('--open-browser', action='store_true', help='Open the served URL after binding')
     args = parser.parse_args()
     parts = args.base_path.strip('/').split('/') if args.base_path.strip('/') else []
     if any(not part or part in ('.', '..') or not all(c.isalnum() or c in '-_' for c in part) for part in parts):
@@ -72,7 +74,10 @@ def main():
         with PackageServer(('127.0.0.1', args.port), PackageHandler) as server:
             server.package_root = pathlib.Path(__file__).resolve().parent
             server.base_path = base
-            print(f'http://127.0.0.1:{server.server_port}{base}', flush=True)
+            url = f'http://127.0.0.1:{server.server_port}{base}'
+            print(url, flush=True)
+            if args.open_browser:
+                webbrowser.open(url)
             server.serve_forever()
     except OSError as error:
         print(f'Cannot serve on port {args.port}: {error}. Choose another --port.', file=sys.stderr)

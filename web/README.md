@@ -9,7 +9,7 @@ Run `python serve.py --port 8000` and open the printed URL in Chrome.
 Use Stop for orderly cleanup. Reload to retry after Stop or failure.
 
 The package requires cross-origin isolation, WebGL 2 and OffscreenCanvas.
-Scene rotation uses approximately ten simulation updates per second. The browser
+Scene rotation uses the elapsed time between presentation callbacks. The browser
 material uses blue diffuse directional lighting and ambient light; native HDR,
 shadows and the desktop renderer are outside this browser milestone.
 

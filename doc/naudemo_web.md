@@ -29,10 +29,11 @@ for cleanup; reload after Stop or Failed to create a fresh canvas and runtime.
 
 The browser material is blue opaque diffuse shading with directional and ambient
 light. The native HDR environment and desktop material remain in the native
-adapter. Rotation is 45 degrees per simulation second at the established nominal
-100 ms update cadence; presentation is visibly discrete, not 60 FPS. The demo's
-cooperative worker loop permits Chrome to present OffscreenCanvas frames without
-Asyncify. Existing minimal callers retain their original loop mode and graph.
+adapter. Rotation is 45 degrees per simulation second. The demo's cooperative
+worker loop now steps and draws on each presentation callback using elapsed time,
+so the browser controls the cadence. It permits Chrome to present OffscreenCanvas
+frames without Asyncify. Existing minimal callers retain their original loop mode
+and graph.
 
 CSS canvas size and device pixel ratio determine drawable size, proportionally
 clamped to reported graphics limits. Zero area pauses drawing. Context/host loss
@@ -69,7 +70,7 @@ python NauDemo/web/test_staging.py
 ```
 
 The success case checks scene-derived matrices and nearest-face shading, blue
-pixels, rotation, 8–12 Hz foreground cadence, responsive page heartbeat, real
+pixels, rotation, frame-driven foreground cadence, responsive page heartbeat, real
 visibility changes, resize/DPR/zero-area/graphics-limit behavior, repeated Stop
 and reload. `--scenario` also accepts `host-loss`, `context-loss`, `missing-buffer`,
 `bad-shader`, `bad-link`, `bad-config`, `missing-canvas`, `no-context`, `stop-assets`,

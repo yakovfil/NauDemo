@@ -229,5 +229,6 @@ int main()
 {
     static DemoDelegate delegate;
     return nau::runBrowserApplication(delegate,
-                                      {.cooperativePresentation = true});
+                                      {.cooperativePresentation = true,
+                                       .frameDrivenUpdates = true});
 }

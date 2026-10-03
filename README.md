@@ -13,7 +13,12 @@ toolchain pins, and coordinated rebuild guidance are in the repository
 ## Browser build
 
 The separate web profile runs the real rotating cube with a simplified blue
-material in Chrome. From `NauEngineLite/`, after activating SDK 6.0.9:
+material in Chrome. On Windows, from `NauDemo/` run `run_web.bat` for Debug or
+`run_web.bat Release` for Release. It activates SDK 6.0.9 if installed under
+`%USERPROFILE%\emsdk`, builds the package, starts the local server, and opens
+the browser. Press Ctrl+C to stop serving; answer Y if CMD prompts you.
+
+For the manual steps, from `NauEngineLite/` after activating SDK 6.0.9:
 
 ```powershell
 . "$HOME/emsdk/emsdk_env.ps1"
@@ -23,8 +28,8 @@ python build/web-demo-debug/package/serve.py --port 8000
 ```
 
 Open the printed URL. Stop waits for cleanup; reload to retry. Copy the entire
-package to serve elsewhere. Rendering follows the approximately ten updates per
-second simulation cadence, with no 60 FPS claim. See the
+package to serve elsewhere. Browser updates follow the presentation callback;
+rotation uses elapsed time rather than a fixed 100 ms step. See the
 [complete browser guide](doc/naudemo_web.md) for prerequisites,
 package inventory, tests, failure behavior and the fresh-checkout walkthrough.
 
