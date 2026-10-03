@@ -17,17 +17,15 @@ material in Chrome. From `NauEngineLite/`, after activating SDK 6.0.9:
 
 ```powershell
 . "$HOME/emsdk/emsdk_env.ps1"
-cmake --preset web-demo-debug
-cmake --build --preset web-demo-debug --parallel 8
-cmake --preset web-demo-release
-cmake --build --preset web-demo-release --parallel 8
+../NauDemo/web/build.ps1 -Configuration Debug
+../NauDemo/web/build.ps1 -Configuration Release
 python build/web-demo-debug/package/serve.py --port 8000
 ```
 
 Open the printed URL. Stop waits for cleanup; reload to retry. Copy the entire
 package to serve elsewhere. Rendering follows the approximately ten updates per
 second simulation cadence, with no 60 FPS claim. See the
-[complete browser guide](../NauEngineLite/doc/naudemo_web.md) for prerequisites,
+[complete browser guide](doc/naudemo_web.md) for prerequisites,
 package inventory, tests, failure behavior and the fresh-checkout walkthrough.
 
 ## Native application

@@ -1,2 +1,14 @@
-# CMAKE_PROJECT_NauEngine_INCLUDE hook, consumed after engine sample targets exist.
-set(NAU_DEMO_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/.." CACHE PATH "Rotating cube demo source")
+# CMAKE_PROJECT_NauEngine_INCLUDE hook, loaded by the engine's project() call.
+get_filename_component(NAU_DEMO_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
+if(NAU_RUNTIME_PROFILE STREQUAL "scene")
+  set(NAU_EXTERNAL_RUNTIME_FILE "${CMAKE_CURRENT_LIST_DIR}/NauDemoRuntime.cmake")
+  set(NAU_EXTERNAL_RUNTIME_FILE "${NAU_EXTERNAL_RUNTIME_FILE}" CACHE FILEPATH "Scene runtime configuration" FORCE)
+else()
+  if(NOT NAU_SAMPLES_SOURCE_DIR)
+    set(NAU_SAMPLES_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/../../NauSamples")
+  endif()
+  include("${NAU_SAMPLES_SOURCE_DIR}/cmake/attach_samples.cmake")
+endif()
+list(APPEND NAU_EXTERNAL_PROJECT_DIRS "${NAU_DEMO_SOURCE_DIR}")
+list(REMOVE_DUPLICATES NAU_EXTERNAL_PROJECT_DIRS)
+set(NAU_EXTERNAL_PROJECT_DIRS "${NAU_EXTERNAL_PROJECT_DIRS}" CACHE STRING "Consumer projects" FORCE)

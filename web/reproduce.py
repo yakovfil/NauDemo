@@ -55,14 +55,14 @@ def main():
         for executable in ('git','cmake','ninja','em++'):
             run([executable,'--version'],destination,'tool-'+executable.replace('+','p'))
         for configuration in ('debug','release'):
-            run(['cmake', '--preset', 'web-minimal-'+configuration], destination/'NauEngineLite', configuration+'-minimal-configure')
-            run(['cmake', '--build', '--preset', 'web-minimal-'+configuration, '-j', '8'], destination/'NauEngineLite', configuration+'-minimal-build')
-            run([sys.executable, destination/'NauEngineLite/cmake/probes/minimal_web_delivery/run.py',
+            run(['powershell', '-NoProfile', '-File', destination/'NauSamples/build_minimal.ps1',
+                 '-Platform', 'Web', '-Configuration', configuration.capitalize()], destination, configuration+'-minimal-build')
+            run([sys.executable, destination/'NauSamples/tests/minimal_web_delivery/run.py',
                  '--build', destination/f'NauEngineLite/build/web-minimal-{configuration}'], destination, configuration+'-minimal-chrome')
             shutil.copytree(destination/f'NauEngineLite/build/web-minimal-{configuration}/delivery-evidence',
                             evidence/(configuration+'-minimal'), dirs_exist_ok=True)
-            run(['cmake','--preset','web-demo-'+configuration,'-DNAU_DEMO_TEST_HOOKS=OFF'],destination/'NauEngineLite',configuration+'-configure')
-            run(['cmake','--build','--preset','web-demo-'+configuration,'-j','8'],destination/'NauEngineLite',configuration+'-build')
+            run(['powershell', '-NoProfile', '-File', destination/'NauDemo/web/build.ps1',
+                 '-Configuration', configuration.capitalize()], destination, configuration+'-build')
             run([sys.executable,destination/'NauDemo/web/test_package.py','--package',destination/f'NauEngineLite/build/web-demo-{configuration}/package',
                  '--output',evidence/configuration,'--base-path','/fresh/demo/'],destination,configuration+'-chrome')
         for name, original in before.items():
