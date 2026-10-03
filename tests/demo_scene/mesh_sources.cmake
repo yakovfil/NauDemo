@@ -1,5 +1,5 @@
 # Compile the recorded CPU decoder boundary before adding its asset adapter.
-get_filename_component(assetFormats "${modules}/engine/core/modules/asset_formats/src" ABSOLUTE)
+get_filename_component(assetFormats "${modules}/modules/asset_formats/src" ABSOLUTE)
 add_library(NauDemoMeshDecoder STATIC
   "${assetFormats}/gltf/gltf_file.cpp"
   "${assetFormats}/gltf/gltf_mesh_accessor.cpp")

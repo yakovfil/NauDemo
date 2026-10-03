@@ -23,14 +23,14 @@ add_executable(NauDemoSceneTests "${demo}/tests/test_demo_portability.cpp")
 target_include_directories(NauDemoSceneTests PRIVATE
   "${demo}/src")
 target_include_directories(NauDemoSceneTests PRIVATE
-  "${modules}/engine/core/modules/scene/src"
-  "${modules}/engine/core/modules/assets/src")
+  "${modules}/modules/scene/src"
+  "${modules}/modules/assets/src")
 target_link_libraries(NauDemoSceneTests PRIVATE CoreScene CoreAssets gtest_main)
 target_link_libraries(NauDemoSceneTests PRIVATE CoreAssetsCpu)
 target_link_libraries(NauDemoSceneTests PRIVATE NauFrameworkScene)
 nau_target_link_modules(NauDemoSceneTests CoreScene CoreAssets CoreAssetsCpu)
 target_sources(NauDemoSceneTests PRIVATE "${demo}/tests/test_demo_scene_lifecycle.cpp")
-target_sources(NauDemoSceneTests PRIVATE "${modules}/engine/core/modules/assets_cpu/tests/test_cpu_mesh.cpp")
+target_sources(NauDemoSceneTests PRIVATE "${modules}/modules/assets_cpu/tests/test_cpu_mesh.cpp")
 file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/fixtures")
 foreach(input IN ITEMS cube.gltf cube.bin)
   configure_file("${demo}/assets/${input}" "${CMAKE_BINARY_DIR}/fixtures/${input}" COPYONLY)
