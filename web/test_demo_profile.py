@@ -17,6 +17,7 @@ def run(command, log):
 def main():
     demo = Path(__file__).resolve().parents[1]
     engine = demo.parent / "NauEngineLite"
+    modules = demo.parent / "NauEngineModules"
     sdk = Path(os.environ["EMSDK"])
     manifest = json.loads((demo / "cmake/naudemo_sources.json").read_text())
     evidence = engine / "build/demo-profile-evidence"
@@ -30,7 +31,9 @@ def main():
             query.touch()
             command = ["cmake", "-S", str(engine), "-B", str(build),
                        "-DNAU_RUNTIME_PROFILE=scene", "-DBUILD_SHARED_LIBS=OFF",
-                       f"-DNAU_EXTERNAL_RUNTIME_FILE={demo / 'cmake/NauDemoRuntime.cmake'}"]
+                       f"-DNAU_EXTERNAL_RUNTIME_FILE={demo / 'cmake/NauDemoRuntime.cmake'}",
+                       f"-DNAU_MODULES_SOURCE_DIR={modules}",
+                       f"-DNAU_EXTERNAL_PROJECT_DIRS={modules}"]
             if platform == "web":
                 command += ["-G", "Ninja", f"-DCMAKE_BUILD_TYPE={config}",
                             f"-DCMAKE_TOOLCHAIN_FILE={sdk}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake"]
@@ -60,7 +63,7 @@ def main():
             for name, sources in source_groups.items():
                 actual = {s["path"].replace("\\", "/") for s in targets[name]["sources"] if s["path"].endswith(".cpp")}
                 expected = set(sources)
-                actual = {p.removeprefix(engine.as_posix() + "/") for p in actual}
+                actual = {p.removeprefix(modules.as_posix() + "/") for p in actual}
                 assert actual == expected, (name, actual ^ expected)
             summaries[f"{platform}-{config}"] = sorted(targets)
             print(f"PASS {platform} {config}: explicit sources and dependency graph", flush=True)
@@ -70,13 +73,16 @@ def main():
     (fixture / "cmake").mkdir()
     shutil.copy2(demo / "cmake/NauDemoRuntime.cmake", fixture / "cmake/NauDemoRuntime.cmake")
     shutil.copy2(demo / "cmake/naudemo_sources.json", fixture / "cmake/naudemo_sources.json")
-    shutil.copy2(engine / "cmake/NauMinimalRuntime.cmake", fixture / "cmake/NauMinimalRuntime.cmake")
+    (fixture / "modules/cmake").mkdir(parents=True)
+    shutil.copy2(modules / "cmake/NauMinimalRuntime.cmake", fixture / "modules/cmake/NauMinimalRuntime.cmake")
+    shutil.copy2(engine / "cmake/NauStandaloneMinimal.cmake", fixture / "cmake/NauStandaloneMinimal.cmake")
     for name in manifest["dependencies"]:
         path = fixture / "engine/3rdparty_libs" / name / "CMakeLists.txt"
         path.parent.mkdir(parents=True)
         path.touch()
     probe = fixture / "check.cmake"
     probe.write_text(f'set(NAU_ENGINE_SOURCE_DIR "{fixture.as_posix()}")\n'
+                     f'set(NAU_MODULES_SOURCE_DIR "{(fixture / "modules").as_posix()}")\n'
                      f'include("{(fixture / "cmake/NauDemoRuntime.cmake").as_posix()}")\n')
     result = subprocess.run(["cmake", "-P", str(probe)], capture_output=True, text=True)
     assert result.returncode != 0 and "Missing demo runtime source:" in result.stderr, result.stderr

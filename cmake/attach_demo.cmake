@@ -1,5 +1,9 @@
 # CMAKE_PROJECT_NauEngine_INCLUDE hook, loaded by the engine's project() call.
 get_filename_component(NAU_DEMO_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/.." ABSOLUTE)
+if(NOT NAU_MODULES_SOURCE_DIR)
+  get_filename_component(NAU_MODULES_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/../../NauEngineModules" ABSOLUTE)
+endif()
+include("${NAU_MODULES_SOURCE_DIR}/cmake/attach_modules.cmake")
 if(NAU_RUNTIME_PROFILE STREQUAL "scene")
   set(NAU_EXTERNAL_RUNTIME_FILE "${CMAKE_CURRENT_LIST_DIR}/NauDemoRuntime.cmake")
   set(NAU_EXTERNAL_RUNTIME_FILE "${NAU_EXTERNAL_RUNTIME_FILE}" CACHE FILEPATH "Scene runtime configuration" FORCE)
