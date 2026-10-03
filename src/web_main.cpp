@@ -1,3 +1,4 @@
+#include <string_view>
 #include <emscripten.h>
 
 #include <fstream>
@@ -58,7 +59,7 @@ namespace
                 auto bytes = readPackage(name);
                 if (!bytes)
                     co_await async::Task<>::makeRejected(bytes.getError());
-                auto json = serialization::jsonParseString(eastl::string_view(reinterpret_cast<const char*>(bytes->data()), bytes->size()));
+                auto json = serialization::jsonParseString(std::string_view(reinterpret_cast<const char*>(bytes->data()), bytes->size()));
                 if (!json)
                     co_await async::Task<>::makeRejected(NauMakeError("Invalid package JSON {}", name));
                 auto* dictionary = *json ? (*json)->as<RuntimeReadonlyDictionary*>() : nullptr;

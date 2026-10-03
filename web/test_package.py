@@ -180,9 +180,9 @@ def main():
                     filename={'missing-loader':'NauDemo.js','missing-wasm':'NauDemo.wasm','missing-data':'NauDemo.data'}[args.scenario]
                     page.route('**/'+filename,lambda route:route.fulfill(status=404,body='Missing fixture input'))
                 if args.scenario in ("missing-buffer", "context-loss", "no-context"):
+                    loader_source = (args.package / "NauDemo.js").read_text(encoding="utf-8")
                     def loader(route):
-                        response = route.fetch()
-                        source = response.text()
+                        source = loader_source
                         if args.scenario == "missing-buffer":
                             assert '/demo-package/cube.bin' in source
                             source = source.replace('/demo-package/cube.bin', '/demo-package/gone.bin')
@@ -193,7 +193,10 @@ def main():
                                 if(e.data.nauTestLoss){e.stopImmediatePropagation();
                                 if(GL.currentContext) GL.currentContext.GLctx.getExtension('WEBGL_lose_context').loseContext();}
                             },true);\n"""
-                        route.fulfill(response=response, body=source)
+                        route.fulfill(status=200, content_type="application/javascript", body=source,
+                            headers={"Cross-Origin-Opener-Policy": "same-origin",
+                                     "Cross-Origin-Embedder-Policy": "require-corp",
+                                     "Cache-Control": "no-store"})
                     page.route("**/NauDemo.js", loader)
                 if args.scenario in ("bad-shader", "bad-config", "bad-link", "blank-frame"):
                     def corrupt(route):

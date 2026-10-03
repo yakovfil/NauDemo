@@ -1,5 +1,10 @@
 # NauDemo web package
 
+This package is produced from the C++20 toolchain-standard-library engine and
+demo sources. If source or package contents are rebuilt, rebuild the matching
+engine/demo components together; do not mix packages from the pre-migration ABI.
+EASTL and EABase are not runtime package dependencies.
+
 Run `python serve.py --port 8000` and open the printed URL in Chrome.
 Use Stop for orderly cleanup. Reload to retry after Stop or failure.
 

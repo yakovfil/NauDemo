@@ -1,3 +1,5 @@
+#include <memory>
+#include <string>
 #include <filesystem>
 
 #include "demo_scene.h"
@@ -34,9 +36,9 @@ namespace
             auto& properties = nau::getServiceProvider().get<nau::GlobalProperties>();
             properties
                 .setValue("sampleProjectDir",
-                          eastl::string(NAU_SAMPLES_DIR "/sceneBase"))
+                          std::string(NAU_SAMPLES_DIR "/sceneBase"))
                 .ignore();
-            properties.setValue("demoProjectDir", eastl::string(NAU_DEMO_DIR)).ignore();
+            properties.setValue("demoProjectDir", std::string(NAU_DEMO_DIR)).ignore();
             NauCheckResult(nau::mergePropertiesFromFile(
                 properties, std::filesystem::path(NAU_DEMO_DIR) / "config/app.json"));
             return nau::applyDefaultAppConfiguration();
@@ -96,5 +98,5 @@ namespace
 
 int main()
 {
-    return nau::runApplication(eastl::make_unique<CubeDemo>());
+    return nau::runApplication(std::make_unique<CubeDemo>());
 }

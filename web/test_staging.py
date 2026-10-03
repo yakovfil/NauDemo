@@ -1,4 +1,5 @@
 """Check both real packages and transactional staging failure/stale-file behavior."""
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -7,9 +8,13 @@ import tempfile
 
 demo = Path(__file__).resolve().parents[1]
 engine = demo.parent / 'NauEngineLite'
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--build-prefix', default='web-demo-',
+                    help='Directory prefix under NauEngineLite/build for Debug/Release packages')
+args = parser.parse_args()
 results = []
 for configuration in ('Debug', 'Release'):
-    build = engine / 'build' / f'web-demo-{configuration.lower()}'
+    build = engine / 'build' / f'{args.build_prefix}{configuration.lower()}'
     package = build / 'package'
     manifest = json.loads((package/'manifest.json').read_text())
     assert manifest['configuration'] == configuration

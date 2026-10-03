@@ -1,5 +1,15 @@
 # Nau Demo: Rotating Cube
 
+## Toolchain and migration
+
+NauDemo consumes the engine's C++20 toolchain-standard-library interfaces. The
+migration is source/ABI breaking: rebuild the engine, shared sample support, and
+NauDemo together in fresh Debug and Release build directories. Do not reuse a
+pre-migration CMake cache or link this demo against old engine binaries. EASTL
+and EABase are not required demo dependencies. Native and browser commands,
+toolchain pins, and coordinated rebuild guidance are in the repository
+[build guide](../build.md) and [prerequisites](../prerequisites.md).
+
 ## Browser build
 
 The separate web profile runs the real rotating cube with a simplified blue
