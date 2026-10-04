@@ -17,7 +17,7 @@ for configuration in ('Debug', 'Release'):
     package = build / 'package'
     manifest = json.loads((package/'manifest.json').read_text())
     assert manifest['configuration'] == configuration
-    assert set(p.name for p in package.iterdir()) == set(manifest['files']) | {'manifest.json'}
+    assert {p.relative_to(package).as_posix() for p in package.rglob('*') if p.is_file()} == set(manifest['files']) | {'manifest.json'}
     for name, expected in manifest['files'].items():
         assert hashlib.sha256((package/name).read_bytes()).hexdigest() == expected, name
     with tempfile.TemporaryDirectory(prefix='demo-stage-', dir=demo/'build') as scratch:
@@ -32,12 +32,28 @@ for configuration in ('Debug', 'Release'):
         (root/'package/stale.css').write_text('stale output')
         subprocess.run(command, check=True, capture_output=True)
         assert not (root/'package/stale.css').exists()
-        before = {p.name:p.read_bytes() for p in (root/'package').iterdir()}
+        inventory = lambda: {p.relative_to(root/'package').as_posix():p.read_bytes() for p in (root/'package').rglob('*') if p.is_file()}
+        before = inventory()
         missing = command.copy()
         missing[3] = f'-DLOADER={root}/missing.js'
         failure = subprocess.run(missing, capture_output=True, text=True)
         assert failure.returncode and 'Missing required package input' in failure.stderr
-        assert before == {p.name:p.read_bytes() for p in (root/'package').iterdir()}
+        assert before == inventory()
+        for name in ('Abel-Regular.ttf', 'OFL-Abel.txt'):
+            assets = root/'assets'
+            (assets/'fonts').mkdir(parents=True, exist_ok=True)
+            import shutil
+            shutil.copy2(demo/'assets/cube.gltf', assets/'cube.gltf')
+            shutil.copy2(demo/'assets/cube.bin', assets/'cube.bin')
+            for present in ('Abel-Regular.ttf', 'OFL-Abel.txt'):
+                if present != name:
+                    shutil.copy2(demo/'assets/fonts'/present, assets/'fonts'/present)
+                elif (assets/'fonts'/present).exists():
+                    (assets/'fonts'/present).unlink()
+            missing_asset = [f'-DMESH_ASSETS={assets}' if v.startswith('-DMESH_ASSETS=') else v for v in command]
+            failure = subprocess.run(missing_asset, capture_output=True, text=True)
+            assert failure.returncode and name in failure.stderr
+            assert before == inventory()
         assert not (root/'package.staging').exists()
     results.append({'configuration':configuration, 'files':manifest['files'], 'passed':True})
 (demo/'build/demo-staging-results.json').write_text(json.dumps(results,indent=2))

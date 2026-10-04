@@ -20,12 +20,12 @@ def main():
     modules = demo.parent / "NauEngineModules"
     sdk = Path(os.environ["EMSDK"])
     manifest = json.loads((demo / "cmake/naudemo_sources.json").read_text())
-    evidence = engine / "build/demo-profile-evidence"
+    evidence = demo / "build/demo-profile-evidence"
     evidence.mkdir(parents=True, exist_ok=True)
     summaries = {}
     for platform in ("web", "native"):
         for config in ("Debug", "Release"):
-            build = engine / f"build/{platform}-demo-cpu-{config.lower()}{'-vs2026' if platform == 'native' else ''}"
+            build = demo / f"build/{platform}-demo-cpu-{config.lower()}{'-vs2026' if platform == 'native' else ''}"
             query = build / ".cmake/api/v1/query/codemodel-v2"
             query.parent.mkdir(parents=True, exist_ok=True)
             query.touch()
@@ -45,7 +45,7 @@ def main():
             model = json.loads((reply / index["reply"]["codemodel-v2"]["jsonFile"]).read_text())
             configuration = next(c for c in model["configurations"] if c["name"] == config)
             targets = {t["name"]: json.loads((reply / t["jsonFile"]).read_text()) for t in configuration["targets"]}
-            assert {"CoreScene", "CoreAssets", "NauFrameworkScene", "NauKernel", "PlatformApp"} <= targets.keys()
+            assert {"CoreScene", "CoreAssets", "NauFrameworkScene", "NauKernel", "PlatformApp", "NauScreenText"} <= targets.keys()
             assert not set(manifest["excluded_targets"]) & targets.keys()
             assert "NauFrameworkMinimal" not in targets and "MinimalAppSample" not in targets
             for target in targets.values():
@@ -69,7 +69,7 @@ def main():
             print(f"PASS {platform} {config}: explicit sources and dependency graph", flush=True)
 
     # Exercise source diagnostics in a disposable source tree, never remove real dependencies.
-    fixture = Path(tempfile.mkdtemp(prefix="demo-missing-source-", dir=engine / "build"))
+    fixture = Path(tempfile.mkdtemp(prefix="demo-missing-source-", dir=demo / "build"))
     (fixture / "cmake").mkdir()
     shutil.copy2(demo / "cmake/NauDemoRuntime.cmake", fixture / "cmake/NauDemoRuntime.cmake")
     shutil.copy2(demo / "cmake/naudemo_sources.json", fixture / "cmake/naudemo_sources.json")

@@ -1,8 +1,10 @@
+#include <atomic>
+#include <filesystem>
 #include <memory>
 #include <string>
-#include <filesystem>
 
 #include "demo_scene.h"
+#include "demo_text.h"
 #include "nau/app/application.h"
 #include "nau/app/global_properties.h"
 #include "nau/app/platform_window.h"
@@ -22,6 +24,7 @@
 
 namespace
 {
+    std::atomic_bool textFailed = false;
     class CubeDemo final : public nau::sample::SampleAppDelegate
     {
     public:
@@ -46,6 +49,15 @@ namespace
 
         nau::Result<> initializeServices() override
         {
+            nau::getServiceProvider().addService<nau::text::ScreenText>();
+            auto label = nau::demo::createDemoText();
+            if (!label)
+            {
+                textFailed = true;
+                NAU_LOG_ERROR("NauDemo text failed: {}", label.getError()->getMessage());
+                return label.getError();
+            }
+            m_label = *label;
             return nau::ResultSuccess;
         }
 
@@ -85,18 +97,46 @@ namespace
             co_await getServiceProvider().get<ISceneManager>().activateScene(
                 std::move(scene));
             getServiceProvider().get<ICameraManager>().setMainCamera(camera);
+            auto submitted = demo::drawDemoText(m_label);
+            if (!submitted)
+            {
+                failText(submitted.getError());
+                co_return;
+            }
+            auto presented = co_await getServiceProvider().get<text::ScreenText>().whenPresented().doTry();
+            if (!presented)
+            {
+                failText(presented.getError());
+                co_return;
+            }
+            NAU_LOG_DEBUG("NauDemo text ready");
+        }
+
+        void failText(nau::Error::Ptr error)
+        {
+            textFailed = true;
+            NAU_LOG_ERROR("NauDemo text failed: {}", error->getMessage());
+            nau::getApplication().stop();
         }
 
         void onApplicationStep(std::chrono::milliseconds dt) override
         {
-            m_scene.advance(dt);
+            m_scene.advance(std::getenv("NAU_DEMO_FREEZE") ? std::chrono::milliseconds(0) : dt);
+            if (m_label && !nau::getApplication().isClosing())
+            {
+                auto drawn = nau::demo::drawDemoText(m_label);
+                if (!drawn)
+                    failText(drawn.getError());
+            }
         }
 
         nau::demo::CubeScene m_scene;
+        nau::text::TextHandle m_label;
     };
 }  // namespace
 
 int main()
 {
-    return nau::runApplication(std::make_unique<CubeDemo>());
+    const int code = nau::runApplication(std::make_unique<CubeDemo>());
+    return textFailed ? 1 : code;
 }

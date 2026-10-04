@@ -1,9 +1,10 @@
-#include <string_view>
 #include <emscripten.h>
 
 #include <fstream>
+#include <string_view>
 
 #include "demo_scene.h"
+#include "demo_text.h"
 #include "nau/app/application_services.h"
 #include "nau/app/browser_runtime.h"
 #include "nau/app/main_loop/game_system.h"
@@ -88,7 +89,7 @@ namespace
                 }
             }
             std::vector<CpuAssetFile> files;
-            for (const char* name : {"cube.gltf", "cube.bin"})
+            for (const char* name : {"cube.gltf", "cube.bin", "fonts/Abel-Regular.ttf"})
             {
                 auto bytes = readPackage(name);
                 if (!bytes)
@@ -102,6 +103,11 @@ namespace
                 "/demo", *filesystem);
             if (!mounted)
                 co_await async::Task<>::makeRejected(mounted.getError());
+            auto label = demo::createDemoText();
+            if (!label)
+                co_await async::Task<>::makeRejected(label.getError());
+            m_label = *label;
+            co_await demo::drawDemoText(m_label);
             auto& factory = getServiceProvider().get<scene::ISceneFactory>();
             auto scene = factory.createEmptyScene();
             m_scene = demo::createCubeScene(factory, *scene);
@@ -149,6 +155,7 @@ namespace
         void gamePreUpdate(std::chrono::milliseconds dt) override
         {
             m_scene.advance(dt);
+            nau::demo::drawDemoText(m_label).ignore();
             m_simulationMs += dt.count();
             MAIN_THREAD_EM_ASM({ Module.nauDemoSimulation = ({milliseconds: $0, angle: $1, elapsed: $2}); }, m_simulationMs, m_scene.angle, dt.count());
         }
@@ -195,6 +202,7 @@ namespace
 
     private:
         nau::demo::CubeScene m_scene;
+        nau::text::TextHandle m_label;
         nau::Ptr<nau::CpuMeshView> m_mesh;
         nau::BrowserRenderer m_renderer;
         nau::Error::Ptr m_failure;
@@ -220,6 +228,7 @@ namespace
 #endif
             nau::getServiceProvider().addService(nau::createPlatformWindowService());
             nau::getServiceProvider().addService<DemoService>();
+            nau::getServiceProvider().addService<nau::text::ScreenText>();
             return {};
         }
     };

@@ -1,5 +1,8 @@
 # Nau Demo: Rotating Cube
 
+The `Nau Demo` label uses the shared engine screen-text API and a bundled TTF on
+native and web. See [screen text](doc/screen_text.md) for API and acceptance details.
+
 ## Toolchain and migration
 
 NauDemo consumes the engine's C++20 toolchain-standard-library interfaces. The
@@ -55,33 +58,20 @@ sibling `NauEngineLite` checkout in place: the executable uses their asset paths
 Rebuild after relocating either folder. Windows x64 and a DirectX 12 capable GPU
 are required.
 
-## Rebuild using the existing engine libraries
+## Rebuild the integrated target
 
-Requires Python, Visual Studio with MSVC v145, and a successfully built static
-`SceneBaseSample` in `../NauEngineLite/build/win_vs2026_x64`.
-
-```powershell
-python ./build.py
-./run.ps1
-```
-
-`build.py` reads the engine-generated `SceneBaseSample.vcxproj` to reuse its exact
-include paths, compiler settings, static module registration, and transitive
-libraries. It writes a separate project under `NauDemo/build/`, compiles the demo,
-and copies runtime DLLs to `NauDemo/bin/Debug/`. It does not modify the engine
-project or rebuild its libraries. This also handles the relocated engine build
-cache present in this workspace. After engine source changes, rebuild the engine
-first to keep its libraries and headers consistent.
-
-For another engine build location or configuration:
+Configure and build under the demo checkout so binaries and generated files remain here:
 
 ```powershell
-python ./build.py --engine ../NauEngineLite --engine-build ../NauEngineLite/build/win_vs2026_x64 --config Release
-./run.ps1 -Configuration Release
+$env:VCPKG_ROOT = 'D:/Programming/vcpkg'
+cmake --preset win_vs2026_x64 -S ../NauEngineLite -B build/native-text -DCMAKE_PROJECT_NauEngine_INCLUDE="$((Get-Location).Path)/cmake/attach_demo.cmake"
+python build.py --config Debug
+python build.py --config Release
 ```
 
-The matching engine libraries must already exist. This fast build supports the
-static Visual Studio preset; it deliberately rejects DLL builds.
+`build.py` builds the generated NauDemo target and its dependencies together. It
+rejects older caches that contain only SceneBaseSample rather than silently
+linking a demo without its screen-text dependency.
 
 ## Build from engine sources with CMake
 

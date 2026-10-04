@@ -5,7 +5,8 @@
     "PlatformApp",
     "CoreAssets",
     "CoreScene",
-    "CoreAssetsCpu"
+    "CoreAssetsCpu",
+    "NauScreenText"
   ],
   "dependencies": [
     "tiny-utf8",
@@ -15,9 +16,11 @@
     "jsoncpp",
     "wyhash",
     "fast_float",
-    "tinyimageformat"
+    "tinyimageformat",
+    "stb"
   ],
   "sources": {
+    "NauScreenText": ["modules/screen_text/src/screen_text.cpp"],
     "CoreAssetsCpu": [
       "modules/assets_cpu/src/cpu_mesh.cpp",
       "modules/asset_formats/src/gltf/gltf_file.cpp",

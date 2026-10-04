@@ -1,4 +1,4 @@
-"""Toolchain provenance and discovery checks for the native fast builder."""
+"""Toolchain provenance and discovery checks for the integrated native builder."""
 import unittest
 from unittest.mock import patch
 import xml.etree.ElementTree as ET

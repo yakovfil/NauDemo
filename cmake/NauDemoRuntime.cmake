@@ -1,7 +1,7 @@
 # Explicit CPU graph for the scene-driven demo. Renderer integration follows.
 include("${NAU_MODULES_SOURCE_DIR}/cmake/NauMinimalRuntime.cmake")
 set(NAU_FRAMEWORK_TARGET NauFrameworkScene)
-set(NAU_MINIMAL_MODULE_DIRS platform_app assets scene assets_cpu)
+set(NAU_MINIMAL_MODULE_DIRS platform_app assets scene assets_cpu screen_text)
 if(EMSCRIPTEN)
   execute_process(COMMAND "${CMAKE_CXX_COMPILER}" --version
     OUTPUT_VARIABLE demoCompilerVersion ERROR_VARIABLE demoCompilerError RESULT_VARIABLE demoCompilerResult)
@@ -12,6 +12,8 @@ if(EMSCRIPTEN)
 endif()
 list(APPEND NAU_MINIMAL_DEPENDENCY_DIRS tinyimageformat)
 list(APPEND NAU_MINIMAL_DEPENDENCY_TARGETS tinyimageformat)
+list(APPEND NAU_MINIMAL_DEPENDENCY_DIRS stb)
+list(APPEND NAU_MINIMAL_DEPENDENCY_TARGETS stb)
 if(NOT EXISTS "${NAU_ENGINE_SOURCE_DIR}/engine/3rdparty_libs/tinyimageformat/CMakeLists.txt")
   message(FATAL_ERROR "Missing demo runtime dependency: tinyimageformat. Restore recorded sources.")
 endif()

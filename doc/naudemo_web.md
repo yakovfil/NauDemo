@@ -2,7 +2,7 @@
 
 NauDemo uses real Nau scene objects, camera transforms and asset-loaded cube
 geometry. Its separate `scene` profile includes CoreScene, CoreAssets,
-CoreAssetsCpu, PlatformApp, NauFrameworkScene and NauBrowserRenderer. It does not
+CoreAssetsCpu, PlatformApp, NauScreenText, NauFrameworkScene and NauBrowserRenderer. It does not
 build the desktop Graphics/Render, UI, VFX, physics or shader-tool graphs.
 
 ## Build and run
@@ -44,7 +44,8 @@ status; fatal aborts do not claim successful cleanup.
 
 `NauDemo/build/web-demo-{debug,release}/package/` contains `NauDemo.js`, `.wasm`, `.data`,
 `cube.gltf`, `cube.bin`, `cube.web.json`, `cube.vert`, `cube.frag`, `app.json`,
-`index.html`, `serve.py`, `README.md` and a SHA-256 `manifest.json`. SDK 6.0.9 embeds
+`index.html`, `serve.py`, `README.md`, `fonts/Abel-Regular.ttf`,
+`fonts/OFL-Abel.txt` and a SHA-256 `manifest.json`. SDK 6.0.9 embeds
 its pthread worker in the loader. `NauDemo.data` preloads the data at
 `/demo-package`; a read-only Nau filesystem mounts cube data at `/demo`.
 The loose source assets are for inspection. Rebuild after editing them so the

@@ -86,11 +86,12 @@ def assert_scene_pixel(path, frame, package):
     return checks
 
 
-def capture_frame(page, path, package):
+def capture_frame(page, path, package, capture_scale=1):
     # At presentation cadence a screenshot can span several submitted frames.
     # Validate against snapshots immediately before and after capture.
     canvas=page.locator('#canvas')
     canvas.scroll_into_view_if_needed()
+    page.wait_for_timeout(100)
     box=canvas.bounding_box()
     scroll=page.evaluate('({x:scrollX,y:scrollY})')
     box['x']+=scroll['x']
@@ -99,7 +100,7 @@ def capture_frame(page, path, package):
     for attempt in range(8):
         before=page.evaluate('structuredClone(Module.nauRender)')
         capture=session.send('Page.captureScreenshot',{'format':'png','captureBeyondViewport':True,
-            'clip':{'x':box['x'],'y':box['y'],'width':box['width'],'height':box['height'],'scale':1}})
+            'clip':{'x':box['x'],'y':box['y'],'width':box['width'],'height':box['height'],'scale':capture_scale}})
         path.write_bytes(base64.b64decode(capture['data']))
         after=page.evaluate('structuredClone(Module.nauRender)')
         if after['frames']-before['frames']>8:
@@ -115,11 +116,34 @@ def capture_frame(page, path, package):
     raise AssertionError('Screenshot did not match geometry from nearby submitted frames')
 
 
+def assert_font_pixels(path, references, scale=1, variant=0, color=(1,1,1,1), position=(24,24)):
+    """Compare actual canvas pixels against stb coverage from the packaged TTF."""
+    stem=f'text-reference-{scale}'+(f'-variant{variant}' if variant else '')
+    metadata = json.loads((references/(stem+'.json')).read_text())
+    coverage = (references/(stem+'.raw')).read_bytes()
+    image = Image.open(path).convert('RGB')
+    background = (6, 9, 14)
+    # CDP temporarily hides the scrollbar when capturing, shifting a centered
+    # canvas by half its width. Locate the canvas edge independently of glyphs.
+    origin = next(x for x in range(24*scale) if image.getpixel((x,100*scale)) == background)
+    errors = []
+    for y in range(metadata['height']):
+        for x in range(metadata['width']):
+            alpha = coverage[y*metadata['width']+x]/255*color[3]
+            expected = [round(c*(1-alpha)+255*tint*alpha) for c,tint in zip(background,color)]
+            point=(origin+position[0]*scale+metadata['left']+x,position[1]*scale+metadata['top']+y)
+            if not(origin<=point[0]<image.width and 0<=point[1]<image.height):continue
+            actual = image.getpixel(point)
+            errors.append(max(abs(a-b) for a,b in zip(actual,expected)))
+    assert max(errors) <= 2, f'Canvas glyphs differ from specified font: maximum error {max(errors)}'
+    return {'pixels':len(errors),'maximumError':max(errors),'canvasOrigin':origin}
+
+
 @contextmanager
 def chrome_session(playwright):
     # no_defaults preserves genuine document visibility; Playwright's default
     # controlled-page settings make all pages visible in the tested version.
-    with tempfile.TemporaryDirectory(prefix='nau-demo-chrome-') as profile:
+    with tempfile.TemporaryDirectory(prefix='nau-demo-chrome-', ignore_cleanup_errors=True) as profile:
         process = subprocess.Popen(['C:/Program Files/Google/Chrome/Application/chrome.exe',
             '--headless=new',f'--user-data-dir={profile}','--remote-debugging-port=0',
             '--no-first-run','--no-default-browser-check','about:blank'],
@@ -148,7 +172,13 @@ def main():
     parser.add_argument("--package", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--base-path", default="/")
-    parser.add_argument("--scenario", default="success", choices=["success", "host-loss", "context-loss", "missing-buffer", "bad-shader", "bad-config", "missing-canvas", "no-context", "stop-assets", "stop-graphics", "pending-scene", "camera", "bad-link", "missing-headers", "file-url", "no-offscreen", "missing-loader", "missing-wasm", "missing-data", "blank-frame", "runner-failure"])
+    parser.add_argument("--text-variant",type=int,choices=(0,1,2),default=0)
+    parser.add_argument("--device-scale",type=int,choices=(1,2),default=1)
+    parser.add_argument("--text-readback",action='store_true',help='Require a package built with -TestHooks for exact DPR framebuffer checks')
+    parser.add_argument("--text-position",nargs=2,type=int,default=(24,24))
+    parser.add_argument("--text-reference", type=Path,
+                        default=Path(__file__).resolve().parents[1]/'build/text-tests-native/fixtures')
+    parser.add_argument("--scenario", default="success", choices=["success", "host-loss", "context-loss", "missing-buffer", "bad-shader", "bad-config", "missing-canvas", "no-context", "missing-font", "text-upload", "stop-assets", "stop-graphics", "pending-scene", "camera", "bad-link", "missing-headers", "file-url", "no-offscreen", "missing-loader", "missing-wasm", "missing-data", "blank-frame", "runner-failure"])
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     result = {"package": str(args.package.resolve()), "scenario":args.scenario, "passed": False, "console": [], "errors": []}
@@ -174,6 +204,22 @@ def main():
                 context = browser.contexts[0]
                 page = context.pages[0]
                 page.set_viewport_size({"width":1280,"height":900})
+                metrics=page.context.new_cdp_session(page)
+                metrics.send('Emulation.setDeviceMetricsOverride',{'width':1280,'height':900,'deviceScaleFactor':args.device_scale,'mobile':False})
+                settings={}
+                if args.text_variant or tuple(args.text_position)!=(24,24):
+                    source=(args.package/'NauDemo.js').read_text(encoding='utf-8')
+                    settings={'NAU_DEMO_TEXT':'Glyph AVjgy','NAU_DEMO_TEXT_SIZE':'32','NAU_DEMO_TEXT_R':'0.25','NAU_DEMO_TEXT_G':'0.75','NAU_DEMO_TEXT_B':'0.5','NAU_DEMO_TEXT_A':'0.6'} if args.text_variant==1 else {}
+                    settings.update(NAU_DEMO_TEXT_X=str(args.text_position[0]),NAU_DEMO_TEXT_Y=str(args.text_position[1]))
+                    page.route('**/NauDemo.js',lambda route:route.fulfill(status=200,content_type='application/javascript',body=source+'\nObject.assign(ENV,'+json.dumps(settings)+');\n',headers={'Cross-Origin-Opener-Policy':'same-origin','Cross-Origin-Embedder-Policy':'require-corp','Cache-Control':'no-store'}))
+                    if args.text_variant==2:
+                        original=(args.package/'fonts/Abel-Regular.ttf').read_bytes()
+                        alternate=(args.text_reference/'Abel-Changed.ttf').read_bytes()
+                        assert len(original)==len(alternate)
+                        def replace_font(route):
+                            response=route.fetch();data=response.body();assert data.count(original)==1
+                            route.fulfill(response=response,body=data.replace(original,alternate))
+                        page.route('**/NauDemo.data',replace_font)
                 wait = functools.partial(page.wait_for_function, polling=10)
                 page.on("console", lambda message: result["console"].append(message.text))
                 page.on("pageerror", lambda error: result["errors"].append(str(error)))
@@ -185,8 +231,10 @@ def main():
                 if args.scenario in ('missing-loader','missing-wasm','missing-data'):
                     filename={'missing-loader':'NauDemo.js','missing-wasm':'NauDemo.wasm','missing-data':'NauDemo.data'}[args.scenario]
                     page.route('**/'+filename,lambda route:route.fulfill(status=404,body='Missing fixture input'))
-                if args.scenario in ("missing-buffer", "context-loss", "no-context"):
+                if args.scenario in ("missing-buffer", "context-loss", "no-context", "missing-font", "text-upload"):
                     loader_source = (args.package / "NauDemo.js").read_text(encoding="utf-8")
+                    if settings:
+                        loader_source += '\nObject.assign(ENV,'+json.dumps(settings)+');\n'
                     def loader(route):
                         source = loader_source
                         if args.scenario == "missing-buffer":
@@ -194,6 +242,11 @@ def main():
                             source = source.replace('/demo-package/cube.bin', '/demo-package/gone.bin')
                         elif args.scenario == "no-context":
                             source += "\nif(ENVIRONMENT_IS_PTHREAD) OffscreenCanvas.prototype.getContext=()=>null;\n"
+                        elif args.scenario == 'missing-font':
+                            assert '/demo-package/fonts/Abel-Regular.ttf' in source
+                            source=source.replace('/demo-package/fonts/Abel-Regular.ttf','/demo-package/fonts/gone.ttf')
+                        elif args.scenario == 'text-upload':
+                            source += '\nif(ENVIRONMENT_IS_PTHREAD) WebGL2RenderingContext.prototype.createTexture=()=>null;\n'
                         else:
                             source += """\nif(ENVIRONMENT_IS_PTHREAD) self.addEventListener('message', e=>{
                                 if(e.data.nauTestLoss){e.stopImmediatePropagation();
@@ -248,7 +301,7 @@ def main():
                     assert not result['startup'].get('render'), result
                     result['passed'] = True
                     return
-                if args.scenario in ("missing-buffer", "bad-shader", "bad-link", "bad-config", "missing-canvas", "no-context"):
+                if args.scenario in ("missing-buffer", "bad-shader", "bad-link", "bad-config", "missing-canvas", "no-context", "missing-font", "text-upload"):
                     if args.scenario == 'missing-canvas' and not result['startup'].get('status'):
                         assert page.locator('#status').inner_text() == 'Failed'
                     else:
@@ -256,6 +309,10 @@ def main():
                         result['terminal'] = page.evaluate('Module.nauRuntime.status')
                         assert result['terminal']['state'] == 'Failed', result
                         assert result['terminal']['completedSteps'] == 0, result
+                        if args.scenario=='missing-font':
+                            assert 'Abel-Regular.ttf' in result['terminal']['message'],result
+                        if args.scenario=='text-upload':
+                            assert 'text upload' in result['terminal']['message'],result
                     result['passed'] = True
                     return
                 assert result["startup"].get("status", {}).get("state") == "Running", result["startup"]
@@ -279,6 +336,7 @@ def main():
                 wait("Module.nauRender?.frames >= 3")
                 first = capture_frame(page,args.output/'cube-first.png',args.package)
                 result['first']=first
+                result['textPixels']=assert_font_pixels(args.output/'cube-first.png',args.text_reference,args.device_scale,args.text_variant,(.25,.75,.5,.6) if args.text_variant==1 else (1,1,1,1),args.text_position)
                 result['firstPixels']=assert_scene_pixel(args.output/'cube-first.png',first,args.package)
                 wait(f"Module.nauRender.frames >= {first['frames'] + 11}")
                 second = capture_frame(page,args.output/'cube-rotated.png',args.package)
@@ -346,6 +404,16 @@ def main():
                     session = page.context.new_cdp_session(page)
                     session.send('Emulation.setDeviceMetricsOverride', {'width':1280,'height':900,'deviceScaleFactor':2,'mobile':False})
                     wait('Module.nauRender.width===840 && Module.nauRender.height===520')
+                    wait('Module.nauText.scale===2 && Module.nauText.textures===1')
+                    if args.text_readback:
+                        page.evaluate('Module.nauTextSurface=null;Module.nauTextCaptureRequest=true')
+                        wait('Module.nauTextSurface')
+                        surface=page.evaluate('Module.nauTextSurface')
+                        assert surface['width']==840,(surface['width'],surface['height'],page.evaluate('Module.nauText'))
+                        raw=Image.frombytes('RGBA',(surface['width'],surface['height']),bytes(surface['pixels'])).transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+                        raw.save(args.output/'text-dpr2-framebuffer.png')
+                        result['textDprPixels']=assert_font_pixels(args.output/'text-dpr2-framebuffer.png',args.text_reference,2,args.text_variant,(.25,.75,.5,.6) if args.text_variant==1 else (1,1,1,1),args.text_position)
+                    capture_frame(page,args.output/'text-dpr2.png',args.package,2)
                     result['resized'] = page.evaluate('structuredClone(Module.nauRender)')
                     session.send('Emulation.clearDeviceMetricsOverride')
                     page.locator('#canvas').evaluate("c=>{c.style.width='100000px';c.style.height='1000px'}")
@@ -367,6 +435,8 @@ def main():
                 expected = 'Failed' if args.scenario in ('host-loss','context-loss') else 'Stopped'
                 assert result["terminal"]["status"]["state"] == expected, result["terminal"]
                 assert result["terminal"]["render"]["stopped"]
+                result['textCleanup']=page.evaluate('Module.nauText')
+                assert result['textCleanup']['stopped'] and result['textCleanup']['textures']==0
                 frozen = result['terminal']['render']['frames']
                 page.wait_for_timeout(150)
                 assert page.evaluate('Module.nauRender.frames') == frozen
@@ -386,6 +456,7 @@ def main():
             finally:
                 chrome.__exit__(None,None,None)
     except Exception as error:
+        result["passed"] = False
         result["error"] = str(error)
     finally:
         server.shutdown()
