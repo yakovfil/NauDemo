@@ -20,7 +20,9 @@
     "stb"
   ],
   "sources": {
-    "NauScreenText": ["modules/screen_text/src/screen_text.cpp"],
+    "NauScreenText": [
+      "modules/screen_text/src/screen_text.cpp"
+    ],
     "CoreAssetsCpu": [
       "modules/assets_cpu/src/cpu_mesh.cpp",
       "modules/asset_formats/src/gltf/gltf_file.cpp",
@@ -34,8 +36,7 @@
       "modules/assets/src/asset_path.cpp",
       "modules/assets/src/asset_ref.cpp",
       "modules/assets/src/assets_module.cpp",
-      "modules/assets/src/reloadable_asset_view.cpp",
-      "modules/assets/src/ui_asset_accessor.cpp"
+      "modules/assets/src/reloadable_asset_view.cpp"
     ],
     "CoreScene": [
       "modules/scene/src/camera/camera_manager_impl.cpp",

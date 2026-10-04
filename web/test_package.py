@@ -164,7 +164,10 @@ def chrome_session(playwright):
                 except Exception: pass
             try: process.wait(timeout=5)
             except subprocess.TimeoutExpired:
-                process.terminate();process.wait(timeout=5)
+                process.terminate()
+                try: process.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    process.kill();process.wait(timeout=5)
 
 
 def main():
@@ -403,7 +406,9 @@ def main():
                     wait(f'Module.nauRender.frames>{frozen}')
                     session = page.context.new_cdp_session(page)
                     session.send('Emulation.setDeviceMetricsOverride', {'width':1280,'height':900,'deviceScaleFactor':2,'mobile':False})
+                    result['visibilityCheckpoint']='dpr-render'
                     wait('Module.nauRender.width===840 && Module.nauRender.height===520')
+                    result['visibilityCheckpoint']='dpr-text'
                     wait('Module.nauText.scale===2 && Module.nauText.textures===1')
                     if args.text_readback:
                         page.evaluate('Module.nauTextSurface=null;Module.nauTextCaptureRequest=true')
@@ -454,6 +459,11 @@ def main():
                 assert not result["errors"], result["errors"]
                 result["passed"] = True
             finally:
+                if sys.exc_info()[0] is not None:
+                    try:
+                        result['failureState'] = page.evaluate('({hidden:document.hidden,status:Module.nauRuntime?.status,render:Module.nauRender,text:Module.nauText,history:Module.nauRuntime?.history?.slice(-8)})')
+                    except Exception:
+                        pass
                 chrome.__exit__(None,None,None)
     except Exception as error:
         result["passed"] = False

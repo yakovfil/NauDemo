@@ -114,3 +114,9 @@ are missing, verify the sibling engine checkout and its compiled
 The material and application setup follow Nau's sample implementation. Nau's
 license is retained in `NAU-LICENSE.txt`; engine assets and third-party components
 retain their upstream licenses.
+
+## Retired Cocos UI
+
+The Cocos2d-backed `ui` module and its widget API, UiSampleApp, GUI editor, UI synchronization, and USD UI translation have been retired. Existing UI assets are unsupported; retained tools report this without converting or deleting them. Rebuild engine, modules, editor, samples, and installed SDK consumers together in fresh output directories. Old UI DLLs, headers, and SDK exports are incompatible.
+
+Asset-backed single-line text remains available through `NauScreenText`; see `NauDemo/doc/screen_text.md`. ImGui diagnostic interfaces and the editor's Qt interface remain available.
