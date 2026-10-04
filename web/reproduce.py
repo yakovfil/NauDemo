@@ -19,7 +19,7 @@ def main():
     assert not destination.exists(), 'Use a new destination; existing directories are never replaced'
     assert not destination.is_relative_to(source), 'Fresh checkout must be outside the original checkout'
     assert Path(os.environ['EMSDK']).resolve() == args.sdk.resolve(), 'Source the requested emsdk_env.ps1 first'
-    evidence = source/'NauEngineLite/build/demo-fresh-evidence'
+    evidence = source/'NauDemo/build/demo-fresh-evidence'
     evidence.mkdir(parents=True, exist_ok=True)
     report = {'source':str(source),'checkout':str(destination),'sdk':str(args.sdk.resolve()),
               'method':'fresh local Git clones with recorded uncommitted patch bundle','repositories':{},'commands':[],'passed':False}
@@ -63,7 +63,7 @@ def main():
                             evidence/(configuration+'-minimal'), dirs_exist_ok=True)
             run(['powershell', '-NoProfile', '-File', destination/'NauDemo/web/build.ps1',
                  '-Configuration', configuration.capitalize()], destination, configuration+'-build')
-            run([sys.executable,destination/'NauDemo/web/test_package.py','--package',destination/f'NauEngineLite/build/web-demo-{configuration}/package',
+            run([sys.executable,destination/'NauDemo/web/test_package.py','--package',destination/f'NauDemo/build/web-demo-{configuration}/package',
                  '--output',evidence/configuration,'--base-path','/fresh/demo/'],destination,configuration+'-chrome')
         for name, original in before.items():
             assert original == subprocess.check_output(['git','diff','--binary','--ignore-submodules=all','HEAD'],cwd=destination/name), f'Build changed tracked source: {name}'

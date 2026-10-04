@@ -33,7 +33,7 @@ if not defined EMSDK (
 powershell -NoProfile -ExecutionPolicy Bypass -File "%DEMO_DIR%web\build.ps1" -Configuration %CONFIG%
 if errorlevel 1 exit /b 1
 
-set "PACKAGE=%ENGINE_DIR%\build\web-demo-%CONFIG%\package"
+set "PACKAGE=%DEMO_DIR%build\web-demo-%CONFIG%\package"
 if not exist "%PACKAGE%\serve.py" (
     echo Web package was not produced: "%PACKAGE%"
     exit /b 1

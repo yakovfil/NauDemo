@@ -11,13 +11,13 @@ Keep NauDemo beside NauEngineLite in the parent Nau checkout. Initialize these
 two required submodules (`git submodule update --init NauEngineLite NauDemo`).
 Install SDK **6.0.9** explicitly as described in [Emscripten build guide](../../NauSamples/doc/emscripten_build.md).
 Use CMake 3.25+, Ninja and Git; tested versions are CMake 4.2.1 and Ninja 1.13.2.
-From NauEngineLite in PowerShell:
+From NauDemo in PowerShell:
 
 ```powershell
 . "$HOME/emsdk/emsdk_env.ps1"
-./cmake/check_emscripten.ps1
-../NauDemo/web/build.ps1 -Configuration Debug
-../NauDemo/web/build.ps1 -Configuration Release
+../NauEngineLite/cmake/check_emscripten.ps1
+./web/build.ps1 -Configuration Debug
+./web/build.ps1 -Configuration Release
 python build/web-demo-debug/package/serve.py --port 8000
 ```
 
@@ -42,7 +42,7 @@ status; fatal aborts do not claim successful cleanup.
 
 ## Package
 
-`build/web-demo-{debug,release}/package/` contains `NauDemo.js`, `.wasm`, `.data`,
+`NauDemo/build/web-demo-{debug,release}/package/` contains `NauDemo.js`, `.wasm`, `.data`,
 `cube.gltf`, `cube.bin`, `cube.web.json`, `cube.vert`, `cube.frag`, `app.json`,
 `index.html`, `serve.py`, `README.md` and a SHA-256 `manifest.json`. SDK 6.0.9 embeds
 its pthread worker in the loader. `NauDemo.data` preloads the data at
@@ -64,8 +64,8 @@ Chrome, a disposable profile and Chrome's new headless mode; it validates actual
 rendered PNGs. No Playwright browser download is required. From the parent Nau:
 
 ```powershell
-python NauDemo/web/test_package.py --package NauEngineLite/build/web-demo-debug/package --output NauEngineLite/build/demo-check-debug
-python NauDemo/web/test_package.py --package NauEngineLite/build/web-demo-release/package --output NauEngineLite/build/demo-check-release
+python NauDemo/web/test_package.py --package NauDemo/build/web-demo-debug/package --output NauDemo/build/demo-check-debug
+python NauDemo/web/test_package.py --package NauDemo/build/web-demo-release/package --output NauDemo/build/demo-check-release
 python NauDemo/web/test_staging.py
 ```
 
@@ -78,10 +78,10 @@ and reload. `--scenario` also accepts `host-loss`, `context-loss`, `missing-buff
 `missing-headers`, `file-url`, and `no-offscreen`.
 `blank-frame` and `runner-failure` deliberately return nonzero and write failed
 structured results. Context and asset fault cases instrument served responses;
-they do not edit the package or engine's generated files.
+they do not edit the package or generated files.
 
 The controlled `camera` and `pending-scene` fixtures require a separate explicit
-compile option. In the engine directory, run `../NauDemo/web/build.ps1 -Configuration Debug -TestHooks`,
+compile option. In the demo directory, run `./web/build.ps1 -Configuration Debug -TestHooks`,
 then run those scenarios. Repeat for Release. Rebuild without `-TestHooks` for normal delivery. The default
 build contains neither the pending test component nor its camera controls.
 
@@ -106,7 +106,7 @@ Choose a new destination outside the checkout. The helper clones Nau, NauEngineL
 NauSamples and NauDemo, and records their base revisions, patch/file hashes,
 SDK/tool identities and commands. It builds minimal and demo packages in Debug/Release,
 checks minimal update/Stop and Chrome demo rendering/Stop at `/fresh/demo/`, and verifies that builds did not edit
-tracked source. Evidence is in `NauEngineLite/build/demo-fresh-evidence/`.
+tracked source. Evidence is in `NauDemo/build/demo-fresh-evidence/`.
 It creates no commits and publishes nothing. After committing the changes,
 ordinary remote clones at the recorded component revisions can use the build
 commands above without a patch bundle.

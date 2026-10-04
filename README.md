@@ -18,12 +18,12 @@ material in Chrome. On Windows, from `NauDemo/` run `run_web.bat` for Debug or
 `%USERPROFILE%\emsdk`, builds the package, starts the local server, and opens
 the browser. Press Ctrl+C to stop serving; answer Y if CMD prompts you.
 
-For the manual steps, from `NauEngineLite/` after activating SDK 6.0.9:
+For the manual steps, from `NauDemo/` after activating SDK 6.0.9:
 
 ```powershell
 . "$HOME/emsdk/emsdk_env.ps1"
-../NauDemo/web/build.ps1 -Configuration Debug
-../NauDemo/web/build.ps1 -Configuration Release
+./web/build.ps1 -Configuration Debug
+./web/build.ps1 -Configuration Release
 python build/web-demo-debug/package/serve.py --port 8000
 ```
 
