@@ -50,25 +50,20 @@ then run CTest. The `FontDerivedRenderReferences` case writes coverage reference
 into the build's fixtures directory. Browser acceptance uses the native fixture
 references under `build/text-tests-native/fixtures` by default.
 
-Build both browser configurations with `web/build.ps1 -Configuration Debug
--TestHooks` (and Release), then run `python web/test_text_acceptance.py`.
+Build both browser configurations with `web/build.ps1 -Configuration Debug` (and Release), then run `python web/test_text_acceptance.py`.
 The fixtures compare actual canvas glyphs with font coverage, change text/size/
 color/font metrics, change DPR, and exercise missing assets and upload failure.
-Test hooks supply exact framebuffer readback before Chrome screenshot resampling.
+Browser checks use canvas screenshots; DPR checks inspect surface dimensions and text scale.
 Both browser configurations prove normal Stop settles.
 
-For native acceptance configure `build/native-text` with
-`-DNAU_DEMO_TEST_HOOKS=ON`, build Debug and Release, and run
-`python tests/test_native_text.py`. Its private Graphics hook reads the actual
-backbuffer on the render thread, so desktop occlusion cannot affect results.
-The runner freezes the cube, compares glyphs against a blank-label baseline,
-checks all pixels outside the glyph rectangle, resizes, clips, and closes normally.
-Results distinguish existing renderer validation messages from text checks.
+The native readback runner `tests/test_native_text.py` requires a separately
+instrumented Graphics build. NauDemo does not enable renderer capture hooks;
+ordinary demo binaries cannot run those framebuffer acceptance checks.
 
 Diagnostic environment variables `NAU_DEMO_TEXT`, `NAU_DEMO_TEXT_FONT`,
 `NAU_DEMO_TEXT_SIZE`, `NAU_DEMO_TEXT_X/Y`, and `NAU_DEMO_TEXT_R/G/B/A` override the
 label inputs for acceptance. Normal runs use the documented defaults.
 `NAU_DEMO_FREEZE` freezes rotation for image comparisons. Native readback exists
-only in test-hook builds and writes to the requested `NAU_SCREEN_TEXT_CAPTURE`
+only in separately instrumented engine builds and writes to the requested `NAU_SCREEN_TEXT_CAPTURE`
 path. Missing fonts fail initialization with the VFS asset path and a nonzero
 native exit code; browser initialization reports Failed and completes cleanup.

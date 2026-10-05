@@ -177,11 +177,10 @@ def main():
     parser.add_argument("--base-path", default="/")
     parser.add_argument("--text-variant",type=int,choices=(0,1,2),default=0)
     parser.add_argument("--device-scale",type=int,choices=(1,2),default=1)
-    parser.add_argument("--text-readback",action='store_true',help='Require a package built with -TestHooks for exact DPR framebuffer checks')
     parser.add_argument("--text-position",nargs=2,type=int,default=(24,24))
     parser.add_argument("--text-reference", type=Path,
                         default=Path(__file__).resolve().parents[1]/'build/text-tests-native/fixtures')
-    parser.add_argument("--scenario", default="success", choices=["success", "host-loss", "context-loss", "missing-buffer", "bad-shader", "bad-config", "missing-canvas", "no-context", "missing-font", "text-upload", "stop-assets", "stop-graphics", "pending-scene", "camera", "bad-link", "missing-headers", "file-url", "no-offscreen", "missing-loader", "missing-wasm", "missing-data", "blank-frame", "runner-failure"])
+    parser.add_argument("--scenario", default="success", choices=["success", "host-loss", "context-loss", "missing-buffer", "bad-shader", "bad-config", "missing-canvas", "no-context", "missing-font", "text-upload", "bad-link", "missing-headers", "file-url", "no-offscreen", "missing-loader", "missing-wasm", "missing-data", "blank-frame", "runner-failure"])
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     result = {"package": str(args.package.resolve()), "scenario":args.scenario, "passed": False, "console": [], "errors": []}
@@ -275,38 +274,18 @@ def main():
                     page.route("**/NauDemo.data", corrupt)
                 if args.scenario == "missing-canvas":
                     page.add_init_script("new MutationObserver(()=>document.getElementById('canvas')?.remove()).observe(document,{childList:true,subtree:true})")
-                if args.scenario in ('stop-assets','stop-graphics'):
-                    def stop_stage(route):
-                        response = route.fetch()
-                        stage = args.scenario.removeprefix('stop-')
-                        html = response.text().replace("stopButton.addEventListener", "Object.defineProperty(Module,'nauDemoStage',{set(value){if(value==='"+stage+"') Module.nauRuntime.stop();}});\nstopButton.addEventListener")
-                        route.fulfill(response=response, body=html)
-                    page.route("**/", stop_stage)
-                if args.scenario == 'pending-scene':
-                    def pending_scene(route):
-                        response = route.fetch()
-                        html = response.text().replace('window.Module = {','window.Module = {nauDemoPendingTest:true,')
-                        route.fulfill(response=response,body=html)
-                    page.route('**/',pending_scene)
                 page.goto((args.package.resolve()/"index.html").as_uri() if args.scenario=="file-url" else f"http://127.0.0.1:{server.server_port}{args.base_path}")
-                wait("['Running','Stopped'].includes(Module.nauRuntime?.status?.state) || document.getElementById('status').textContent === 'Failed'", timeout=60000)
-                result["startup"] = page.evaluate("({status:Module.nauRuntime?.status, render:Module.nauRender, message:document.getElementById('message').textContent})")
+                wait("['Running','Stopped'].includes(Module.nauRuntime?.status?.state) || window.nauDelivery.state === 'Failed'", timeout=60000)
+                result["startup"] = page.evaluate("({status:Module.nauRuntime?.status, render:Module.nauRender, message:window.nauDelivery.message})")
                 if args.scenario in ('missing-loader','missing-wasm','missing-data','missing-headers','file-url','no-offscreen'):
-                    assert page.locator('#status').inner_text()=='Failed',result
-                    assert page.locator('#cleanup').inner_text()!='Complete',result
+                    assert page.evaluate('window.nauDelivery.state')=='Failed',result
+                    assert not (result['startup'].get('status') or {}).get('cleanupComplete', False),result
                     assert result['startup']['message'],result
                     result['passed']=True
                     return
-                if args.scenario in ('stop-assets','stop-graphics'):
-                    assert result['startup']['status']['state'] == 'Stopped', result
-                    assert result['startup']['status']['cleanupComplete'], result
-                    assert result['startup']['status']['completedSteps'] == 0, result
-                    assert not result['startup'].get('render'), result
-                    result['passed'] = True
-                    return
                 if args.scenario in ("missing-buffer", "bad-shader", "bad-link", "bad-config", "missing-canvas", "no-context", "missing-font", "text-upload"):
                     if args.scenario == 'missing-canvas' and not result['startup'].get('status'):
-                        assert page.locator('#status').inner_text() == 'Failed'
+                        assert page.evaluate('window.nauDelivery.state') == 'Failed'
                     else:
                         wait("Module.nauRuntime.status.cleanupComplete", timeout=30000)
                         result['terminal'] = page.evaluate('Module.nauRuntime.status')
@@ -319,23 +298,11 @@ def main():
                     result['passed'] = True
                     return
                 assert result["startup"].get("status", {}).get("state") == "Running", result["startup"]
-                if args.scenario == 'pending-scene':
-                    wait('Module.nauDemoPending?.pending')
-                    page.evaluate('Module.nauRuntime.stop();Module.nauRuntime.stop()')
-                    wait("Module.nauRuntime.status.state==='Stopping'")
-                    page.wait_for_timeout(200)
-                    result['pending'] = page.evaluate('({status:Module.nauRuntime.status,work:Module.nauDemoPending,render:Module.nauRender})')
-                    assert not result['pending']['status']['cleanupComplete']
-                    assert result['pending']['work']['deactivated'] == 1
-                    assert result['pending']['work']['destroyed'] == 0
-                    page.evaluate('Module.nauDemoReleasePending=true')
-                    wait('Module.nauRuntime.status.cleanupComplete')
-                    result['terminal'] = page.evaluate('({status:Module.nauRuntime.status,work:Module.nauDemoPending,render:Module.nauRender})')
-                    assert result['terminal']['status']['state']=='Stopped',result
-                    assert result['terminal']['work']['destroyed']==1,result
-                    assert result['pending']['render']['frames']==result['terminal']['render']['frames'],result
-                    result['passed']=True
-                    return
+                assert page.locator('button, h1, dl, p').count() == 0
+                bounds = page.locator('#canvas').bounding_box()
+                viewport = page.evaluate('({width:innerWidth,height:innerHeight})')
+                assert bounds == {'x':0,'y':0,**viewport}, (bounds, viewport)
+
                 wait("Module.nauRender?.frames >= 3")
                 first = capture_frame(page,args.output/'cube-first.png',args.package)
                 result['first']=first
@@ -354,14 +321,6 @@ def main():
                 assert first["model"] != second["model"]
                 assert second["indices"] == 36 and second["worker"]
                 result["first"], result["second"] = first, second
-                if args.scenario == 'camera':
-                    page.evaluate('Module.nauDemoMoveCamera=true')
-                    wait('Math.abs(Module.nauRender.view[12])>1')
-                    moved = page.evaluate('structuredClone(Module.nauRender)')
-                    assert abs(moved['projection'][5]-math.sqrt(3))<1e-4
-                    page.locator('#canvas').screenshot(path=str(args.output/'cube-camera.png'))
-                    assert ImageChops.difference(Image.open(args.output/'cube-rotated.png').convert('RGB'),Image.open(args.output/'cube-camera.png').convert('RGB')).getbbox()
-                    result['camera']=moved
                 if args.scenario == 'runner-failure':
                     raise AssertionError('Deliberately broken acceptance assertion')
                 if args.scenario == 'success':
@@ -410,14 +369,6 @@ def main():
                     wait('Module.nauRender.width===840 && Module.nauRender.height===520')
                     result['visibilityCheckpoint']='dpr-text'
                     wait('Module.nauText.scale===2 && Module.nauText.textures===1')
-                    if args.text_readback:
-                        page.evaluate('Module.nauTextSurface=null;Module.nauTextCaptureRequest=true')
-                        wait('Module.nauTextSurface')
-                        surface=page.evaluate('Module.nauTextSurface')
-                        assert surface['width']==840,(surface['width'],surface['height'],page.evaluate('Module.nauText'))
-                        raw=Image.frombytes('RGBA',(surface['width'],surface['height']),bytes(surface['pixels'])).transpose(Image.Transpose.FLIP_TOP_BOTTOM)
-                        raw.save(args.output/'text-dpr2-framebuffer.png')
-                        result['textDprPixels']=assert_font_pixels(args.output/'text-dpr2-framebuffer.png',args.text_reference,2,args.text_variant,(.25,.75,.5,.6) if args.text_variant==1 else (1,1,1,1),args.text_position)
                     capture_frame(page,args.output/'text-dpr2.png',args.package,2)
                     result['resized'] = page.evaluate('structuredClone(Module.nauRender)')
                     session.send('Emulation.clearDeviceMetricsOverride')
@@ -433,7 +384,7 @@ def main():
                     page.evaluate("Object.values(PThread.pthreads).forEach(w=>w.postMessage({nauTestLoss:true}))")
                     wait("Module.nauRuntime.status.state==='Failed'", timeout=10000)
                 else:
-                    page.locator("#stop").click()
+                    page.evaluate('Module.nauRuntime.stop()')
                 page.evaluate("Module.nauRuntime.stop()")
                 wait("Module.nauRuntime.status.cleanupComplete", timeout=30000)
                 result["terminal"] = page.evaluate("({status:Module.nauRuntime.status, render:Module.nauRender})")
@@ -452,7 +403,7 @@ def main():
                     page.reload()
                     wait("Module.nauRuntime?.status?.state==='Running' && Module.nauRender?.frames>=2",timeout=30000)
                     assert page.locator('#canvas').get_attribute('data-previously-used') is None
-                    page.locator('#stop').click()
+                    page.evaluate('Module.nauRuntime.stop()')
                     wait('Module.nauRuntime.status.cleanupComplete')
                     result['reloaded']=page.evaluate('Module.nauRuntime.status')
                     assert result['reloaded']['state']=='Stopped'

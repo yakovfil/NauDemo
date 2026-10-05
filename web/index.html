@@ -2,62 +2,31 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nau Demo ? Rotating Cube</title>
+<title>Nau Demo</title>
 <link rel="icon" href="data:,">
 <style>
-body { font: 18px/1.5 system-ui, sans-serif; background: #f3f5f8; color: #172436; margin: 0; }
-main { max-width: 1100px; margin: 5vh auto; padding: 24px; background: white; border-radius: 12px; }
-h1 { margin-top: 0; } dt { color: #536174; } dd { margin: 0 0 16px; font-weight: 600; }
-button { font: inherit; padding: 8px 24px; cursor: pointer; } button:disabled { cursor: default; }
-#message { overflow-wrap: anywhere; } code { font-size: 16px; }
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #000; }
+#nau-window { position: fixed; inset: 0; }
+#canvas { display: block; width: 100%; height: 100%; }
 </style>
-<main>
-<h1>Nau Demo ? Rotating Cube</h1>
-<p>A scene-driven blue cube. Rotation advances with the simulation at approximately ten updates per second.</p>
-<dl aria-live="polite">
-<dt>Status</dt><dd id="status">Checking browser</dd>
-<dt>Completed updates</dt><dd id="count">0</dd>
-<dt>Cleanup</dt><dd id="cleanup">Not reported</dd>
-</dl>
-<button id="stop" disabled>Stop</button>
-<p id="message" role="status"></p>
-<p id="retry">Reload this page to start another run.</p>
-<p>Serve this folder with <code>python serve.py --port 8000</code>, then open the printed URL.</p>
-<div id="nau-window"><canvas id="canvas" style="display:block;width:100%;height:60vh"></canvas></div>
-</main>
+<body>
+<div id="nau-window"><canvas id="canvas" aria-label="Nau Demo"></canvas></div>
 <script>
 'use strict';
-const statusText = document.getElementById('status');
-const countText = document.getElementById('count');
-const cleanupText = document.getElementById('cleanup');
-const messageText = document.getElementById('message');
-const stopButton = document.getElementById('stop');
+window.nauDelivery = { state: 'Loading', message: '' };
 let deliveryFailure = null;
 function fail(message) {
     deliveryFailure ??= message;
-    statusText.textContent = 'Failed';
-    messageText.textContent = deliveryFailure + ' Repair the package or hosting configuration, then reload.';
-    cleanupText.textContent = 'Not confirmed';
-    stopButton.disabled = true;
-}
-function render() {
-    if (deliveryFailure) return;
-    const snapshot = window.Module?.nauRuntime?.status;
-    if (!snapshot) return;
-    statusText.textContent = snapshot.state;
-    countText.textContent = snapshot.completedSteps;
-    cleanupText.textContent = snapshot.cleanupComplete ? 'Complete' : 'In progress';
-    messageText.textContent = snapshot.message || '';
-    stopButton.disabled = snapshot.cleanupComplete || snapshot.state === 'Failed';
+    window.nauDelivery = { state: 'Failed', message: deliveryFailure };
+    console.error(deliveryFailure);
 }
 window.Module = {
     canvas:document.getElementById("canvas"),
     onAbort(reason) { fail('Runtime loading or execution aborted: ' + String(reason)); },
-    onExit() { render(); }
+    onExit() { console.info("NauDemo exited", window.Module.nauRuntime?.status); }
 };
 window.addEventListener('error', event => fail('Runtime load or execution error: ' + event.message));
 window.addEventListener('unhandledrejection', event => fail('Runtime load or execution error: ' + String(event.reason)));
-stopButton.addEventListener('click', () => window.Module.nauRuntime?.stop());
 if (!['http:', 'https:'].includes(location.protocol)) {
     fail('Local file URLs cannot launch this application. Use the packaged Python server.');
 } else if (!window.isSecureContext || !window.crossOriginIsolated) {
@@ -69,15 +38,14 @@ if (!['http:', 'https:'].includes(location.protocol)) {
 } else if (!window.OffscreenCanvas || !HTMLCanvasElement.prototype.transferControlToOffscreen || !document.createElement('canvas').getContext('webgl2')) {
     fail('WebGL 2 and transferable OffscreenCanvas are required.');
 } else {
-    statusText.textContent = 'Loading';
     const loader = document.createElement('script');
     loader.src = 'NauDemo.js';
     loader.onerror = () => fail('Could not load NauDemo.js. Check that all package files are present.');
     document.body.appendChild(loader);
-    setInterval(render, 25);
     setTimeout(() => {
         if (!Module.nauRuntime?.status && !deliveryFailure) fail('Runtime startup did not respond within 30 seconds.');
     }, 30000);
 }
 </script>
+</body>
 </html>

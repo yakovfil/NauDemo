@@ -74,17 +74,11 @@ The success case checks scene-derived matrices and nearest-face shading, blue
 pixels, rotation, frame-driven foreground cadence, responsive page heartbeat, real
 visibility changes, resize/DPR/zero-area/graphics-limit behavior, repeated Stop
 and reload. `--scenario` also accepts `host-loss`, `context-loss`, `missing-buffer`,
-`bad-shader`, `bad-link`, `bad-config`, `missing-canvas`, `no-context`, `stop-assets`,
-`stop-graphics`, `missing-loader`, `missing-wasm`, `missing-data`,
+`bad-shader`, `bad-link`, `bad-config`, `missing-canvas`, `no-context`, `missing-loader`, `missing-wasm`, `missing-data`,
 `missing-headers`, `file-url`, and `no-offscreen`.
 `blank-frame` and `runner-failure` deliberately return nonzero and write failed
 structured results. Context and asset fault cases instrument served responses;
 they do not edit the package or generated files.
-
-The controlled `camera` and `pending-scene` fixtures require a separate explicit
-compile option. In the demo directory, run `./web/build.ps1 -Configuration Debug -TestHooks`,
-then run those scenarios. Repeat for Release. Rebuild without `-TestHooks` for normal delivery. The default
-build contains neither the pending test component nor its camera controls.
 
 The focused native/Node/Chrome scene suite is
 `python NauDemo/tests/demo_scene/run.py` from the parent checkout,

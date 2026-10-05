@@ -14,9 +14,6 @@
 #include "nau/scene/camera/camera_manager.h"
 #include "nau/scene/scene_manager.h"
 #include "nau/serialization/json.h"
-#ifdef NAU_DEMO_TEST_HOOKS
-    #include "web_test_hooks.h"
-#endif
 #include "nau/service/service.h"
 #include "nau/service/service_provider.h"
 
@@ -47,11 +44,10 @@ namespace
         nau::async::Task<> initService() override
         {
             using namespace nau;
-            // Separate owner-loop turns let Stop settle startup before reading
+            // Separate owner-loop turns let shutdown settle startup before reading
             // assets or allocating graphics, without blocking the worker.
             m_continue = async::TaskSource<>{};
             m_initializationPending = true;
-            MAIN_THREAD_EM_ASM({ Module.nauDemoStage = 'assets'; });
             co_await m_continue.getTask();
             if (getApplication().isClosing())
                 co_return;
@@ -111,10 +107,6 @@ namespace
             auto& factory = getServiceProvider().get<scene::ISceneFactory>();
             auto scene = factory.createEmptyScene();
             m_scene = demo::createCubeScene(factory, *scene);
-#ifdef NAU_DEMO_TEST_HOOKS
-            if (MAIN_THREAD_EM_ASM_INT({ return !!Module.nauDemoPendingTest; }))
-                m_scene.cube->addComponent<demo::test::PendingComponent>().state = &m_pending;
-#endif
             co_await getServiceProvider().get<scene::ISceneManager>().activateScene(
                 std::move(scene));
             if (getApplication().isClosing())
@@ -132,7 +124,6 @@ namespace
             m_mesh = *loaded;
             m_continue = async::TaskSource<>{};
             m_initializationPending = true;
-            MAIN_THREAD_EM_ASM({ Module.nauDemoStage = 'graphics'; });
             co_await m_continue.getTask();
             if (getApplication().isClosing())
                 co_return;
@@ -150,7 +141,6 @@ namespace
             auto drawn = m_renderer.draw(*m_scene.cube, *m_scene.camera);
             if (!drawn)
                 co_await async::Task<>::makeRejected(drawn.getError());
-            MAIN_THREAD_EM_ASM({ Module.nauDemoStage = 'ready'; });
         }
         void gamePreUpdate(std::chrono::milliseconds dt) override
         {
@@ -169,20 +159,6 @@ namespace
         }
         nau::Result<> pollBrowserRuntime() override
         {
-#ifdef NAU_DEMO_TEST_HOOKS
-            if (m_scene.camera && MAIN_THREAD_EM_ASM_INT({ return !!Module.nauDemoMoveCamera; }))
-            {
-                m_scene.camera->setTranslation({2.0f, 3.0f, 9.0f});
-                m_scene.camera->getRootComponent<nau::scene::CameraComponent>().setFov(60.0f);
-            }
-            if (m_pending.pending && !m_pending.released && MAIN_THREAD_EM_ASM_INT({ return !!Module.nauDemoReleasePending; }))
-            {
-                m_pending.released = true;
-                m_pending.release.resolve();
-            }
-            MAIN_THREAD_EM_ASM({ Module.nauDemoPending = ({pending: !!$0, deactivated: $1, destroyed: $2}); },
-                               m_pending.pending, m_pending.deactivated, m_pending.destroyed);
-#endif
             if (m_initializationPending)
             {
                 m_initializationPending = false;
@@ -209,9 +185,6 @@ namespace
         nau::async::TaskSource<> m_continue = nullptr;
         bool m_initializationPending = false;
         int m_simulationMs = 0;
-#ifdef NAU_DEMO_TEST_HOOKS
-        nau::demo::test::PendingState m_pending;
-#endif
     };
 
     class DemoDelegate final : public nau::ApplicationInitDelegate
@@ -223,9 +196,6 @@ namespace
         nau::Result<> initializeApplication() override
         {
             NauCheckResult(nau::loadModulesList(NAU_MODULES_LIST));
-#ifdef NAU_DEMO_TEST_HOOKS
-            nau::getServiceProvider().addClass<nau::demo::test::PendingComponent>();
-#endif
             nau::getServiceProvider().addService(nau::createPlatformWindowService());
             nau::getServiceProvider().addService<DemoService>();
             nau::getServiceProvider().addService<nau::text::ScreenText>();

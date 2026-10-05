@@ -1,6 +1,5 @@
 param(
-    [ValidateSet('Debug', 'Release')][string]$Configuration = 'Debug',
-    [switch]$TestHooks
+    [ValidateSet('Debug', 'Release')][string]$Configuration = 'Debug'
 )
 
 $demo = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
@@ -16,7 +15,6 @@ cmake -S $engine -B $build -G Ninja `
     '-DNAU_BUILD_BROWSER=ON' '-DNAU_RUNTIME_PROFILE=scene' `
     '-DBUILD_SHARED_LIBS=OFF' '-DNAU_CORE_SAMPLES=OFF' `
     '-DNAU_CORE_TOOLS=OFF' '-DNAU_CORE_TESTS=OFF' `
-    "-DNAU_DEMO_TEST_HOOKS=$($TestHooks.IsPresent.ToString().ToUpperInvariant())" `
     "-DCMAKE_PROJECT_NauEngine_INCLUDE=$demo/cmake/attach_demo.cmake"
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 cmake --build $build --target NauDemoWebPackage --parallel 8

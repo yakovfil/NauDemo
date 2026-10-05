@@ -6,7 +6,9 @@ engine/demo components together; do not mix packages from the pre-migration ABI.
 EASTL and EABase are not runtime package dependencies.
 
 Run `python serve.py --port 8000` and open the printed URL in Chrome.
-Use Stop for orderly cleanup. Reload to retry after Stop or failure.
+The demo canvas fills the browser viewport with no surrounding HTML controls.
+Diagnostics appear in the browser console. For orderly cleanup from the console,
+call `Module.nauRuntime.stop()`. Reload to restart after shutdown or failure.
 
 The package requires cross-origin isolation, WebGL 2 and OffscreenCanvas.
 Scene rotation uses the elapsed time between presentation callbacks. The browser
