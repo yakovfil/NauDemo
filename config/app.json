@@ -3,13 +3,13 @@
     "name": "NauDemo",
     "author": "Nau Demo",
     "version": "1.0.0",
-    "log": {"files": ["$folder{LocalAppData}/nau/NauDemo/logs/log"]},
-    "vfs": {
-      "mounts": [
-        {"mountPoint": "/content", "path": "${sampleProjectDir}/content", "enabled": true},
-        {"mountPoint": "/res", "path": "${sampleProjectDir}/resources", "enabled": true},
-        {"mountPoint": "/demo", "path": "${demoProjectDir}/assets", "enabled": true}
+    "log": {
+      "files": [
+        "$folder{LocalAppData}/nau/NauDemo/logs/log"
       ]
+    },
+    "vfs": {
+      "mounts": []
     }
   }
 }

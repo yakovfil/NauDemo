@@ -42,15 +42,22 @@ status; fatal aborts do not claim successful cleanup.
 
 ## Package
 
-`NauDemo/build/web-demo-{debug,release}/package/` contains `NauDemo.js`, `.wasm`, `.data`,
-`cube.gltf`, `cube.bin`, `cube.web.json`, `cube.vert`, `cube.frag`, `app.json`,
-`index.html`, `serve.py`, `README.md`, `fonts/Abel-Regular.ttf`,
-`fonts/OFL-Abel.txt` and a SHA-256 `manifest.json`. SDK 6.0.9 embeds
-its pthread worker in the loader. `NauDemo.data` preloads the data at
-`/demo-package`; a read-only Nau filesystem mounts cube data at `/demo`.
-The loose source assets are for inspection. Rebuild after editing them so the
-preload archive changes too. Staging replaces the exact inventory, rejects missing
-inputs and retains the previous package if input validation fails.
+`NauDemo/build/web-demo-{debug,release}/package/` contains `NauDemo.js`, `.wasm`,
+`.data`, `index.html`, `serve.py`, `README.md`, `fonts/OFL-Abel.txt` and a SHA-256
+`manifest.json`. SDK 6.0.9 embeds its pthread worker in the loader.
+`NauDemo.data` preloads one engine archive at `/demo-package/NauDemo.nau_pack`.
+The portable Nau package filesystem mounts mesh/font/browser shader/configuration
+entries through VFS at `/demo`. Loose source assets are not staged as substitutes.
+
+The build also requires a host-native AssetPackToolCmd executable. Web/build.ps1
+builds it in `NauDemo/build/asset-pack-host` using VS 2026/CMake 4.2 before invoking
+the separate Emscripten build. Direct CMake users can pass `NAU_ASSET_PACKER`.
+The packer has an isolated kernel-only dependency graph and is not linked into wasm.
+
+Rebuild after editing source assets so the engine archive and preload transport
+are updated. Staging replaces the exact inventory, rejects missing inputs and
+retains the previous package if input validation fails. Missing archives, corrupt
+indexes or absent required entries cause identified startup failure.
 
 Copy the whole package anywhere and run its `serve.py`. For a nested URL:
 

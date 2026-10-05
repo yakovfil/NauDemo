@@ -6,6 +6,7 @@
 #include "../demo_platform.h"
 #include "nau/app/application.h"
 #include "nau/app/browser_runtime.h"
+#include "nau/io/asset_pack_file_system.h"
 #include "nau/io/virtual_file_system.h"
 #include "nau/render/browser_renderer.h"
 #include "nau/serialization/json.h"
@@ -16,15 +17,17 @@ namespace nau::demo
 {
     nau::Result<std::vector<std::byte>> readPackage(const char* name)
     {
-        const std::string path = std::string("/demo-package/") + name;
-        std::ifstream input(path, std::ios::binary | std::ios::ate);
-        if (!input || input.tellg() <= 0 || input.tellg() > 16 * 1024 * 1024)
-            return NauMakeError("Missing, empty or oversized package input {}",
-                                path.c_str());
-        std::vector<std::byte> bytes(static_cast<size_t>(input.tellg()));
-        input.seekg(0);
-        if (!input.read(reinterpret_cast<char*>(bytes.data()), bytes.size()))
-            return NauMakeError("Could not read package input {}", path.c_str());
+        const std::string path = std::string("/demo/") + name;
+        auto file = getServiceProvider().get<io::IVirtualFileSystem>().openFile(path, io::AccessMode::Read, io::OpenFileMode::OpenExisting);
+        if (!file || !file->getSize() || file->getSize() > 16 * 1024 * 1024)
+            return NauMakeError("Missing, empty or oversized package input {}", path);
+        std::vector<std::byte> bytes(file->getSize());
+        io::IStreamReader::Ptr input = file->createStream();
+        if (!input)
+            return NauMakeError("Could not open package entry {}", path);
+        auto read = input->read(bytes.data(), bytes.size());
+        if (!read || *read != bytes.size())
+            return NauMakeError("Could not read package entry {}", path);
         return bytes;
     }
 
@@ -51,6 +54,10 @@ namespace nau::demo
             co_await nextTurn();
             if (getApplication().isClosing())
                 co_return;
+            auto filesystem = io::openAssetPackFileSystem("/demo-package/NauDemo.nau_pack");
+            if (!filesystem)
+                co_await async::Task<>::makeRejected(filesystem.getError());
+            co_await getServiceProvider().get<io::IVirtualFileSystem>().mount("/", *filesystem);
             for (const char* name : {"app.json", "cube.web.json"})
             {
                 auto bytes = readPackage(name);
@@ -84,21 +91,12 @@ namespace nau::demo
                     co_await require("fragmentShader", "cube.frag");
                 }
             }
-            std::vector<CpuAssetFile> files;
             for (const char* name : {"cube.gltf", "cube.bin", "fonts/Abel-Regular.ttf"})
             {
                 auto bytes = readPackage(name);
                 if (!bytes)
                     co_await async::Task<>::makeRejected(bytes.getError());
-                files.push_back({name, std::move(*bytes)});
             }
-            auto filesystem = createCpuAssetFileSystem(std::move(files));
-            if (!filesystem)
-                co_await async::Task<>::makeRejected(filesystem.getError());
-            auto mounted = getServiceProvider().get<io::IVirtualFileSystem>().mount(
-                "/demo", *filesystem);
-            if (!mounted)
-                co_await async::Task<>::makeRejected(mounted.getError());
         }
         void decorateScene(scene::IScene&, CubeScene&) override
         {

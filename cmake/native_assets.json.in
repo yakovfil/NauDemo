@@ -1,0 +1,109 @@
+{
+  "description": "NauDemo native assets",
+  "files": [
+    {
+      "source": "@DEMO@/assets/cube.gltf",
+      "path": "demo/cube.gltf"
+    },
+    {
+      "source": "@DEMO@/assets/cube.bin",
+      "path": "demo/cube.bin"
+    },
+    {
+      "source": "@DEMO@/assets/fonts/Abel-Regular.ttf",
+      "path": "demo/fonts/Abel-Regular.ttf"
+    },
+    {
+      "source": "@DEMO@/assets/fonts/OFL-Abel.txt",
+      "path": "demo/fonts/OFL-Abel.txt"
+    },
+    {
+      "source": "@DEMO@/assets/cube.nmat_json",
+      "path": "demo/cube.nmat_json"
+    },
+    {
+      "source": "@SAMPLES@/sceneBase/content/textures/environment/SunnyHills_2k.hdr",
+      "path": "content/textures/environment/SunnyHills_2k.hdr"
+    },
+    {
+      "source": "@SAMPLES@/sceneBase/resources/textures/hdri/default_cubemap_2k.hdr",
+      "path": "res/textures/hdri/default_cubemap_2k.hdr"
+    },
+    {
+      "source": "@SHADER_CACHE@",
+      "path": "res/shaders/cache/shader_cache.nsbc"
+    },
+    {
+      "source": "@SAMPLES@/sceneBase/resources/materials/pp_tonemap.nmat_json",
+      "path": "res/materials/pp_tonemap.nmat_json"
+    },
+    {
+      "source": "@SAMPLES@/sceneBase/resources/materials/grid.nmat_json",
+      "path": "res/materials/grid.nmat_json"
+    },
+    {
+      "source": "@SAMPLES@/sceneBase/resources/materials/pixel_data_extraction.nmat_json",
+      "path": "res/materials/pixel_data_extraction.nmat_json"
+    },
+    {
+      "source": "@SAMPLES@/sceneBase/resources/materials/outline_calculation.nmat_json",
+      "path": "res/materials/outline_calculation.nmat_json"
+    },
+    {
+      "source": "@SAMPLES@/sceneBase/resources/materials/skybox.nmat_json",
+      "path": "res/materials/skybox.nmat_json"
+    },
+    {
+      "source": "@SAMPLES@/sceneBase/resources/materials/pp_deferred_resolve.nmat_json",
+      "path": "res/materials/pp_deferred_resolve.nmat_json"
+    },
+    {
+      "source": "@SAMPLES@/sceneBase/resources/materials/z_prepass.nmat_json",
+      "path": "res/materials/z_prepass.nmat_json"
+    },
+    {
+      "source": "@SAMPLES@/sceneBase/resources/materials/billboards.nmat_json",
+      "path": "res/materials/billboards.nmat_json"
+    },
+    {
+      "source": "@SAMPLES@/sceneBase/resources/materials/deffered_light.nmat_json",
+      "path": "res/materials/deffered_light.nmat_json"
+    },
+    {
+      "source": "@SAMPLES@/sceneBase/resources/materials/imgui.nmat_json",
+      "path": "res/materials/imgui.nmat_json"
+    },
+    {
+      "source": "@SAMPLES@/sceneBase/resources/materials/embedded/standard_opaque.nmat_json",
+      "path": "res/materials/embedded/standard_opaque.nmat_json"
+    },
+    {
+      "source": "@SAMPLES@/sceneBase/resources/materials/embedded/debug_renderer.nmat_json",
+      "path": "res/materials/embedded/debug_renderer.nmat_json"
+    },
+    {
+      "source": "@SAMPLES@/sceneBase/resources/materials/embedded/simple_debug.nmat_json",
+      "path": "res/materials/embedded/simple_debug.nmat_json"
+    },
+    {
+      "source": "@SAMPLES@/sceneBase/content/textures/white_8x8.png",
+      "path": "content/textures/white_8x8.png"
+    },
+    {
+      "source": "@SAMPLES@/sceneBase/content/textures/default.jpg",
+      "path": "content/textures/default.jpg"
+    },
+    {
+      "source": "@SAMPLES@/sceneBase/content/textures/default_1k_albedo.jpg",
+      "path": "content/textures/default_1k_albedo.jpg"
+    },
+    {
+      "source": "@SAMPLES@/sceneBase/content/textures/default_normal_8x8.png",
+      "path": "content/textures/default_normal_8x8.png"
+    },
+    {
+      "source": "@SAMPLES@/sceneBase/content/textures/default_1k_ORM.jpg",
+      "path": "content/textures/default_1k_ORM.jpg"
+    }
+  ]
+}

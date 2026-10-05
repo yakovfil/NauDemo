@@ -15,12 +15,18 @@ Scene rotation uses the elapsed time between presentation callbacks. The browser
 material uses blue diffuse directional lighting and ambient light; native HDR,
 shadows and the desktop renderer are outside this browser milestone.
 
-NauDemo.data contains the mounted runtime copy of the listed configuration,
-material, shaders and cube files. The loose originals are included for inspection;
-editing them requires rebuilding the package to update the preload archive.
-manifest.json records exact hashes. No SDK or source checkout is needed to serve.
+NauDemo.data transports a single engine NauDemo.nau_pack archive. The engine
+mounts it through its portable read-only package filesystem. Mesh/buffer, browser
+material/shaders, JSON configuration and the Abel TTF are archive entries.
+Loose source assets are not included as runtime substitutes. Rebuild the delivery
+after changing assets; manifest.json records exact delivery hashes.
+No SDK or source checkout is needed to serve.
 
-`fonts/Abel-Regular.ttf` is the screen-text font, embedded in NauDemo.data and
-mounted at `/demo/fonts/Abel-Regular.ttf`. Its license is `fonts/OFL-Abel.txt`.
-Both loose files are required package inputs and have manifest hashes. The label
-is drawn in the canvas at (24,24), size 24 CSS pixels, with DPR-aware coverage.
+The font is mounted at `/demo/fonts/Abel-Regular.ttf`; its license is provided as
+`fonts/OFL-Abel.txt` and also included in the archive. The label is drawn in the
+canvas at (24,24), size 24 CSS pixels, with DPR-aware coverage. Missing or malformed
+archive content reports diagnostic startup failure and requires reload after repair.
+
+Building requires the supported Emscripten SDK and a native host compiler for the
+isolated AssetPackToolCmd packaging build; neither the packer nor desktop runtime
+libraries are linked into the browser runtime.

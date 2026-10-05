@@ -30,11 +30,21 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         pass
 
 
+def archive_entries(package):
+    data=(package/'NauDemo.data').read_bytes()
+    header_end=data.index(b'\n\n')+2
+    length=int(data[:header_end].split(b'Content-Length: ')[1].splitlines()[0])
+    index=json.loads(data[header_end+1:header_end+1+length])
+    payload=header_end+1+length
+    return {entry['filePath']:data[payload+entry['blobData']['offset']:payload+entry['blobData']['offset']+entry['blobData']['size']] for entry in index['content']}
+
+
 def assert_scene_pixel(path, frame, package):
     """Check nearest asset triangles at interior pixels, away from moving edges."""
     image = Image.open(path).convert('RGB')
-    asset = json.loads((package/'cube.gltf').read_text())
-    binary = (package/'cube.bin').read_bytes()
+    entries=archive_entries(package)
+    asset = json.loads(entries['demo/cube.gltf'])
+    binary = entries['demo/cube.bin']
     primitive = asset['meshes'][0]['primitives'][0]
     def accessor(index, format):
         a = asset['accessors'][index]
@@ -180,7 +190,7 @@ def main():
     parser.add_argument("--text-position",nargs=2,type=int,default=(24,24))
     parser.add_argument("--text-reference", type=Path,
                         default=Path(__file__).resolve().parents[1]/'build/text-tests-native/fixtures')
-    parser.add_argument("--scenario", default="success", choices=["success", "host-loss", "context-loss", "missing-buffer", "bad-shader", "bad-config", "missing-canvas", "no-context", "missing-font", "text-upload", "bad-link", "missing-headers", "file-url", "no-offscreen", "missing-loader", "missing-wasm", "missing-data", "blank-frame", "runner-failure"])
+    parser.add_argument("--scenario", default="success", choices=["success", "host-loss", "context-loss", "missing-buffer", "bad-shader", "bad-config", "missing-canvas", "no-context", "missing-font", "text-upload", "bad-link", "missing-headers", "file-url", "no-offscreen", "missing-loader", "missing-wasm", "missing-data", "blank-frame", "runner-failure", "missing-archive", "corrupt-archive", "truncated-archive"])
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     result = {"package": str(args.package.resolve()), "scenario":args.scenario, "passed": False, "console": [], "errors": []}
@@ -215,7 +225,7 @@ def main():
                     settings.update(NAU_DEMO_TEXT_X=str(args.text_position[0]),NAU_DEMO_TEXT_Y=str(args.text_position[1]))
                     page.route('**/NauDemo.js',lambda route:route.fulfill(status=200,content_type='application/javascript',body=source+'\nObject.assign(ENV,'+json.dumps(settings)+');\n',headers={'Cross-Origin-Opener-Policy':'same-origin','Cross-Origin-Embedder-Policy':'require-corp','Cache-Control':'no-store'}))
                     if args.text_variant==2:
-                        original=(args.package/'fonts/Abel-Regular.ttf').read_bytes()
+                        original=archive_entries(args.package)['demo/fonts/Abel-Regular.ttf']
                         alternate=(args.text_reference/'Abel-Changed.ttf').read_bytes()
                         assert len(original)==len(alternate)
                         def replace_font(route):
@@ -233,20 +243,17 @@ def main():
                 if args.scenario in ('missing-loader','missing-wasm','missing-data'):
                     filename={'missing-loader':'NauDemo.js','missing-wasm':'NauDemo.wasm','missing-data':'NauDemo.data'}[args.scenario]
                     page.route('**/'+filename,lambda route:route.fulfill(status=404,body='Missing fixture input'))
-                if args.scenario in ("missing-buffer", "context-loss", "no-context", "missing-font", "text-upload"):
+                if args.scenario in ("context-loss", "no-context", "text-upload", "missing-archive"):
                     loader_source = (args.package / "NauDemo.js").read_text(encoding="utf-8")
                     if settings:
                         loader_source += '\nObject.assign(ENV,'+json.dumps(settings)+');\n'
                     def loader(route):
                         source = loader_source
-                        if args.scenario == "missing-buffer":
-                            assert '/demo-package/cube.bin' in source
-                            source = source.replace('/demo-package/cube.bin', '/demo-package/gone.bin')
+                        if args.scenario == "missing-archive":
+                            assert '/demo-package/NauDemo.nau_pack' in source
+                            source=source.replace('/demo-package/NauDemo.nau_pack','/demo-package/Missing.nau_pack')
                         elif args.scenario == "no-context":
                             source += "\nif(ENVIRONMENT_IS_PTHREAD) OffscreenCanvas.prototype.getContext=()=>null;\n"
-                        elif args.scenario == 'missing-font':
-                            assert '/demo-package/fonts/Abel-Regular.ttf' in source
-                            source=source.replace('/demo-package/fonts/Abel-Regular.ttf','/demo-package/fonts/gone.ttf')
                         elif args.scenario == 'text-upload':
                             source += '\nif(ENVIRONMENT_IS_PTHREAD) WebGL2RenderingContext.prototype.createTexture=()=>null;\n'
                         else:
@@ -259,6 +266,22 @@ def main():
                                      "Cross-Origin-Embedder-Policy": "require-corp",
                                      "Cache-Control": "no-store"})
                     page.route("**/NauDemo.js", loader)
+                if args.scenario in ('missing-buffer','missing-font','corrupt-archive','truncated-archive'):
+                    def corrupt_archive(route):
+                        response=route.fetch();body=response.body()
+                        if args.scenario=='missing-buffer':
+                            assert b'demo/cube.bin' in body
+                            body=body.replace(b'demo/cube.bin',b'demo/gone.bin',1)
+                        elif args.scenario=='missing-font':
+                            assert b'demo/fonts/Abel-Regular.ttf' in body
+                            body=body.replace(b'demo/fonts/Abel-Regular.ttf',b'demo/fonts/Gone-Regular.ttf',1)
+                        elif args.scenario=='corrupt-archive':
+                            body=body.replace(b'nau-vfs-pack',b'bad-vfs-pack',1)
+                        else:
+                            # Keep transport length intact while truncating the package payload view.
+                            body=body[:len(body)//2]
+                        route.fulfill(response=response,body=body)
+                    page.route('**/NauDemo.data',corrupt_archive)
                 if args.scenario in ("bad-shader", "bad-config", "bad-link", "blank-frame"):
                     def corrupt(route):
                         response = route.fetch()
@@ -283,7 +306,7 @@ def main():
                     assert result['startup']['message'],result
                     result['passed']=True
                     return
-                if args.scenario in ("missing-buffer", "bad-shader", "bad-link", "bad-config", "missing-canvas", "no-context", "missing-font", "text-upload"):
+                if args.scenario in ("missing-buffer", "bad-shader", "bad-link", "bad-config", "missing-canvas", "no-context", "missing-font", "text-upload", "missing-archive", "corrupt-archive", "truncated-archive"):
                     if args.scenario == 'missing-canvas' and not result['startup'].get('status'):
                         assert page.evaluate('window.nauDelivery.state') == 'Failed'
                     else:

@@ -5,6 +5,8 @@ param(
 $demo = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $engine = (Resolve-Path (Join-Path $demo '../NauEngineLite')).Path
 $build = Join-Path $demo ('build/web-demo-' + $Configuration.ToLowerInvariant())
+& (Join-Path $demo 'cmake/build_asset_packer.ps1') -Configuration Release
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 if (-not $env:EMSDK) {
     throw 'Activate Emscripten SDK 6.0.9 before building NauDemo.'
 }

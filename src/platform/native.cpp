@@ -1,11 +1,15 @@
 #include <filesystem>
 
 #include "../demo_platform.h"
+#include "demo_asset_manifest.h"
 #include "nau/app/application_init_delegate.h"
 #include "nau/app/global_properties.h"
 #include "nau/app/platform_window.h"
 #include "nau/app/window_manager.h"
 #include "nau/input.h"
+#include "nau/io/asset_pack_file_system.h"
+#include "nau/io/special_paths.h"
+#include "nau/io/virtual_file_system.h"
 #include "nau/scene/components/directional_light_component.h"
 #include "nau/scene/components/environment_component.h"
 #include "nau/service/service_provider.h"
@@ -20,10 +24,19 @@ namespace nau::demo
         Result<> configure() override
         {
             auto& properties = getServiceProvider().get<GlobalProperties>();
-            properties.setValue("sampleProjectDir", std::string(NAU_SAMPLES_DIR "/sceneBase")).ignore();
-            properties.setValue("demoProjectDir", std::string(NAU_DEMO_DIR)).ignore();
-            NauCheckResult(mergePropertiesFromFile(properties, std::filesystem::path(NAU_DEMO_DIR) / "config/app.json"));
-            return applyDefaultAppConfiguration();
+            const auto directory = io::getKnownFolderPath(io::KnownFolder::ExecutableLocation);
+            NauCheckResult(mergePropertiesFromFile(properties, directory / "app.json"));
+            NauCheckResult(applyDefaultAppConfiguration());
+            const auto package = directory / "NauDemo.nau_pack";
+            auto filesystem = io::openAssetPackFileSystem(package.string());
+            NauCheckResult(filesystem);
+            for (const char* entry : RequiredPackageEntries)
+            {
+                auto file = (*filesystem)->openFile(entry, io::AccessMode::Read, io::OpenFileMode::OpenExisting);
+                if (!file || !file->getSize())
+                    return NauMakeError("NauDemo package missing or empty required entry {}", entry);
+            }
+            return getServiceProvider().get<io::IVirtualFileSystem>().mount("/", *filesystem);
         }
         void initialized() override
         {
