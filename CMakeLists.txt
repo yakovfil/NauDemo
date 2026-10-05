@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.24)
 
 if(EMSCRIPTEN AND NAU_RUNTIME_PROFILE STREQUAL "scene")
-    add_executable(NauDemo src/web_main.cpp)
+    add_executable(NauDemo src/main.cpp src/demo_application.cpp src/platform/web.cpp)
     target_link_libraries(NauDemo PRIVATE NauFrameworkScene NauBrowserRenderer PlatformAppApi NauScreenText)
     nau_target_link_modules(NauDemo PlatformApp CoreAssets CoreScene CoreAssetsCpu)
     nau_add_compile_options(NauDemo)
@@ -45,7 +45,7 @@ if(NOT TARGET SampleCommonLib)
     message(FATAL_ERROR "Configure the engine with -DCMAKE_PROJECT_NauEngine_INCLUDE=<NauDemo>/cmake/attach_demo.cmake. See README.md.")
 endif()
 
-add_executable(NauDemo src/main.cpp)
+add_executable(NauDemo src/main.cpp src/demo_application.cpp src/platform/native.cpp)
 target_link_libraries(NauDemo PRIVATE SampleCommonLib Animation Physics Graphics VFX NauScreenText)
 nau_target_link_modules(NauDemo PlatformApp Animation CoreScene CoreAssets GraphicsAssets
     DebugRenderer CoreAssetFormats CoreInput Graphics Physics PhysicsJolt VFX)

@@ -275,7 +275,7 @@ def main():
                 if args.scenario == "missing-canvas":
                     page.add_init_script("new MutationObserver(()=>document.getElementById('canvas')?.remove()).observe(document,{childList:true,subtree:true})")
                 page.goto((args.package.resolve()/"index.html").as_uri() if args.scenario=="file-url" else f"http://127.0.0.1:{server.server_port}{args.base_path}")
-                wait("['Running','Stopped'].includes(Module.nauRuntime?.status?.state) || window.nauDelivery.state === 'Failed'", timeout=60000)
+                wait("['Running','Stopped','Failed'].includes(Module.nauRuntime?.status?.state) || window.nauDelivery.state === 'Failed'", timeout=60000)
                 result["startup"] = page.evaluate("({status:Module.nauRuntime?.status, render:Module.nauRender, message:window.nauDelivery.message})")
                 if args.scenario in ('missing-loader','missing-wasm','missing-data','missing-headers','file-url','no-offscreen'):
                     assert page.evaluate('window.nauDelivery.state')=='Failed',result

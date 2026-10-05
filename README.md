@@ -30,7 +30,8 @@ For the manual steps, from `NauDemo/` after activating SDK 6.0.9:
 python build/web-demo-debug/package/serve.py --port 8000
 ```
 
-Open the printed URL. Stop waits for cleanup; reload to retry. Copy the entire
+Open the printed URL. The canvas fills the viewport. To request cleanup from the
+browser console, call `Module.nauRuntime.stop()`; reload to retry. Copy the entire
 package to serve elsewhere. Browser updates follow the presentation callback;
 rotation uses elapsed time rather than a fixed 100 ms step. See the
 [complete browser guide](doc/naudemo_web.md) for prerequisites,
@@ -96,7 +97,10 @@ with the external NauSamples integration.
 
 ## Files and customization
 
-- `src/main.cpp`: native application, material, light and environment setup.
+- `src/main.cpp`: common native/browser entry point using the engine-owned host.
+- `src/demo_application.cpp`: shared scene startup, pre-update rotation/text, and post-update presentation dispatch.
+- `src/platform/native.cpp`: native configuration, window and material/light/environment integration.
+- `src/platform/web.cpp`: web package mounting, browser renderer integration and diagnostics.
 - `src/demo_scene.h`: shared cube/camera construction and elapsed-time rotation.
   Change `radiansPerSecond` to adjust rotation speed or direction.
 - `assets/cube.gltf` and `cube.bin`: a centered 2 × 2 × 2 cube with six hard-edged
