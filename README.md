@@ -107,9 +107,12 @@ with the external NauSamples integration.
   Change `radiansPerSecond` to adjust rotation speed or direction.
 - `assets/cube.gltf` and `cube.bin`: a centered 2 × 2 × 2 cube with six hard-edged
   faces, normals, UVs, and tangents; no external modeling tool is needed.
-- `assets/cube.nmat_json`: blue material using Nau's standard shader pipelines.
+- `assets/materials/native/cube.nmat_json`: blue material using Nau's standard shader pipelines.
 - `config/app.json`: native bootstrap/log configuration deployed beside the executable.
-- `cmake/native_assets.json.in` and `cmake/web_assets.json.in`: explicit archive manifests.
+- `assets/materials/web/`: browser material and GLSL shaders.
+- `assets/config/web/app.json`: browser mesh/material selection.
+- `cmake/common_assets.json.in`: shared mesh, font, and license entries.
+- `cmake/native_assets.json.in` and `cmake/web_assets.json.in`: platform-specific archive entries appended to the common manifest.
 - `build.py`, `CMakeLists.txt`, and `cmake/attach_demo.cmake`: the two build routes.
 
 Logs are written to `%LOCALAPPDATA%/nau/NauDemo/logs/`. The engine's Debug renderer
@@ -131,7 +134,9 @@ Asset-backed single-line text remains available through `NauScreenText`; see `Na
 ## Engine asset packages
 
 Both platforms mount an engine `NauDemo.nau_pack` through the portable kernel VFS
-reader. Platform manifests share cube/font data; native includes its material,
+reader. Demo content lives under `assets/`; `web/` contains browser delivery
+and validation support. Both packages include the common manifest once, then
+append their platform entries. Native includes its material,
 environment, renderer textures/materials and generated shader cache, while web
 includes browser GLSL and asset configuration. Source assets are required at
 build time; runtime source-directory fallbacks are removed. Required missing or
@@ -142,6 +147,10 @@ The host packer uses Visual Studio 2026/CMake 4.2 and builds separately in
 For direct CMake builds, run cmake/build_asset_packer.ps1 first or pass
 `-DNAU_ASSET_PACKER=<compatible native AssetPackToolCmd.exe>`. The browser link
 does not consume this executable or desktop runtime libraries.
+
+After building the host packer, run `python tests/test_asset_manifests.py` to
+check both package manifests, shared asset rebuilds, manifest regeneration, and
+missing-input failures without compiling the renderers.
 
 Web preloads only the engine archive into NauDemo.data. The generated raw
 archive is in `build/web-demo-<configuration>/external/NauDemo/assets/`; loose

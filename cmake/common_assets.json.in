@@ -1,0 +1,21 @@
+{
+  "description": "NauDemo shared assets",
+  "files": [
+    {
+      "source": "@DEMO@/assets/cube.gltf",
+      "path": "demo/cube.gltf"
+    },
+    {
+      "source": "@DEMO@/assets/cube.bin",
+      "path": "demo/cube.bin"
+    },
+    {
+      "source": "@DEMO@/assets/fonts/Abel-Regular.ttf",
+      "path": "demo/fonts/Abel-Regular.ttf"
+    },
+    {
+      "source": "@DEMO@/assets/fonts/OFL-Abel.txt",
+      "path": "demo/fonts/OFL-Abel.txt"
+    }
+  ]
+}

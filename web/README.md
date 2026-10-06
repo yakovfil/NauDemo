@@ -18,6 +18,9 @@ shadows and the desktop renderer are outside this browser milestone.
 NauDemo.data transports a single engine NauDemo.nau_pack archive. The engine
 mounts it through its portable read-only package filesystem. Mesh/buffer, browser
 material/shaders, JSON configuration and the Abel TTF are archive entries.
+Source content lives under `NauDemo/assets/`, including browser variants in
+`materials/web/` and `config/web/`. The common manifest supplies the same mesh
+and font inputs to both platforms.
 Loose source assets are not included as runtime substitutes. Rebuild the delivery
 after changing assets; manifest.json records exact delivery hashes.
 No SDK or source checkout is needed to serve.

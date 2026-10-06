@@ -5,7 +5,7 @@ parser.add_argument('--build',type=pathlib.Path,required=True)
 parser.add_argument('--configuration',choices=['Debug','Release'],default='Debug')
 parser.add_argument('--web',action='store_true')
 args=parser.parse_args();demo=pathlib.Path(__file__).resolve().parents[1]
-source=demo/('web/cube.vert' if args.web else 'assets/cube.gltf')
+source=demo/('assets/materials/web/cube.vert' if args.web else 'assets/cube.gltf')
 original=source.read_bytes();held=source.with_name(source.name+'.build-check-held')
 assert not held.exists()
 archive=args.build/('external/NauDemo/assets/NauDemo.nau_pack' if args.web else f'external/NauDemo/native-assets/{args.configuration}/NauDemo.nau_pack')
