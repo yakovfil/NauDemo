@@ -1,0 +1,17 @@
+# Generated builds and binaries
+/build/
+/bin/
+/lib/
+/dist/
+
+# Generated asset database
+/assets_database/
+
+# Local editor state
+/.editor/
+*.nauproject.user
+
+# Tool logs
+/log_*.txt
+/logs/
+/imgui.ini
