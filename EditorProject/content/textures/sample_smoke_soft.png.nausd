@@ -1,0 +1,8 @@
+#nausd 1.0
+
+def NauAssetTexture "Root"
+{
+    asset path = @sample_smoke_soft.png@
+    string uid = "b1746a12-c1c1-11f1-9548-d85ed3acac60"
+}
+

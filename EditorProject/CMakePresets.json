@@ -1,0 +1,96 @@
+{
+    "version": 5,
+    "configurePresets": [
+        {
+            "name": "config_base",
+            "hidden": true,
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "installDir": "${sourceDir}/dist/${presetName}",
+            "cacheVariables": {
+                "CMAKE_EXPORT_COMPILE_COMMANDS": true,
+                "CMAKE_SYSTEM_VERSION": "10.0",
+                "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+                "NAU_BUILD_SDK": true,
+                "BUILD_SHARED_LIBS": false
+            }
+        },
+
+        {
+            "name": "vs_2026_base",
+            "hidden": true,
+            "generator": "Visual Studio 18 2026",
+            "architecture": "x64",
+            "toolset": "v145,host=x64",
+            "cacheVariables": {
+                "CMAKE_CONFIGURATION_TYPES": "Debug;Release"
+            },
+
+            "vendor": {
+                "microsoft.com/VisualStudioSettings/CMake/1.0": {
+                    "hostOS": ["Windows"],
+                    "intelliSenseMode": "windows-msvc-x64"
+                }
+            }
+        },
+
+        {
+            "name": "win_vs2026_x64_base",
+            "inherits": ["config_base", "vs_2026_base"],
+            "hidden": true,
+            "toolset": {
+                "strategy": "set",
+                "value": "v145,host=x64"
+            },
+            "architecture": {
+                "strategy": "set",
+                "value": "x64"
+            }
+        },
+
+
+        {
+            "name": "win_vs2026_x64",
+            "inherits": ["win_vs2026_x64_base"],
+            "displayName": "Visual Studio 2026 x64",
+            "description": "Configure for Visual Studio 18 2026",
+            "hidden": false
+        },
+        {
+            "name": "win_vs2026_x64_dll",
+            "inherits": ["config_base", "vs_2026_base"],
+            "displayName": "Visual Studio 2026 x64, DLL",
+            "description": "Dll configure for Visual Studio 18 2026",
+            "hidden": false,
+            "cacheVariables": {
+                "BUILD_SHARED_LIBS": true
+            }
+        }
+
+    ],
+    "buildPresets": [
+        {
+            "name": "VS Debug",
+            "displayName": "Visual Studio Community 2026 x64 Debug",
+            "configurePreset": "win_vs2026_x64",
+            "configuration": "Debug"
+        },
+        {
+            "name": "VS Debug Dll",
+            "displayName": "Visual Studio Community 2026 x64 Debug Dll",
+            "configurePreset": "win_vs2026_x64_dll",
+            "configuration": "Debug"
+        },
+        {
+            "name": "VS Release",
+            "displayName": "Visual Studio Community 2026 x64 Release",
+            "configurePreset": "win_vs2026_x64",
+            "configuration": "Release"
+        },
+        {
+            "name": "VS Release Dll",
+            "displayName": "Visual Studio Community 2026 x64 Release",
+            "configurePreset": "win_vs2026_x64_dll",
+            "configuration": "Release"
+        }
+    ]
+}

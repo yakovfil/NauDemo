@@ -1,0 +1,16 @@
+{
+    "DefaultScene": "empty",
+    "Dependencies": [
+    ],
+    "Description": "sample standalone game module",
+    "EditorVersion": "0.10.3 beta",
+    "Engine": {
+        "Version": "0.1"
+    },
+    "MainScene": {
+        "Name": "main",
+        "Path": "/content/scenes"
+    },
+    "ProjectName": "NauDemo",
+    "ProjectVersion": "1.0"
+}

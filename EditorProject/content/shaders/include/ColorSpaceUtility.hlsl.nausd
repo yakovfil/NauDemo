@@ -1,0 +1,25 @@
+#nausd 1.0
+
+def NauAssetShader "Root"
+{
+    asset path = @ColorSpaceUtility.hlsl@
+    string uid = "b17469f0-c1c1-11f1-9548-d85ed3acac60"
+
+    def NauShaderInputLayout "DefaultInputLayout"
+    {
+        string stream = "VSD_STREAM_PER_VERTEX_DATA"
+
+        def NauShaderInputItem "POSITION"
+        {
+            int bufferIndex = 0
+            token type = "VSDT_FLOAT3"
+        }
+    }
+
+    def NauShaderConfig "Main"
+    {
+        string entryPoint = "VSMain"
+        string target = "vs"
+    }
+}
+

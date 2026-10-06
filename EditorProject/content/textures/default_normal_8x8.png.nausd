@@ -1,0 +1,8 @@
+#nausd 1.0
+
+def NauAssetTexture "Root"
+{
+    asset path = @default_normal_8x8.png@
+    string uid = "b1746a0e-c1c1-11f1-9548-d85ed3acac60"
+}
+

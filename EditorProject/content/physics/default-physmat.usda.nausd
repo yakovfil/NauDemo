@@ -1,0 +1,23 @@
+#nausd 1.0
+
+def "Asset"
+{
+    def "PhysicsMaterial" (
+        payload = @default-physmat.usda@</PhysicsMaterial>
+    )
+    {
+    }
+}
+
+def NauAssetGroup "Root"
+{
+    asset path = @default-physmat.usda@
+    string uid = "b17469ec-c1c1-11f1-9548-d85ed3acac60"
+
+    def NauPhysicsMaterial "PhysicsMaterial"
+    {
+        asset path = @default-physmat.usda@
+        string uid = "b17469ed-c1c1-11f1-9548-d85ed3acac60"
+    }
+}
+

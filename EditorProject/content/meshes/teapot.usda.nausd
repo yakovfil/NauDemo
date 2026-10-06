@@ -1,0 +1,32 @@
+#nausd 1.0
+
+def "Asset"
+{
+    def "TeapotMesh" (
+        payload = @teapot.usda@</TeapotMesh>
+    )
+    {
+    }
+}
+
+def NauAssetGroup "Root"
+{
+    asset path = @teapot.usda@
+    string uid = "b17469e8-c1c1-11f1-9548-d85ed3acac60"
+
+    def NauAssetMesh "TeapotMesh"
+    {
+        bool flipU = 0
+        bool flipV = 0
+        bool generateCollider = 0
+        bool generateLods = 0
+        bool generateTangents = 1
+        bool ignoreAnimation = 0
+        rel meshSource = </Asset/TeapotMesh>
+        asset path = @teapot.usda@
+        string uid = "b17469e9-c1c1-11f1-9548-d85ed3acac60"
+        float unitScale = 1
+        token upAxis = "Y"
+    }
+}
+

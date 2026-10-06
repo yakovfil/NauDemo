@@ -1,0 +1,33 @@
+#nausd_scene 1.0
+
+def Xform "Xform" (
+    displayName = "Xform"
+)
+{
+    matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0, 0, -15, 1) )
+    uniform token[] xformOpOrder = ["xformOp:transform"]
+
+    def "NauAssetMesh" (
+        displayName = "NauAssetMesh"
+        prepend references = @../meshes/cube.usda.nausd@</Root/Cube>
+    )
+    {
+        matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (0, 0, 0, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+    }
+}
+
+def NauComponent "nau__scene__CameraComponent" (
+    displayName = "nau::scene::CameraComponent"
+)
+{
+    string cameraName = ""
+    float ClipFarPlane = 1000
+    float ClipNearPlane = 0.1
+    custom string componentTypeName = "nau::scene::CameraComponent"
+    float FieldOfView = 90
+    string uid = "98e58b6b-c1c2-11f1-9548-d85ed3acac60"
+    matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (-0.002762135583907366, 0.002762135583907366, -23, 1) )
+    uniform token[] xformOpOrder = ["xformOp:transform"]
+}
+

@@ -1,0 +1,8 @@
+#nausd 1.0
+
+def NauAssetTexture "Root"
+{
+    asset path = @default_1k_grey_albedo.jpg@
+    string uid = "b1746a0a-c1c1-11f1-9548-d85ed3acac60"
+}
+

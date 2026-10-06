@@ -3,6 +3,8 @@
 /bin/
 /lib/
 /dist/
+/resources/shaders/cache/
+/source/.naubuild-dirty
 
 # Generated asset database
 /assets_database/

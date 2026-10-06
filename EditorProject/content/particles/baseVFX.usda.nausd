@@ -1,0 +1,23 @@
+#nausd 1.0
+
+def "Asset"
+{
+    def "VFX" (
+        payload = @baseVFX.usda@</VFX>
+    )
+    {
+    }
+}
+
+def NauAssetGroup "Root"
+{
+    asset path = @baseVFX.usda@
+    string uid = "b17469ea-c1c1-11f1-9548-d85ed3acac60"
+
+    def NauAssetVFX "VFX"
+    {
+        asset path = @baseVFX.usda@
+        string uid = "b17469eb-c1c1-11f1-9548-d85ed3acac60"
+    }
+}
+

@@ -1,0 +1,8 @@
+#nausd 1.0
+
+def NauAssetScene "Root"
+{
+    asset path = @main.nausd_scene@
+    string uid = "b17469ee-c1c1-11f1-9548-d85ed3acac60"
+}
+
