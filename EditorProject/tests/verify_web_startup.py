@@ -150,6 +150,8 @@ def run(args):
                     application = "NauDemoStartupProbe" if probe else "NauDemoMain"
                     page = browser.new_page()
                     logs = []
+                    console_messages = []
+                    page.on("console", lambda message: console_messages.append((message.type, message.text)))
                     page.on("console", lambda message: (logs.append(message.text), print(message.text[:2000], flush=True) if message.type == "error" else None))
                     page.on("pageerror", lambda error: (logs.append(str(error)), print(str(error)[:2000], flush=True)))
                     html = (directory / "index.html").read_text()
@@ -188,6 +190,20 @@ def run(args):
                         assert status["state"] == "Stopped", status
                     if probe:
                         assert page.evaluate("Module.sceneProbeCleanup") is True
+                        for level, kind in (("info", "log"), ("warning", "warning"), ("error", "error"), ("critical", "error")):
+                            matches = [(category, text) for category, text in console_messages if "PROBE_LOG " + level in text]
+                            assert len(matches) == 1 and matches[0][0] == kind, matches
+                    lifecycle = [(kind, text) for kind, text in console_messages if text.startswith("[Nau] ")]
+                    assert any("Starting" in text for _, text in lifecycle), lifecycle
+                    assert any("cleanup complete" in text for _, text in lifecycle), lifecycle
+                    if expected:
+                        assert any(kind == "error" and expected in text for kind, text in lifecycle), lifecycle
+                    elif not stop_phase:
+                        assert any("Running" in text for _, text in lifecycle), lifecycle
+                    if name == "authored-component-state":
+                        component_logs = [(kind, text) for kind, text in console_messages if "MainGameModule updateComponent" in text]
+                        assert len(component_logs) >= 20 and all(kind == "warning" for kind, _ in component_logs), component_logs
+                        assert len({text for _, text in component_logs}) == len(component_logs), component_logs
                     if stop_phase:
                         assert status["completedSteps"] == 0
                         assert not any(item["state"] == "Running" for item in history), history

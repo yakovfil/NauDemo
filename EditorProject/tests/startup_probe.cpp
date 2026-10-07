@@ -9,6 +9,7 @@
 #include "nau/app/run_application.h"
 #include "nau/assets/asset_container.h"
 #include "nau/assets/asset_manager.h"
+#include "nau/diag/logging.h"
 #include "nau/io/file_system.h"
 #include "nau/io/memory_stream.h"
 #include "nau/rtti/rtti_impl.h"
@@ -104,6 +105,10 @@ namespace
     private:
         nau::Result<> configureApplication() override
         {
+            NAU_LOG_INFO("PROBE_LOG info");
+            NAU_LOG_WARNING("PROBE_LOG warning");
+            NAU_LOG_ERROR("PROBE_LOG error");
+            NAU_LOG_CRITICAL("PROBE_LOG critical");
             return m_application->configureApplication();
         }
         std::string getModulesListString() const override

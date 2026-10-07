@@ -63,6 +63,12 @@ source-tree, native SDK, loose-asset or browser USD fallback. Check
 `Module.nauRuntime.status` in the browser console for Running, failure diagnostics
 and completed cleanup; this milestone intentionally has no rendered output.
 
+Runtime logs appear in the browser's developer console (F12, Console), not in
+the batch file's server terminal. Enable Info, Warning and Error messages there.
+The engine reports startup phases, Running, failures and completed cleanup even
+when the loaded scene has no components that log. Component warnings/errors use
+the matching console severity; each engine message appears once.
+
 The profile starts with 128 MiB of WebAssembly memory and permits growth up to
 512 MiB. CMake's `NAU_BROWSER_PROJECT_INITIAL_MEMORY` and
 `NAU_BROWSER_PROJECT_MAXIMUM_MEMORY` configure those limits.
