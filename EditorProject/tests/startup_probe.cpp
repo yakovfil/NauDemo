@@ -21,6 +21,9 @@
 #include "nau/serialization/json.h"
 #include "nau/serialization/native_runtime_value/native_value_base.h"
 #include "nau/service/service_provider.h"
+#ifdef NAU_PACKAGED_PROJECT_TEST
+    #include "nau_project_policy.h"
+#endif
 #ifdef __EMSCRIPTEN__
     #include <emscripten.h>
 
@@ -30,6 +33,7 @@
 namespace
 {
     bool delayStartup = false;
+    std::string nativeStopPhase;
     std::string legacyScene;
 
     class StartupGateComponent final : public nau::scene::Component,
@@ -47,12 +51,21 @@ namespace
                 co_await nau::async::Task<>::makeRejected(NauMakeError("Probe immediate activation failure"));
 #ifdef __EMSCRIPTEN__
             MAIN_THREAD_EM_ASM({ Module.sceneProbePhase = 'activation'; });
+#else
+            if (nativeStopPhase == "activation")
+            {
+                std::puts("PROBE_STOP activation");
+                nau::getApplication().stop();
+                nau::getApplication().stop();
+            }
 #endif
             co_await std::chrono::milliseconds(250);
             if (failActivation)
                 co_await nau::async::Task<>::makeRejected(NauMakeError("Probe deferred activation failure"));
 #ifdef __EMSCRIPTEN__
             MAIN_THREAD_EM_ASM({ Module.sceneProbeActivationSettled = true; });
+#else
+            std::puts("PROBE_ACTIVATION_SETTLED");
 #endif
         }
     };
@@ -171,6 +184,13 @@ namespace
             {
 #ifdef __EMSCRIPTEN__
                 MAIN_THREAD_EM_ASM({ Module.sceneProbePhase = 'before-mount'; });
+#else
+                if (nativeStopPhase == "before-mount")
+                {
+                    std::puts("PROBE_STOP before-mount");
+                    nau::getApplication().stop();
+                    nau::getApplication().stop();
+                }
 #endif
                 co_await std::chrono::milliseconds(250);
             }
@@ -271,9 +291,25 @@ int main(int argc, char** argv)
     if (argc > 2)
         options.configurationPath = argv[2];
     if (argc > 3)
-        legacyScene = argv[3];
+    {
+        const std::string_view argument = argv[3];
+        if (argument.starts_with("stop:"))
+        {
+            nativeStopPhase = argument.substr(5);
+            delayStartup = nativeStopPhase == "before-mount";
+        }
+        else
+        {
+            legacyScene = argument;
+        }
+    }
 #endif
+#ifdef NAU_PACKAGED_PROJECT_TEST
+    options.supportedComponents = nau::project::SupportedComponents;
+    options.supportedComponents.push_back("StartupGateComponent");
+#else
     options.supportedComponents = {"nau::scene::SceneComponent", "nau::scene::CameraComponent",
                                    "nau::scene::StaticMeshComponent", "MyMover", "MyRotator", "StartupGateComponent"};
+#endif
     return nau::runApplication(std::make_unique<ProbeDelegate>(nau::scene::createPackagedSceneApplication(std::move(options))));
 }

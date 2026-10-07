@@ -26,14 +26,14 @@ def run(args):
         clone = root / "project"
         shutil.copytree(project / "content", clone / "content")
         shutil.copytree(project / "config", clone / "config")
+        shutil.copy2(project / "portable_project.json", clone / "portable_project.json")
         output = clone / "build/prepared"
         command = [str(native_python), str(modules / "tools/asset_tools/prepare_browser_project.py"),
                    "--project", str(clone), "--output", str(output),
                    "--asset-tool", str(args.tools.resolve() / "AssetToolCmd.exe"),
                    "--pack-tool", str(args.tools.resolve() / "AssetPackToolCmd.exe"),
                    "--module", str(args.module.resolve()), "--scene", "scenes/web_startup_fixture.nausd_scene"]
-        for component in ("nau::scene::SceneComponent", "nau::scene::CameraComponent", "nau::scene::StaticMeshComponent", "MyMover", "MyRotator"):
-            command += ["--supported-component", component]
+        command += ["--declaration", str(clone / "portable_project.json")]
 
         def prepare(name, success=True, diagnostic=None, invocation=command):
             result = subprocess.run(invocation, env=environment, capture_output=True, text=True, timeout=90)
@@ -48,6 +48,14 @@ def run(args):
         digest = lambda: hashlib.sha256(archive.read_bytes()).hexdigest()
         prepare("clean")
         first = digest()
+        declaration_file = clone / "portable_project.json"
+        policy = json.loads(declaration_file.read_text())
+        original_policy = declaration_file.read_text()
+        policy["supportedComponents"].remove("MyMover")
+        declaration_file.write_text(json.dumps(policy))
+        prepare("changed-component-policy", success=False, diagnostic="MyMover")
+        assert digest() == first
+        declaration_file.write_text(original_policy)
         scene = clone / "content/scenes/main.nausd_scene"
         scene.write_text(scene.read_text().replace("(0, 0, -15, 1)", "(0, 0, -11, 1)"))
         fixture = clone / "content/scenes/web_startup_fixture.nausd_scene"

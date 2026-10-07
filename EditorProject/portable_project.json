@@ -1,0 +1,8 @@
+{
+    "version": 1,
+    "profile": "non-rendering-scene",
+    "modules": ["PlatformApp", "CoreAssets", "CoreScene", "CoreSceneFormats"],
+    "projectModule": "MainGameModule",
+    "startupConfiguration": "/config/scene.json",
+    "supportedComponents": ["nau::scene::SceneComponent", "nau::scene::CameraComponent", "nau::scene::StaticMeshComponent", "MyMover", "MyRotator"]
+}

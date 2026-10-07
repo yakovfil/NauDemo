@@ -3,15 +3,16 @@
 
 #include "nau/app/run_application.h"
 #include "nau/scene/packaged_scene_application.h"
+#include "nau_project_policy.h"
 
 int main(int argc, char** argv)
 {
     nau::scene::PackagedSceneOptions options;
-    options.archivePath = "/project-package/content.nau_pack";
-    if (argc == 2)
-        options.configurationPath = argv[1];
-    options.supportedComponents = {
-        "nau::scene::SceneComponent", "nau::scene::CameraComponent",
-        "nau::scene::StaticMeshComponent", "MyMover", "MyRotator"};
+    options.configurationPath = argc > 1 ? argv[1] : nau::project::StartupConfiguration;
+    if (argc > 2)
+    {
+        options.archivePath = argv[2];
+    }
+    options.supportedComponents = nau::project::SupportedComponents;
     return nau::runApplication(nau::scene::createPackagedSceneApplication(std::move(options)));
 }

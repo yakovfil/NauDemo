@@ -3,8 +3,8 @@
 #
 cmake_minimum_required(VERSION 3.20)
 
-if(NAU_BROWSER_PROJECT_PROFILE)
-  include(cmake/browser_project.cmake)
+if(NAU_PACKAGED_PROJECT_PROFILE)
+  include(cmake/packaged_project.cmake)
   return()
 endif()
 

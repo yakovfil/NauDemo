@@ -127,7 +127,7 @@ def run(args):
     project = pathlib.Path(__file__).resolve().parents[1]
     configuration = args.configuration.lower()
     build = project / "build" / ("web-" + configuration)
-    archive = (project / "build" / ("prepared-" + configuration) / "content.nau_pack").read_bytes()
+    archive = (build / "selected-input/content.nau_pack").read_bytes()
     original = unpack(archive)
     results = []
     with tempfile.TemporaryDirectory(prefix="nau-editor-web-") as temporary:
