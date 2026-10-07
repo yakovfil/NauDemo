@@ -1,0 +1,43 @@
+#nausd_scene 1.0
+
+def Xform "FixtureParent"
+{
+    matrix4d xformOp:transform = ( (2, 0, 0, 0), (0, 3, 0, 0), (0, 0, 4, 0), (1, 2, 3, 1) )
+    uniform token[] xformOpOrder = ["xformOp:transform"]
+
+    def Xform "MovingChild"
+    {
+        matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (4, -2, 5, 1) )
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+
+        def NauComponent "Mover"
+        {
+            custom string componentTypeName = "MyMover"
+            string uid = "11111111-2222-3333-4444-555555555551"
+            string axis = "Z"
+            float amplitude = 0.25
+            float frequency = 1.75
+            float phase = 0.2
+        }
+
+        def NauComponent "Rotator"
+        {
+            custom string componentTypeName = "MyRotator"
+            string uid = "11111111-2222-3333-4444-555555555552"
+            string axis = "X"
+            float speedFactor = 0.65
+        }
+    }
+}
+
+def NauComponent "FixtureCamera"
+{
+    custom string componentTypeName = "nau::scene::CameraComponent"
+    string uid = "11111111-2222-3333-4444-555555555553"
+    string cameraName = "Fixture camera"
+    float FieldOfView = 75
+    float ClipNearPlane = 0.25
+    float ClipFarPlane = 250
+    matrix4d xformOp:transform = ( (1, 0, 0, 0), (0, 1, 0, 0), (0, 0, 1, 0), (6, 7, 8, 1) )
+    uniform token[] xformOpOrder = ["xformOp:transform"]
+}

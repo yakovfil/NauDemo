@@ -3,6 +3,11 @@
 #
 cmake_minimum_required(VERSION 3.20)
 
+if(NAU_BROWSER_PROJECT_PROFILE)
+  include(cmake/browser_project.cmake)
+  return()
+endif()
+
 project(NauDemo)
 
 # TODO: set enviroment variables for other platforms
@@ -19,6 +24,7 @@ if(NOT DEFINED NauEngineFolder OR NOT NauEngineFolder)
   set(NauEngineFolder "${ENV_NAU_ENGINE_SDK_DIR}")
 endif()
 
+file(TO_CMAKE_PATH "${NauEngineFolder}" NauEngineFolder)
 message(NOTICE "SDK folder ${NauEngineFolder}")
 
 if(NOT EXISTS ${NauEngineFolder}/CMakeLists.txt
@@ -61,8 +67,14 @@ include(NauModule)
 include(NauGenFunctions)
 include(platformSpec/NauPlatformSetup)
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+option(NAU_WEB_HOST_COMPONENTS "Build only native component registration for web cooking" OFF)
+if(NAU_WEB_HOST_COMPONENTS)
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+else()
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+endif()
 
 # Enable Hot Reload for MSVC compilers if supported.
 if(POLICY CMP0141)
@@ -149,6 +161,10 @@ try_inc(cmake/core/Audio/Audio-config.cmake)
 try_inc(cmake/tools/ShaderCompilerTool/ShaderCompilerTool-config.cmake)
 
 include(source/game/NauDemo.cmake)
+
+if(NAU_WEB_HOST_COMPONENTS)
+  return()
+endif()
 
 file(GLOB Sources
   source/main.cpp

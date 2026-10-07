@@ -12,6 +12,9 @@ nau_add_module(${TargetName}
 
 target_precompile_headers(${TargetName} PRIVATE pch.h)
 
+if(NAU_BROWSER_PROJECT_PROFILE)
+  target_link_libraries(${TargetName} PUBLIC NauFrameworkScene CoreScene)
+else()
 target_link_libraries(${TargetName} PUBLIC 
     NauFramework 
     CoreInput
@@ -33,6 +36,7 @@ nau_target_link_modules(${TargetName}
     Physics
     PhysicsJolt
 )
+endif()
 
 target_include_directories(${TargetName} PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}

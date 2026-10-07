@@ -1,5 +1,9 @@
 # Nau Demo: Rotating Cube
 
+The editor-created [EditorProject browser startup](EditorProject/web/README.md)
+has a separate non-rendering build that loads packaged scenes and project
+components. Its outputs remain under `EditorProject/build/`.
+
 The `Nau Demo` label uses the shared engine screen-text API and a bundled TTF on
 native and web. See [screen text](doc/screen_text.md) for API and acceptance details.
 
