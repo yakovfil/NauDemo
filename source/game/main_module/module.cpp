@@ -10,7 +10,7 @@
 
 class MainGameModule final : public nau::DefaultModuleImpl
 {
-    nau::string getModuleName() override
+    std::string getModuleName() override
     {
         return "MainGameModule";
     }
