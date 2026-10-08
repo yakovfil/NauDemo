@@ -1,0 +1,5 @@
+#nausd 1.0
+def NauAssetMaterial "PortableOrange"
+{
+    string uid = "22222222-3333-4444-5555-666666666662"
+}

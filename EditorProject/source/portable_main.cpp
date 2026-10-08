@@ -14,5 +14,10 @@ int main(int argc, char** argv)
         options.archivePath = argv[2];
     }
     options.supportedComponents = nau::project::SupportedComponents;
+    options.runtimeProfile = nau::project::RuntimeProfile;
+    if (nau::project::RenderingConfiguration)
+    {
+        options.renderingConfiguration = nau::project::RenderingConfiguration;
+    }
     return nau::runApplication(nau::scene::createPackagedSceneApplication(std::move(options)));
 }

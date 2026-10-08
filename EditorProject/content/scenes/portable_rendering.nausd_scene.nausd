@@ -1,0 +1,6 @@
+#nausd 1.0
+def NauAssetScene "Root"
+{
+    asset path = @portable_rendering.nausd_scene@
+    string uid = "22222222-3333-4444-5555-666666666684"
+}

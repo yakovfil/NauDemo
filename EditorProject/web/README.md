@@ -1,16 +1,58 @@
 # Packaged Windows and web startup
 
-EditorProject provides the same portable, non-rendering scene application on
-Windows and web. It loads a cooked archive, activates real scene objects and
-supported components, runs updates and performs checked cleanup. Camera and
-mesh/material references remain passive data. Rendering, physics, animation
-playback, audio and input services are outside this profile.
+EditorProject provides a portable scene application on Windows and web.
+`run_windows.bat` and `run_web.bat` select `portable_rendering_project.json`
+and display the cube/tetrahedron scene. Both default to Debug and accept Release
+as their first argument.
 
 The existing rendered Windows SDK build remains separately available through
-its existing presets/CMake route. `run_windows.bat` selects the new portable
-application, so its window intentionally has no rendered scene.
+its existing presets/CMake route. Direct `build.ps1` calls without `-Declaration`
+still select `portable_project.json`, the non-rendering profile. That profile
+loads and updates scene objects with camera and mesh/material references as
+passive data; its window intentionally has no rendered scene.
 
 ## Build and run
+
+### Scene rendering
+
+Select `portable_rendering_project.json` to display the separate editor-authored
+cube/tetrahedron fixture through the same portable entry on both platforms:
+
+```powershell
+./build.ps1 -Platform Windows -Configuration Debug -Declaration ./portable_rendering_project.json -Run
+./build.ps1 -Platform Web -Configuration Debug -Declaration ./portable_rendering_project.json -Serve
+```
+
+Use `Release` for optimized builds. Outputs are isolated under
+`build/basic-rendering-scene/windows-debug`, `windows-release`, `web-debug` and
+`web-release`; each contains its delivery in `package`. Native shader compilation
+requires DXC from the Windows SDK shader tools. The web target embeds GLSL and
+does not execute DXC. Fresh preparation uses the native cooking prerequisites
+below. To reuse the exact native-selected archive without recooking:
+
+```powershell
+./build.ps1 -Platform Web -Configuration Debug -Declaration ./portable_rendering_project.json `
+  -PreparedArchive ./build/basic-rendering-scene/windows-debug/selected-input/content.nau_pack -Serve
+```
+
+This profile supports static indexed triangles, explicit opaque linear RGB
+materials, ambient/directional lighting and one selected engine camera. Positive
+non-uniform scale, nested/component transforms and live visibility/membership
+changes are supported. Unsupported geometry/material data fails validation.
+Textures, skinning, animation playback, transparency, scene lights and runtime
+mesh/material replacement are outside this profile. Its main scene and default
+non-rendering declaration remain separate. See the shared packaged-project guide
+for the rendering declaration and content contract.
+
+Rendering acceptance helpers are in `tests/verify_production_rendering.py`,
+`verify_native_rendering.py` and `verify_web_rendering.py`. Run them from the
+checkout root after an `-Acceptance` build. They require Python with Pillow and
+Playwright, installed Chrome, and the Orca CLI for owned native-window captures.
+For example, use `python NauDemo/EditorProject/tests/verify_native_rendering.py
+Debug`; repeat with `Release` and use `verify_web_rendering.py` for Chrome.
+Build outputs retain case logs, screenshots, archive provenance and cleanup
+results under `build/basic-rendering-scene`. See the change's validation record
+for the complete matrix, pixel tolerances and injected versus real fault limits.
 
 From EditorProject:
 

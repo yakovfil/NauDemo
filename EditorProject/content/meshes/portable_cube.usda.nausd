@@ -1,0 +1,21 @@
+#nausd 1.0
+def "Asset"
+{
+    def "Cube" (payload = @portable_cube.usda@</Cube>) {}
+}
+def NauAssetGroup "Root"
+{
+    asset path = @portable_cube.usda@
+    string uid = "22222222-3333-4444-5555-666666666671"
+    def NauAssetMesh "Cube"
+    {
+        bool generateCollider = 0
+        bool generateLods = 0
+        bool generateTangents = 0
+        rel meshSource = </Asset/Cube>
+        asset path = @portable_cube.usda@
+        string uid = "22222222-3333-4444-5555-666666666672"
+        float unitScale = 1
+        token upAxis = "Y"
+    }
+}

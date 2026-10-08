@@ -1,0 +1,21 @@
+#nausd 1.0
+def "Asset"
+{
+    def "Tetra" (payload = @portable_tetra.usda@</Tetra>) {}
+}
+def NauAssetGroup "Root"
+{
+    asset path = @portable_tetra.usda@
+    string uid = "22222222-3333-4444-5555-666666666673"
+    def NauAssetMesh "Tetra"
+    {
+        bool generateCollider = 0
+        bool generateLods = 0
+        bool generateTangents = 0
+        rel meshSource = </Asset/Tetra>
+        asset path = @portable_tetra.usda@
+        string uid = "22222222-3333-4444-5555-666666666674"
+        float unitScale = 1
+        token upAxis = "Y"
+    }
+}

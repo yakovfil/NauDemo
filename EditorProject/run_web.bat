@@ -13,5 +13,5 @@ if not exist "%EMSDK%\emsdk_env.bat" (
 )
 call "%EMSDK%\emsdk_env.bat"
 if errorlevel 1 exit /b 1
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0web\build.ps1" -Configuration "%CONFIGURATION%" -Serve
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0web\build.ps1" -Configuration "%CONFIGURATION%" -Declaration "%~dp0portable_rendering_project.json" -Serve
 exit /b %ERRORLEVEL%

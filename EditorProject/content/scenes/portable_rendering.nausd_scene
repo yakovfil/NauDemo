@@ -1,0 +1,61 @@
+#nausd_scene 1.0
+def Xform "Parent"
+{
+    matrix4d xformOp:transform = ((1,0,0,0),(0,1,0,0),(0,0,1,0),(0.25,0,-7,1))
+    uniform token[] xformOpOrder = ["xformOp:transform"]
+    def "BlueCube" (prepend references = @../meshes/portable_cube.usda.nausd@</Root/Cube>)
+    {
+        asset Material:assign = @../materials/portable_blue.nausd@
+        matrix4d xformOp:transform = ((1.2,0,0,0),(0,0.8,0,0),(0,0,1,0),(-1.25,0,0,1))
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+        def NauComponent "Rotator"
+        {
+            custom string componentTypeName = "MyRotator"
+            string uid = "22222222-3333-4444-5555-666666666681"
+            string axis = "Y"
+            float speedFactor = 0.1
+        }
+    }
+    def "OrangeTetra" (prepend references = @../meshes/portable_tetra.usda.nausd@</Root/Tetra>)
+    {
+        asset Material:assign = @../materials/portable_orange.nausd@
+        matrix4d xformOp:transform = ((1,0,0,0),(0,1,0,0),(0,0,1,0),(1,0,1,1))
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+        def NauComponent "Rotator"
+        {
+            custom string componentTypeName = "MyRotator"
+            string uid = "22222222-3333-4444-5555-666666666682"
+            string axis = "Z"
+            float speedFactor = 0.08
+        }
+    }
+    def "BlueRepeated" (prepend references = @../meshes/portable_cube.usda.nausd@</Root/Cube>)
+    {
+        asset Material:assign = @../materials/portable_blue.nausd@
+        matrix4d xformOp:transform = ((0.5,0,0,0),(0,0.5,0,0),(0,0,0.5,0),(0,-1.5,-1,1))
+        uniform token[] xformOpOrder = ["xformOp:transform"]
+    }
+    def Xform "MovingData"
+    {
+        def NauComponent "Mover"
+        {
+            custom string componentTypeName = "MyMover"
+            string uid = "22222222-3333-4444-5555-666666666685"
+            string axis = "Y"
+            float amplitude = 0.01
+            float frequency = 1
+            float phase = 0
+        }
+    }
+}
+def NauComponent "RenderCamera"
+{
+    custom string componentTypeName = "nau::scene::CameraComponent"
+    string uid = "22222222-3333-4444-5555-666666666683"
+    string cameraName = "Portable camera"
+    float FieldOfView = 60
+    float ClipNearPlane = 0.1
+    float ClipFarPlane = 100
+    matrix4d xformOp:transform = ((1,0,0,0),(0,1,0,0),(0,0,1,0),(0,0,0,1))
+    uniform token[] xformOpOrder = ["xformOp:transform"]
+}
