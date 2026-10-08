@@ -10,7 +10,7 @@ from verify_web_startup import unpack, pack
 
 
 project = pathlib.Path(__file__).resolve().parents[1]
-checkout = project.parents[1]
+checkout = project.parent
 validator = checkout / "NauEngineModules/tools/asset_tools/packaged_project.py"
 declaration = project / "portable_rendering_project.json"
 archive = (project / "build/basic-rendering-scene/windows-debug/selected-input/content.nau_pack").read_bytes()

@@ -12,7 +12,7 @@ import tempfile
 
 def run(args):
     project = pathlib.Path(__file__).resolve().parents[1]
-    modules = project.parents[1] / "NauEngineModules"
+    modules = project.parent / "NauEngineModules"
     native_python = args.python.resolve()
     environment = os.environ.copy()
     environment["PATH"] = os.pathsep.join([str(args.tools.resolve()), str(args.tools.resolve() / "plugins"), str(native_python.parent), str(args.usd_sdk.resolve() / "bin"), str(args.usd_sdk.resolve() / "lib"), environment["PATH"]])

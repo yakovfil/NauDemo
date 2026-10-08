@@ -4,7 +4,7 @@ import pathlib
 import subprocess
 
 project = pathlib.Path(__file__).resolve().parents[1]
-engine = project.parents[1] / "NauEngineLite"
+engine = project.parent / "NauEngineLite"
 results = []
 for profile in ("basic-rendering-scene", "non-rendering-scene"):
     for platform in ("windows", "web"):

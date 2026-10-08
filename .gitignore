@@ -1,5 +1,23 @@
+# Generated builds and binaries
 /build/
 /bin/
+/lib/
+/dist/
+/resources/shaders/cache/
+/source/.naubuild-dirty
+
+# Generated asset database
+/assets_database/
+
+# Local editor state
+/.editor/
+*.nauproject.user
+
+# Tool logs
+/log_*.txt
 /logs/
-__pycache__/
 /imgui.ini
+
+# Python caches and runtime logs
+__pycache__/
+/log_*.log*

@@ -12,7 +12,7 @@ from verify_web_startup import unpack
 
 def verify(args):
     project = pathlib.Path(__file__).resolve().parents[1]
-    checkout = project.parents[1]
+    checkout = project.parent
     tool = checkout / "NauEngineModules/tools/asset_tools/prepare_packaged_project.py"
     output = project / "build/basic-rendering-scene/freshness"
     output.mkdir(exist_ok=True)

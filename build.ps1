@@ -9,12 +9,12 @@ param(
     [ValidateRange(1,65535)][int]$Port = 8000,
     [string]$PreparedArchive,
     [string]$Declaration,
-    [ValidateSet('Windows','Web')][string]$Platform = 'Web',
+    [ValidateSet('Windows','Web')][string]$Platform = 'Windows',
     [switch]$Run
 )
 $ErrorActionPreference = 'Stop'
-$projectDirectory = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
-$checkout = (Resolve-Path (Join-Path $projectDirectory '../..')).Path
+$projectDirectory = (Resolve-Path $PSScriptRoot).Path
+$checkout = (Resolve-Path (Join-Path $projectDirectory '..')).Path
 $arguments = @{} + $PSBoundParameters
 $arguments.Platform = $Platform
 $arguments.ApplicationTarget = 'NauDemoMain'

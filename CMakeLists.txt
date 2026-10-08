@@ -1,79 +1,239 @@
-cmake_minimum_required(VERSION 3.24)
-include(cmake/asset_packages.cmake)
+# CMakeList.txt : Top-level CMake project file, do global configuration
+# and include sub-projects here.
+#
+cmake_minimum_required(VERSION 3.20)
 
-if(EMSCRIPTEN AND NAU_RUNTIME_PROFILE STREQUAL "scene")
-    add_executable(NauDemo src/main.cpp src/demo_application.cpp src/platform/web.cpp)
-    target_link_libraries(NauDemo PRIVATE NauFrameworkScene NauBrowserRenderer PlatformAppApi NauScreenText)
-    nau_target_link_modules(NauDemo PlatformApp CoreAssets CoreScene CoreAssetsCpu)
-    nau_add_compile_options(NauDemo)
-    set(assetArchive "${CMAKE_CURRENT_BINARY_DIR}/assets/NauDemo.nau_pack")
-    nau_demo_package("${CMAKE_CURRENT_SOURCE_DIR}/cmake/web_assets.json.in" "${CMAKE_CURRENT_BINARY_DIR}/web_assets.json" "${assetArchive}")
-    add_custom_target(NauDemoAssets DEPENDS "${assetArchive}")
-    add_dependencies(NauDemo NauDemoAssets)
-    target_link_options(NauDemo PRIVATE -sEXIT_RUNTIME=1 -sPTHREAD_POOL_SIZE=12
-        -sINITIAL_MEMORY=67108864 -sALLOW_BLOCKING_ON_MAIN_THREAD=0
-        -sOFFSCREENCANVAS_SUPPORT=1 "-sOFFSCREENCANVASES_TO_PTHREAD=#canvas"
-        -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2
-        "SHELL:--preload-file ${assetArchive}@/demo-package/NauDemo.nau_pack")
-    set_property(TARGET NauDemo APPEND PROPERTY LINK_DEPENDS "${assetArchive}")
-    add_custom_target(NauDemoWebPackage ALL
-        COMMAND ${CMAKE_COMMAND}
-            "-DBUILD_ROOT=${CMAKE_BINARY_DIR}"
-            "-DDESTINATION=${CMAKE_BINARY_DIR}/package"
-            "-DLOADER=$<TARGET_FILE:NauDemo>"
-            "-DWASM=$<TARGET_FILE_DIR:NauDemo>/NauDemo.wasm"
-            "-DDATA=$<TARGET_FILE_DIR:NauDemo>/NauDemo.data"
-            "-DASSETS=${CMAKE_CURRENT_SOURCE_DIR}/web"
-            "-DMESH_ASSETS=${CMAKE_CURRENT_SOURCE_DIR}/assets"
-            "-DCONFIGURATION=$<CONFIG>"
-            -P "${CMAKE_CURRENT_SOURCE_DIR}/web/stage.cmake"
-        DEPENDS NauDemo VERBATIM)
-    return()
+if(NAU_PACKAGED_PROJECT_PROFILE)
+  include(cmake/packaged_project.cmake)
+  return()
 endif()
 
-# Added to the engine build by cmake/attach_demo.cmake after its targets exist.
-if(NOT TARGET SampleCommonLib)
-    message(FATAL_ERROR "Configure the engine with -DCMAKE_PROJECT_NauEngine_INCLUDE=<NauDemo>/cmake/attach_demo.cmake. See README.md.")
+project(NauDemo)
+
+# TODO: set enviroment variables for other platforms
+if(WIN32)
+  execute_process(COMMAND "${CMAKE_SOURCE_DIR}/cmake/platformSpec/set_env.bat")
+endif(WIN32)
+
+if(POLICY CMP0091)
+  cmake_policy(SET CMP0091 NEW)
 endif()
 
-add_executable(NauDemo src/main.cpp src/demo_application.cpp src/platform/native.cpp)
-target_link_libraries(NauDemo PRIVATE SampleCommonLib Animation Physics Graphics VFX NauScreenText)
-nau_target_link_modules(NauDemo PlatformApp Animation CoreScene CoreAssets GraphicsAssets
-    DebugRenderer CoreAssetFormats CoreInput Graphics Physics PhysicsJolt VFX)
-nau_add_compile_options(NauDemo)
-file(TO_CMAKE_PATH "${CMAKE_CURRENT_SOURCE_DIR}" DEMO_SOURCE_PATH)
-file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}" ENGINE_SOURCE_PATH)
-file(TO_CMAKE_PATH "${NAU_SAMPLES_SOURCE_DIR}" SAMPLES_SOURCE_PATH)
-set_target_properties(NauDemo PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin"
-    VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
-set(shaderSource "${NAU_SAMPLES_SOURCE_DIR}/sceneBase/content/shaders")
-set(SHADER_CACHE "${CMAKE_CURRENT_BINARY_DIR}/native-assets/$<CONFIG>/shader_cache.nsbc")
-file(GLOB_RECURSE shaderInputs CONFIGURE_DEPENDS "${shaderSource}/src/*.hlsl" "${shaderSource}/include/*.hlsli" "${shaderSource}/meta/*.blk" "${NAU_MODULES_SOURCE_DIR}/modules/render/include/nau/shaders/*.hlsli")
-add_custom_command(OUTPUT "${SHADER_CACHE}"
-  COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_BINARY_DIR}/native-assets/$<CONFIG>"
-  COMMAND $<TARGET_FILE:ShaderCompilerTool> -c shader_cache.nsbc -o "${CMAKE_CURRENT_BINARY_DIR}/native-assets/$<CONFIG>"
-    -s "${shaderSource}/src" -m "${shaderSource}/meta" -i "${shaderSource}/include"
-    -i "${NAU_MODULES_SOURCE_DIR}/modules/render/include/nau/shaders" $<$<CONFIG:Debug>:-De>
-  DEPENDS ShaderCompilerTool ${shaderInputs} COMMAND_EXPAND_LISTS VERBATIM)
-set(nativeArchive "${CMAKE_CURRENT_BINARY_DIR}/native-assets/$<CONFIG>/NauDemo.nau_pack")
-nau_demo_package("${CMAKE_CURRENT_SOURCE_DIR}/cmake/native_assets.json.in" "${CMAKE_CURRENT_BINARY_DIR}/native-assets/$<CONFIG>/manifest.json" "${nativeArchive}")
-set(requiredHeader "#pragma once\nnamespace nau::demo { inline constexpr const char* RequiredPackageEntries[] = {\n")
-foreach(path IN LISTS NAU_DEMO_PACKAGED_PATHS)
-  string(APPEND requiredHeader "\"${path}\",\n")
-endforeach()
-string(APPEND requiredHeader "}; }\n")
-file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/generated/demo_asset_manifest.h" CONTENT "${requiredHeader}")
-target_include_directories(NauDemo PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/generated")
-add_custom_target(NauDemoAssets
-  COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/bin/$<CONFIG>"
-  COMMAND ${CMAKE_COMMAND} -E copy_if_different "${nativeArchive}" "${CMAKE_CURRENT_SOURCE_DIR}/bin/$<CONFIG>/NauDemo.nau_pack"
-  COMMAND ${CMAKE_COMMAND} -E copy_if_different "${CMAKE_CURRENT_SOURCE_DIR}/config/app.json" "${CMAKE_CURRENT_SOURCE_DIR}/bin/$<CONFIG>/app.json"
-  DEPENDS "${nativeArchive}" "${CMAKE_CURRENT_SOURCE_DIR}/config/app.json" VERBATIM)
-add_dependencies(NauDemo NauDemoAssets)
-add_custom_command(TARGET NauDemo POST_BUILD
-    COMMAND ${CMAKE_COMMAND}
-        "-DENGINE_BIN=${CMAKE_BINARY_DIR}/bin/$<CONFIG>"
-        "-DDEMO_BIN=$<TARGET_FILE_DIR:NauDemo>"
-        -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/deploy_runtime.cmake"
-    VERBATIM)
+if(NOT DEFINED NauEngineFolder OR NOT NauEngineFolder)
+  file(TO_CMAKE_PATH "$ENV{NAU_ENGINE_SDK_DIR}" ENV_NAU_ENGINE_SDK_DIR)
+  set(NauEngineFolder "${ENV_NAU_ENGINE_SDK_DIR}")
+endif()
+
+file(TO_CMAKE_PATH "${NauEngineFolder}" NauEngineFolder)
+message(NOTICE "SDK folder ${NauEngineFolder}")
+
+if(NOT EXISTS ${NauEngineFolder}/CMakeLists.txt
+  OR NOT EXISTS ${NauEngineFolder}/cmake
+  OR NOT EXISTS ${NauEngineFolder}/lib
+  OR NOT EXISTS ${NauEngineFolder}/include
+)
+  message(FATAL_ERROR "SDK folder ${NauEngineFolder} does not contain required files!")
+endif()
+
+set(CMAKE_MODULE_PATH ${NauEngineFolder}
+  ${NauEngineFolder}/cmake
+  ${NauEngineFolder}/cmake/defaults
+)
+
+option(NAU_RTTI "Enable rtti support" OFF)
+option(NAU_EXCEPTIONS "Enable exception support" OFF)
+option(NAU_VERBOSE_LOG "Enable verbose messages for logger" OFF)
+option(NAU_MATH_USE_DOUBLE_PRECISION "Enable double precision for math" OFF)
+
+option(BUILD_SHARED_LIBS "Build shared libs" ON)
+
+if(BUILD_SHARED_LIBS)
+  message(STATUS "Configure for dynamic (DLL) runtime")
+else()
+  message(STATUS "Configure for static (monolith) runtime")
+endif()
+
+set(NauSDKIncludes ${NauEngineFolder}/include)
+set(NauSDKLibraries ${NauEngineFolder}/lib)
+
+set(CMAKE_CXX_STANDARD 20)
+
+find_package(Python
+  REQUIRED
+)
+
+include(NauCommon)
+include(NauModule)
+include(NauGenFunctions)
+include(platformSpec/NauPlatformSetup)
+
+option(NAU_WEB_HOST_COMPONENTS "Build only native component registration for web cooking" OFF)
+if(NAU_WEB_HOST_COMPONENTS)
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+else()
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+endif()
+
+# Enable Hot Reload for MSVC compilers if supported.
+if(POLICY CMP0141)
+  cmake_policy(SET CMP0141 NEW)
+  set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
+endif()
+
+find_package(Threads REQUIRED)
+
+function(try_inc cmakeName)
+  if(EXISTS ${NauEngineFolder}/${cmakeName})
+    include(${NauEngineFolder}/${cmakeName})
+    message(STATUS "${NauEngineFolder}/${cmakeName}")
+  endif()
+endfunction()
+
+function(try_add subdir)
+  if(EXISTS ${NauEngineFolder}/${subdir})
+    add_subdirectory(${NauEngineFolder}/${subdir})
+    message(STATUS "${NauEngineFolder}/${subdir}")
+  endif()
+endfunction()
+
+try_inc(cmake/3rdPartyLibs/asio/asio-config.cmake)
+try_inc(cmake/3rdPartyLibs/brotli/brotli-config.cmake)
+try_inc(cmake/3rdPartyLibs/fast_float/fast_float-config.cmake)
+try_inc(cmake/3rdPartyLibs/jsoncpp/jsoncpp-config.cmake)
+try_inc(cmake/3rdPartyLibs/lzma-9.20/lzma-9.20-config.cmake)
+try_inc(cmake/3rdPartyLibs/md5/md5-config.cmake)
+try_inc(cmake/3rdPartyLibs/vectormath/vectormath-config.cmake)
+try_inc(cmake/3rdPartyLibs/wyhash/wyhash-config.cmake)
+try_inc(cmake/3rdPartyLibs/zlib-ng/zlib-ng-config.cmake)
+try_inc(cmake/3rdPartyLibs/zstd-1.4.5/zstd-1.4.5-config.cmake)
+try_inc(cmake/3rdPartyLibs/fmt/fmt-config.cmake)
+try_inc(cmake/3rdPartyLibs/tinyutf8/tinyutf8-config.cmake)
+try_inc(cmake/3rdPartyLibs/utf8cpp/utf8cpp-config.cmake)
+try_inc(cmake/3rdPartyLibs/tinyimageformat/tinyimageformat-config.cmake)
+try_inc(cmake/3rdPartyLibs/gainputstatic/gainputstatic-config.cmake)
+try_inc(cmake/3rdPartyLibs/imgui/imgui-config.cmake)
+try_inc(cmake/3rdPartyLibs/miniaudio/miniaudio-config.cmake)
+try_inc(cmake/3rdPartyLibs/lua/lua-config.cmake)
+try_inc(cmake/3rdPartyLibs/RenderDoc/RenderDoc-config.cmake)
+try_inc(cmake/3rdPartyLibs/adlSdk/adlSdk-config.cmake)
+try_inc(cmake/3rdPartyLibs/dxc/dxc-config.cmake)
+try_inc(cmake/3rdPartyLibs/ska_hash_map/ska_hash_map-config.cmake)
+try_inc(cmake/3rdPartyLibs/xxHash/xxHash-config.cmake)
+try_inc(cmake/3rdPartyLibs/ozz_base/ozz_base-config.cmake)
+try_inc(cmake/3rdPartyLibs/ozz_animation/ozz_animation-config.cmake)
+try_inc(cmake/3rdPartyLibs/stb/stb-config.cmake)
+try_inc(cmake/3rdPartyLibs/ispc_texcomp/ispc_texcomp-config.cmake)
+try_inc(cmake/3rdPartyLibs/tinydds/tinydds-config.cmake)
+try_inc(cmake/3rdPartyLibs/Jolt/Jolt-config.cmake)
+try_inc(cmake/3rdPartyLibs/uriparser/uriparser-config.cmake)
+
+## try_inc(share/Tracy/TracyConfig.cmake)
+
+try_inc(cmake/core/NauKernel/NauKernel-config.cmake)
+
+try_inc(cmake/3rdPartyLibs/binPack2D/binPack2D-config.cmake)
+
+try_inc(cmake/core/NauKernel/NauKernel-config.cmake)
+
+try_inc(cmake/core/CoreAssets/CoreAssets-config.cmake)
+try_inc(cmake/core/CoreScene/CoreScene-config.cmake)
+try_inc(cmake/core/PlatformAppApi/PlatformAppApi-config.cmake)
+try_inc(cmake/core/PlatformApp/PlatformApp-config.cmake)
+try_inc(cmake/core/CoreInput/CoreInput-config.cmake)
+try_inc(cmake/core/Render/Render-config.cmake)
+try_inc(cmake/core/Render/Render-config.cmake)
+try_inc(cmake/core/GraphicsAssets/GraphicsAssets-config.cmake)
+try_inc(cmake/core/CoreInput/CoreInput-config.cmake)
+try_inc(cmake/core/Animation/Animation-config.cmake)
+try_inc(cmake/core/DebugRenderer/DebugRenderer-config.cmake)
+try_inc(cmake/core/VFX/VFX-config.cmake)
+try_inc(cmake/core/NauScreenText/NauScreenText-config.cmake)
+try_inc(cmake/core/Graphics/Graphics-config.cmake)
+try_inc(cmake/core/CoreAssetFormats/CoreAssetFormats-config.cmake)
+try_inc(cmake/core/NauFramework/NauFramework-config.cmake)
+try_inc(cmake/core/Physics/Physics-config.cmake)
+try_inc(cmake/core/PhysicsJolt/PhysicsJolt-config.cmake)
+try_inc(cmake/core/Network/Network-config.cmake)
+try_inc(cmake/core/Audio/Audio-config.cmake)
+
+try_inc(cmake/tools/ShaderCompilerTool/ShaderCompilerTool-config.cmake)
+
+include(source/game/NauDemo.cmake)
+
+if(NAU_WEB_HOST_COMPONENTS)
+  return()
+endif()
+
+file(GLOB Sources
+  source/main.cpp
+)
+
+set(TargetName NauDemoMain)
+
+add_executable(${TargetName} ${Sources})
+
+target_precompile_headers(${TargetName} PRIVATE source/pch.h)
+
+target_link_libraries(${TargetName} PRIVATE
+  MainGameModule
+  PlatformAppApi
+  Animation
+  CoreInput
+  NauFramework
+  imgui
+  Physics
+  Graphics
+
+  jsoncpp
+)
+
+if(CMAKE_GENERATOR MATCHES "Visual Studio")
+  set(CURRENT_CONFIG $<CONFIG>)
+  set(ENGINE_BIN_PATH "PATH=${NAU_BUILD_DIR}/bin/${CMAKE_BUILD_TYPE}/${CURRENT_CONFIG};%PATH%")
+  set_target_properties(${TargetName} PROPERTIES VS_DEBUGGER_ENVIRONMENT "${ENGINE_BIN_PATH}")
+  set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${TargetName})
+endif()
+
+source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${Sources})
+
+nau_add_compile_options(${TargetName})
+
+nau_target_link_modules(${TargetName}
+  MainGameModule
+  PlatformApp
+  Animation
+  Audio
+  CoreScene
+  CoreAssets
+  GraphicsAssets
+  DebugRenderer
+  CoreAssetFormats
+  CoreInput
+  Graphics
+  Physics
+  PhysicsJolt
+)
+
+add_custom_command(TARGET ${TargetName} PRE_BUILD
+  COMMAND ${CMAKE_COMMAND}
+  -DFileToCheck=${NauEngineFolder}/lib/$<CONFIG>
+  -P ${NauEngineFolder}/check.cmake
+  COMMENT "Checking if ${NauEngineFolder}/lib/$<CONFIG> exists...")
+
+add_custom_command(TARGET ${TargetName} POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_directory
+  "${NauEngineFolder}/bin/$<CONFIG>"
+  $<TARGET_FILE_DIR:${TargetName}>
+)
+
+## add_custom_command(TARGET ${TargetName} POST_BUILD
+##   COMMAND ${CMAKE_COMMAND} -E copy
+##   "${NauEngineFolder}/bin/TracyClient.dll"
+##   $<TARGET_FILE_DIR:${TargetName}>
+## )
+
+install(TARGETS ${TargetName}
+  DESTINATION bin
+)

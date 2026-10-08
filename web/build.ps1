@@ -1,23 +1,26 @@
 param(
-    [ValidateSet('Debug', 'Release')][string]$Configuration = 'Debug'
+    [ValidateSet('Debug', 'Release')][string]$Configuration = 'Debug',
+    [string]$HostSdk = $env:NAU_ENGINE_SDK_DIR,
+    [string]$HostTools = $env:NAU_HOST_TOOLS_DIR,
+    [string]$UsdSdk = $env:NAU_USD_SDK_DIR,
+    [string]$PythonExecutable,
+    [switch]$Acceptance,
+    [switch]$Serve,
+    [ValidateRange(1,65535)][int]$Port = 8000,
+    [string]$PreparedArchive,
+    [string]$Declaration,
+    [ValidateSet('Windows','Web')][string]$Platform = 'Web',
+    [switch]$Run
 )
-
-$demo = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
-$engine = (Resolve-Path (Join-Path $demo '../NauEngineLite')).Path
-$build = Join-Path $demo ('build/web-demo-' + $Configuration.ToLowerInvariant())
-& (Join-Path $demo 'cmake/build_asset_packer.ps1') -Configuration Release
-if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-if (-not $env:EMSDK) {
-    throw 'Activate Emscripten SDK 6.0.9 before building NauDemo.'
-}
-$toolchain = Join-Path $env:EMSDK 'upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake'
-cmake -S $engine -B $build -G Ninja `
-    "-DCMAKE_TOOLCHAIN_FILE=$toolchain" `
-    "-DCMAKE_BUILD_TYPE=$Configuration" `
-    '-DNAU_BUILD_BROWSER=ON' '-DNAU_RUNTIME_PROFILE=scene' `
-    '-DBUILD_SHARED_LIBS=OFF' '-DNAU_CORE_SAMPLES=OFF' `
-    '-DNAU_CORE_TOOLS=OFF' '-DNAU_CORE_TESTS=OFF' `
-    "-DCMAKE_PROJECT_NauEngine_INCLUDE=$demo/cmake/attach_demo.cmake"
-if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-cmake --build $build --target NauDemoWebPackage --parallel 8
+$ErrorActionPreference = 'Stop'
+$projectDirectory = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
+$checkout = (Resolve-Path (Join-Path $projectDirectory '..')).Path
+$arguments = @{} + $PSBoundParameters
+$arguments.Platform = $Platform
+$arguments.ApplicationTarget = 'NauDemoMain'
+$arguments.AcceptanceScenes = @('scenes/web_startup_fixture.nausd_scene')
+$arguments.ProjectDirectory = $projectDirectory
+$arguments.EngineDirectory = Join-Path $checkout 'NauEngineLite'
+$arguments.ModulesDirectory = Join-Path $checkout 'NauEngineModules'
+& (Join-Path $arguments.ModulesDirectory 'cmake/packaged_project/build.ps1') @arguments
 exit $LASTEXITCODE

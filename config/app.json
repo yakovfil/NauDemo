@@ -1,15 +1,19 @@
 {
-  "app": {
-    "name": "NauDemo",
-    "author": "Nau Demo",
-    "version": "1.0.0",
-    "log": {
-      "files": [
-        "$folder{LocalAppData}/nau/NauDemo/logs/log"
-      ]
+    "app": {
+        "name": "NauDemo",
+        "author": "Nau Engine",
+        "version": "0.6.0",
+        "log": {
+            "files": [
+                "$folder{LocalAppData}/nau/${app/name}/logs/log",
+                {
+                    "contentType": "application/text",
+                    "location": "$folder{ExecutableLocation}/logs",
+                    "fileNamePrefix": "log",
+                    "optional": true
+                }
+            ]
+        }
     },
-    "vfs": {
-      "mounts": []
-    }
-  }
+    "contentPath": "test"
 }
