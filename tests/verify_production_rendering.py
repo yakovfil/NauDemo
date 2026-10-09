@@ -15,7 +15,7 @@ from playwright.sync_api import sync_playwright
 from verify_native_rendering import capture_owned_window
 from verify_native_startup import close_windows
 from verify_web_startup import Handler
-from rendering_evidence import verify_image
+from rendering_evidence import verify_image, verify_billboard_marker
 
 
 def verify(platform, configuration):
@@ -81,6 +81,15 @@ def verify(platform, configuration):
                 server.shutdown()
                 server.server_close()
         evidence = verify_image(output / "second.png")
+        evidence["billboard"] = verify_billboard_marker(output / "second.png")
+        marker_image = Image.open(output / "second.png").convert("RGB")
+        green = magenta = 0
+        for r, g, b in marker_image.getdata():
+            green += r < 80 and g > 180 and b < 100
+            magenta += r > 180 and g < 70 and b > 160
+        assert green > 100 and magenta > 100, ("Missing production billboard", green, magenta)
+        evidence["billboardGreenPixels"] = green
+        evidence["billboardMagentaPixels"] = magenta
         first, second = (Image.open(output / name).convert("RGB") for name in ("first.png", "second.png"))
         assert first.size == second.size
         assert ImageChops.difference(first, second).getbbox(), "Production scene motion did not change output"

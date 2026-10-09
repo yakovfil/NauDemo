@@ -14,6 +14,7 @@
 #include "nau/assets/asset_container.h"
 #include "nau/render/scene_backend.h"
 #include "nau/scene/camera/camera_manager.h"
+#include "nau/scene/components/billboard_component.h"
 #include "nau/scene/components/camera_component.h"
 #include "nau/scene/components/component_life_cycle.h"
 #include "nau/scene/components/static_mesh_component.h"
@@ -22,6 +23,7 @@
 #include "nau/scene/packaged_scene_presenter.h"
 #include "nau/scene/scene_factory.h"
 #include "nau/scene/scene_manager.h"
+#include "nau/serialization/json_utils.h"
 #include "nau/service/service.h"
 #include "nau/service/service_provider.h"
 #include "nau_project_policy.h"
@@ -101,6 +103,12 @@ namespace
                         return candidate;
         return nullptr;
     }
+    scene::BillboardComponent* marker()
+    {
+        auto uid = Uid::parseString("22222222-3333-4444-5555-666666666691");
+        auto* component = getServiceProvider().get<scene::ISceneManagerInternal>().findComponent(*uid);
+        return component ? component->as<scene::BillboardComponent*>() : nullptr;
+    }
     std::string geometryHash(const CpuMeshView& mesh)
     {
         uint64_t hash = 14695981039346656037ull;
@@ -133,12 +141,17 @@ namespace
 #ifdef __EMSCRIPTEN__
             MAIN_THREAD_EM_ASM({ Module.renderSubmittedFrames = $0; }, frames);
 #endif
+            if (stage == "frozen" && mode == "billboard-share" && frame.billboards.size() != 2)
+                return;
+            if (stage == "frozen" && (mode == "billboard-swap" || mode == "replace-texture") && (frame.billboards.empty() || !frame.billboards.front().texture.ends_with("666666666694")))
+                return;
             if (records.isMember(stage))
                 return;
             Json::Value record;
             record["draws"] = Json::Value{Json::arrayValue};
             record["updates"] = updates;
             record["camera"] = frame.camera;
+            record["drawable"] = array(frame.drawable);
             record["viewProjection"] = array(frame.viewProjection);
             record["ownerThread"] = getApplication().isMainThread();
             bool valid = !motionPending;
@@ -168,6 +181,26 @@ namespace
                         valid = valid && std::abs(actual[i] - draw.model[i]) < 1e-5f;
                 }
                 record["draws"].append(value);
+            }
+            record["billboards"] = Json::Value{Json::arrayValue};
+            for (const auto& draw : frame.billboards)
+            {
+                Json::Value value;
+                value["component"] = draw.component;
+                value["texture"] = draw.texture;
+                value["position"] = array(draw.position);
+                value["size"] = draw.size;
+                value["width"] = draw.image->width;
+                value["height"] = draw.image->height;
+                uint64_t hash = 14695981039346656037ull;
+                for (auto byte : draw.image->pixels)
+                    hash = (hash ^ std::to_integer<unsigned char>(byte)) * 1099511628211ull;
+                value["pixelHash"] = std::to_string(hash);
+                auto uid = Uid::parseString(draw.component.c_str());
+                auto* component = uid ? manager.findComponent(*uid) : nullptr;
+                auto* billboard = component ? component->as<scene::BillboardComponent*>() : nullptr;
+                valid = valid && billboard && billboard->getVisibility() && toString(billboard->getTextureRef()) == draw.texture;
+                record["billboards"].append(value);
             }
             for (auto active : getServiceProvider().get<scene::ISceneManager>().getActiveScenes())
             {
@@ -229,6 +262,40 @@ namespace
 #ifdef __EMSCRIPTEN__
             MAIN_THREAD_EM_ASM({ Module.renderLoadSettled = true; });
 #endif
+            co_return loaded;
+        }
+    };
+    class DelayedTexture final : public IAssetContainerLoader
+    {
+        NAU_INTERFACE(DelayedTexture, IAssetContainerLoader)
+    public:
+        std::vector<std::string_view> getSupportedAssetKind() const override
+        {
+            return {"probe-delayed-ntex"};
+        }
+        RuntimeReadonlyDictionary::Ptr getDefaultImportSettings() const override
+        {
+            return nullptr;
+        }
+        async::Task<IAssetContainer::Ptr> loadFromStream(io::IStreamReader::Ptr stream, AssetContentInfo info) override
+        {
+            loadAccepted = true;
+            std::puts("RENDER_LOAD_ACCEPTED");
+            if (mode == "stop-texture")
+            {
+                getApplication().stop();
+                getApplication().stop();
+            }
+            co_await std::chrono::milliseconds(100);
+            co_await getApplication().getExecutor();
+            if (mode == "remove-texture" && marker())
+                marker()->getParentObject().removeComponent(*marker());
+            if (mode == "replace-texture" && marker())
+                marker()->setTextureRef(TextureAssetRef{"uid:22222222-3333-4444-5555-666666666694"});
+            CpuTextureContainerLoader loader;
+            auto loaded = co_await loader.loadFromStream(std::move(stream), std::move(info));
+            loadSettled = true;
+            std::puts("RENDER_LOAD_SETTLED");
             co_return loaded;
         }
     };
@@ -347,6 +414,7 @@ namespace
             NauCheckResult(m_application->initializeServices());
             getServiceProvider().addService(std::make_unique<FrameObserver>());
             getServiceProvider().addService(std::make_unique<DelayedGeometry>());
+            getServiceProvider().addService(std::make_unique<DelayedTexture>());
             getServiceProvider().addClass<PendingMotion>();
             if (mode.ends_with("error") || mode == "context-loss" || mode == "stop-upload")
                 getServiceProvider().addService(std::make_unique<FaultFactory>());
@@ -364,12 +432,78 @@ namespace
             auto& world = getServiceProvider().get<scene::ISceneManager>().getDefaultWorld();
             world.setSimulationPause(true);
             stage = "frozen";
+            {
+                auto source = getServiceProvider().get<scene::ISceneFactory>().createSceneObject<scene::BillboardComponent>();
+                auto& component = source->getRootComponent<scene::BillboardComponent>();
+                if (std::abs(component.getScreenPercentageSize() - .1f) > 1e-6 || component.isTextureDirty() || !component.getVisibility())
+                    co_await async::Task<>::makeRejected(NauMakeError("Billboard default contract failed"));
+                component.setScreenPercentageSize(.25f);
+                component.setVisibility(false);
+                component.setTextureRef(TextureAssetRef{"uid:22222222-3333-4444-5555-666666666690"});
+                std::string json;
+                io::InplaceStringWriter<char> writer{json};
+                co_await serialization::jsonWrite(writer, nau::Ptr{component.as<RuntimeValue*>()}, serialization::JsonSettings{});
+                auto target = getServiceProvider().get<scene::ISceneFactory>().createSceneObject<scene::BillboardComponent>();
+                auto parsed = serialization::jsonParseString(json);
+                if (!parsed)
+                    co_await async::Task<>::makeRejected(parsed.getError());
+                auto& restored = target->getRootComponent<scene::BillboardComponent>();
+                co_await RuntimeValue::assign(nau::Ptr{restored.as<RuntimeValue*>()}, *parsed);
+                if (restored.getScreenPercentageSize() != .25f || restored.getVisibility() || toString(restored.getTextureRef()) != toString(component.getTextureRef()))
+                    co_await async::Task<>::makeRejected(NauMakeError("Billboard serialization contract failed"));
+                std::puts("BILLBOARD_COMPONENT_CONTRACT_PASS");
+            }
+            if (mode == "billboard-distance")
+                marker()->setTranslation({3.6f, 2.8f, -12});
+            if (mode == "billboard-swap")
+                marker()->setTextureRef(TextureAssetRef{"uid:22222222-3333-4444-5555-666666666694"});
+            if (mode == "billboard-parent" || mode == "billboard-share" || mode == "billboard-swap" || mode == "replace-texture")
+            {
+                auto parent = getServiceProvider().get<scene::ISceneFactory>().createSceneObject();
+                parent->setTransform(math::Transform{math::Quat::rotationZ(.5f), math::Vector3(1, .5f, -8), math::Vector3(2, 3, 1)});
+                auto child = getServiceProvider().get<scene::ISceneFactory>().createSceneObject<scene::BillboardComponent>();
+                child->setTranslation({.2f, .3f, 0});
+                child->getRootComponent<scene::BillboardComponent>().setTextureRef(marker()->getTextureRef());
+                child->getRootComponent<scene::BillboardComponent>().setScreenPercentageSize(.12f);
+                parent->attachChild(std::move(child));
+                marker()->setVisibility(false);
+                co_await getServiceProvider().get<scene::ISceneManager>().getActiveScenes().front()->getRoot().attachChildAsync(std::move(parent));
+            }
+            if (mode == "billboard-hidden")
+                marker()->setVisibility(false);
+            if (mode == "billboard-remove")
+                marker()->getParentObject().removeComponent(*marker());
+            if (mode == "billboard-behind")
+                marker()->setTranslation({0, 0, 1});
+            if (mode == "billboard-near")
+                marker()->setTranslation({0, 0, -.01f});
+            if (mode == "billboard-far")
+                marker()->setTranslation({0, 0, -200});
+            if (mode == "billboard-depth")
+                marker()->setTranslation({-1, 0, -9});
+            if (mode == "billboard-front")
+                marker()->setTranslation({-1, 0, -4});
+            if (mode == "billboard-edge")
+                marker()->setTranslation({5.2f, 0, -6});
+            if (mode == "billboard-only" || mode == "billboard-distance" || mode == "billboard-fov" || mode == "billboard-facing" || mode == "billboard-parent" || mode == "billboard-share" || mode == "billboard-swap" || mode == "replace-texture")
+                for (auto name : {"BlueCube", "BlueRepeated", "OrangeTetra"})
+                    object(name)->getRootComponent<scene::StaticMeshComponent>().setVisibility(false);
+            if (mode == "billboard-share")
+            {
+                auto added = getServiceProvider().get<scene::ISceneFactory>().createSceneObject<scene::BillboardComponent>();
+                auto& billboard = added->getRootComponent<scene::BillboardComponent>();
+                billboard.setTextureRef(marker()->getTextureRef());
+                billboard.setScreenPercentageSize(.08f);
+                added->setTranslation({-2, 1.4f, -6});
+                co_await getServiceProvider().get<scene::ISceneManager>().getActiveScenes().front()->getRoot().attachChildAsync(std::move(added));
+            }
             if (mode == "visibility")
                 object("BlueRepeated")->getRootComponent<scene::StaticMeshComponent>().setVisibility(false);
             if (mode == "removal")
                 object("OrangeTetra")->destroy();
             if (mode == "empty")
             {
+                marker()->setVisibility(false);
                 for (auto name : {"BlueCube", "BlueRepeated", "OrangeTetra"})
                     object(name)->getRootComponent<scene::StaticMeshComponent>().setVisibility(false);
             }
@@ -386,10 +520,10 @@ namespace
                     mesh.setTransform(math::Transform{math::Quat::identity(), math::Vector3(0, 3, 0)});
                 });
             }
-            if (mode == "camera")
+            if (mode == "camera" || mode == "billboard-fov" || mode == "billboard-facing")
             {
                 m_camera = getServiceProvider().get<scene::ICameraManager>().createDetachedCamera();
-                m_camera->setTransform(math::Transform{math::Quat::identity(), math::Vector3(0, 0, 2)});
+                m_camera->setTransform(math::Transform{mode == "billboard-facing" ? math::Quat::rotationY(.15f) : math::Quat::identity(), math::Vector3(0, 0, mode == "camera" ? 2 : 0)});
                 m_camera->setFov(50);
                 getServiceProvider().get<scene::ICameraManager>().setMainCamera(*m_camera);
             }
@@ -428,7 +562,7 @@ namespace
                 getServiceProvider().get<scene::ISceneManager>().getDefaultWorld().setSimulationPause(true);
                 frozen = true;
             }
-            if (frozen && !m_readyReported)
+            if (frozen && !m_readyReported && records.isMember("frozen"))
             {
                 m_readyReported = true;
                 std::puts("RENDER_PROBE_READY");

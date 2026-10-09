@@ -160,3 +160,15 @@ The portable type-name records support native64 and wasm32 lookup. Legacy native
 records keep their original platform hash fallback; recook old content for web.
 See the [reusable integration guide](../../NauEngineModules/cmake/packaged_project/README.md)
 for generic source locations, declaration fields and compatibility interfaces.
+# Billboards in the shared scene
+
+The rendering scene includes a packaged PNG marker through the engine's
+`BillboardComponent`. Both root launchers use the same component and asset archive.
+Its `screenPercentageSize` is `0.12`, so it occupies 12% of drawable width and
+remains square as the camera moves. The transparent center reveals scene geometry;
+opaque texels participate in depth occlusion.
+
+Host preparation requires Pillow in the Python interpreter selected for USD:
+`<host-python> -m pip install Pillow`. The helper reports a missing dependency
+before compiling host components. See the module repository's
+`cmake/packaged_project/README.md` for the PNG subset and billboard semantics.

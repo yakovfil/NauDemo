@@ -72,6 +72,21 @@ def verify_image(path, empty=False):
     return dict(bluePixels=blue, orangePixels=orange, width=image.width, height=image.height)
 
 
+def verify_billboard_marker(path, size=.12):
+    """Measure the authored marker independently after viewport/DPR changes."""
+    image = Image.open(path).convert("RGB")
+    colors = ((40,220,70),(220,30,200),(240,220,30),(30,200,220))
+    points = [(index % image.width, index // image.width) for index, pixel in enumerate(image.getdata())
+              if any(max(abs(a-b) for a,b in zip(pixel,color)) < 12 for color in colors)]
+    assert len(points) > 100, ("Missing billboard pixels", path, len(points))
+    left, right = min(x for x,y in points), max(x for x,y in points)
+    # Authored colored columns occupy 56/64 of the full square. Top corners
+    # remain visible even where geometry occludes parts of the lower marker.
+    expected = image.width * size * 56 / 64
+    assert abs(right-left+1-expected) < 5, (path, right-left+1, expected)
+    return dict(markerPixels=len(points),coloredWidth=right-left+1,expectedWidth=expected)
+
+
 def verify_projection(path, record, archive):
     """Sample an independent CPU rasterization for framing, depth and lighting."""
     files = unpack(archive)

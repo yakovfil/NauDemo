@@ -59,3 +59,23 @@ def NauComponent "RenderCamera"
     matrix4d xformOp:transform = ((1,0,0,0),(0,1,0,0),(0,0,1,0),(0,0,0,1))
     uniform token[] xformOpOrder = ["xformOp:transform"]
 }
+
+def NauComponent "PortableBillboard"
+{
+    custom string componentTypeName = "nau::scene::BillboardComponent"
+    string uid = "22222222-3333-4444-5555-666666666691"
+    asset texture = @../textures/portable_marker.png.nausd@
+    bool visibility = true
+    float screenPercentageSize = 0.12
+    matrix4d xformOp:transform = ((1,0,0,0),(0,1,0,0),(0,0,1,0),(1.8,1.4,-6,1))
+    uniform token[] xformOpOrder = ["xformOp:transform"]
+}
+
+def NauComponent "AlternateBillboardAsset"
+{
+    custom string componentTypeName = "nau::scene::BillboardComponent"
+    string uid = "22222222-3333-4444-5555-666666666695"
+    asset texture = @../textures/portable_marker_alt.png.nausd@
+    bool visibility = false
+    float screenPercentageSize = 0.12
+}

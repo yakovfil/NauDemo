@@ -11,7 +11,7 @@ import threading
 from playwright.sync_api import sync_playwright
 from verify_web_startup import Handler
 from rendering_cases import CONTENT_FAILURES, mutate
-from rendering_evidence import verify_records, verify_image, verify_projection
+from rendering_evidence import verify_records, verify_image, verify_projection, verify_billboard_marker
 
 
 def verify(configuration):
@@ -84,6 +84,7 @@ def verify(configuration):
                                     image = output / f"resize-{width}-{height}.png"
                                     page.locator("#canvas").screenshot(path=str(image))
                                     verify_image(image)
+                                    verify_billboard_marker(image)
                                 page.evaluate("document.getElementById('canvas').style.width='0px';document.getElementById('canvas').style.height='0px'")
                                 page.wait_for_function("document.getElementById('canvas').clientWidth === 0 && document.getElementById('canvas').clientHeight === 0")
                                 page.wait_for_timeout(100)
@@ -98,6 +99,7 @@ def verify(configuration):
                                 image = output / "zero-size-recovered.png"
                                 page.locator("#canvas").screenshot(path=str(image))
                                 verify_image(image)
+                                verify_billboard_marker(image)
                             page.evaluate("Module.nauRuntime.stop();Module.nauRuntime.stop()")
                         page.wait_for_function("Module.nauRuntime?.status?.cleanupComplete", timeout=30000)
                         status = page.evaluate("Module.nauRuntime.status")
