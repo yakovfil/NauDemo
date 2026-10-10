@@ -6,7 +6,8 @@
         "CoreAssets",
         "CoreScene",
         "CoreSceneFormats",
-        "SceneRenderer"
+        "SceneRenderer",
+        "CoreInput"
     ],
     "projectModule": "MainGameModule",
     "startupConfiguration": "/config/render_scene.json",

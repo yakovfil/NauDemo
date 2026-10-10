@@ -21,6 +21,11 @@ Both default to Debug. Close the native window to stop Windows; use Ctrl+C to
 stop the browser server. Web activates Emscripten from `EMSDK` or
 `%USERPROFILE%/emsdk`.
 
+Move the scene camera with WASD, use Q/E to move down/up, and hold the left mouse
+button while dragging to look around. Click the browser scene to focus its
+controls. Releasing the button ends camera rotation; changing focus clears held
+controls. Windows and web use the same camera controller and sensitivity.
+
 For build-only checks, with native host SDK/tools and OpenUSD provisioned:
 
 ```powershell

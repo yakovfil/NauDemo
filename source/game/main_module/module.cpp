@@ -1,12 +1,12 @@
 // Copyright 2024 N-GINN LLC. All rights reserved.
 // Use of this source code is governed by a BSD-3 Clause license that can be found in the LICENSE file.
 
-
 #include "nau/module/module.h"
 
+#include "free_camera.h"
+#include "mover.h"
 #include "myapi_impl.h"
 #include "rotator.h"
-#include "mover.h"
 
 class MainGameModule final : public nau::DefaultModuleImpl
 {
@@ -20,8 +20,10 @@ class MainGameModule final : public nau::DefaultModuleImpl
         NAU_MODULE_EXPORT_SERVICE(MyApiImpl);
         nau::getServiceProvider().addClass<MyRotator>();
         nau::getServiceProvider().addClass<MyMover>();
+#ifdef NAU_DEMO_PORTABLE_INPUT
+        nau::getServiceProvider().addClass<DemoFreeCamera>();
+#endif
     }
 };
-
 
 IMPLEMENT_MODULE(MainGameModule)

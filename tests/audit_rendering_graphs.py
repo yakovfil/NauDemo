@@ -19,8 +19,15 @@ for profile in ("basic-rendering-scene", "non-rendering-scene"):
             index = json.loads(max(reply.glob("index-*.json"), key=lambda path: path.stat().st_mtime).read_text())
             model = json.loads((reply / index["reply"]["codemodel-v2"]["jsonFile"]).read_text())
             targets = {target["name"] for config in model["configurations"] for target in config["targets"]}
-            excluded = {"Graphics", "Physics", "Audio", "Animation", "VFX", "CoreInput", "Qt6::Core", "usd"}
+            policy = json.loads((project / ("portable_rendering_project.json" if profile == "basic-rendering-scene" else "portable_project.json")).read_text())
+            requested_input = "CoreInput" in policy["modules"]
+            excluded = {"Graphics", "Physics", "Audio", "Animation", "VFX", "Qt6::Core", "usd"}
+            if not requested_input:
+                excluded.add("CoreInput")
             assert not targets & excluded, targets & excluded
+            assert ("CoreInput" in targets) == requested_input
+            if platform == "web":
+                assert not targets & {"gainput", "gainputstatic"}
             if platform == "web" or profile == "non-rendering-scene":
                 assert "Render" not in targets
             if profile == "non-rendering-scene":

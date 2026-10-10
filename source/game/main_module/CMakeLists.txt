@@ -14,6 +14,10 @@ target_precompile_headers(${TargetName} PRIVATE pch.h)
 
 if(NAU_BROWSER_PROJECT_PROFILE)
   target_link_libraries(${TargetName} PUBLIC NauFrameworkScene CoreScene)
+  if("CoreInput" IN_LIST NAU_PACKAGED_PROJECT_MODULES)
+    target_link_libraries(${TargetName} PRIVATE CoreInput)
+    target_compile_definitions(${TargetName} PRIVATE NAU_DEMO_PORTABLE_INPUT)
+  endif()
 else()
 target_link_libraries(${TargetName} PUBLIC 
     NauFramework 
