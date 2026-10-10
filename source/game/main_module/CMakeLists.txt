@@ -18,6 +18,13 @@ if(NAU_BROWSER_PROJECT_PROFILE)
     target_link_libraries(${TargetName} PRIVATE CoreInput)
     target_compile_definitions(${TargetName} PRIVATE NAU_DEMO_PORTABLE_INPUT)
   endif()
+  if("Audio" IN_LIST NAU_PACKAGED_PROJECT_MODULES)
+    target_link_libraries(${TargetName} PRIVATE Audio CoreSceneFormats)
+    target_include_directories(${TargetName} PRIVATE "${CMAKE_BINARY_DIR}/generated")
+    if("CoreInput" IN_LIST NAU_PACKAGED_PROJECT_MODULES)
+      target_compile_definitions(${TargetName} PRIVATE NAU_DEMO_PORTABLE_AUDIO)
+    endif()
+  endif()
 else()
 target_link_libraries(${TargetName} PUBLIC 
     NauFramework 

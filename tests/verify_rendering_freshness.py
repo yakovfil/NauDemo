@@ -42,6 +42,21 @@ def verify(args):
             results.append(dict(case=name, exitCode=completed.returncode, authoredUnchanged=True))
             return (destination / "content.nau_pack").read_bytes()
         initial = prepare("initial")
+        sound = source / "content/audio/click.wav"
+        sound_bytes = sound.read_bytes()
+        assert unpack(initial)["audio/click.wav"] == sound_bytes
+        assert prepare("audio-repeat") == initial
+        changed_sound = bytearray(sound_bytes)
+        changed_sound[50] ^= 1
+        sound.write_bytes(changed_sound)
+        changed_archive = prepare("audio-changed")
+        assert changed_archive != initial and unpack(changed_archive)["audio/click.wav"] == changed_sound
+        sound.write_bytes(sound_bytes[:30])
+        assert prepare("audio-corrupt", False) == changed_archive
+        sound.unlink()
+        assert prepare("audio-missing", False) == changed_archive
+        sound.write_bytes(sound_bytes)
+        assert prepare("audio-restored") == initial
         material = source / "content/materials/portable_blue.json"
         value = json.loads(material.read_text())
         value["baseColor"][0] = .1

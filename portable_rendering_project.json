@@ -7,7 +7,8 @@
         "CoreScene",
         "CoreSceneFormats",
         "SceneRenderer",
-        "CoreInput"
+        "CoreInput",
+        "Audio"
     ],
     "projectModule": "MainGameModule",
     "startupConfiguration": "/config/render_scene.json",
@@ -19,6 +20,7 @@
         "MyRotator",
         "nau::scene::BillboardComponent"
     ],
+    "audio": { "click": "audio/click.wav" },
     "rendering": {
         "materials": {
             "22222222-3333-4444-5555-666666666661": "materials/portable_blue.json",

@@ -4,6 +4,7 @@
 #include "nau/module/module.h"
 
 #include "free_camera.h"
+#include "click_feedback.h"
 #include "mover.h"
 #include "myapi_impl.h"
 #include "rotator.h"
@@ -22,6 +23,9 @@ class MainGameModule final : public nau::DefaultModuleImpl
         nau::getServiceProvider().addClass<MyMover>();
 #ifdef NAU_DEMO_PORTABLE_INPUT
         nau::getServiceProvider().addClass<DemoFreeCamera>();
+#endif
+#ifdef NAU_DEMO_PORTABLE_AUDIO
+        nau::getServiceProvider().addClass<DemoClickFeedback>();
 #endif
     }
 };

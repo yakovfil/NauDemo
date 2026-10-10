@@ -13,6 +13,9 @@
 #include "nau/scene/scene_manager.h"
 #include "nau/service/service_provider.h"
 #include "nau_project_policy.h"
+#ifdef NAU_DEMO_AUDIO_PROBE
+    #include "nau/audio/portable_audio.h"
+#endif
 #ifdef __EMSCRIPTEN__
     #include <emscripten.h>
 
@@ -32,6 +35,19 @@ namespace
             auto camera = getServiceProvider().get<scene::ICameraManager>().getCameras().getWorldMainCamera();
             Json::Value record;
             record["frame"] = ++m_frames;
+#ifdef NAU_DEMO_AUDIO_PROBE
+            auto& audio = getServiceProvider().get<audio::IPortableAudio>();
+            const auto stats = audio.statistics();
+            record["audio"]["state"] = int(audio.outputState());
+            record["audio"]["requests"] = Json::UInt64(stats.requests);
+            record["audio"]["started"] = Json::UInt64(stats.started);
+            record["audio"]["stolen"] = Json::UInt64(stats.stolen);
+            record["audio"]["dropped"] = Json::UInt64(stats.dropped);
+            record["audio"]["nonzeroFrames"] = Json::UInt64(stats.nonzeroFrames);
+            record["audio"]["peak"] = stats.peak;
+            record["audio"]["active"] = stats.active;
+            record["audio"]["pending"] = stats.pending;
+#endif
             record["camera"] = frame.camera;
             record["valid"] = camera && frame.camera == toString(camera->getCameraUid()) && getApplication().isMainThread();
             record["valid"] = record["valid"].asBool() &&

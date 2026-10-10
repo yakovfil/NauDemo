@@ -26,6 +26,18 @@ button while dragging to look around. Click the browser scene to focus its
 controls. Releasing the button ends camera rotation; changing focus clears held
 controls. Windows and web use the same camera controller and sensitivity.
 
+The demo plays a short click for each press of the left, middle or right mouse
+button or W/A/S/D/Q/E. Holding a control or dragging plays one click for its
+initial press. The sound comes from the shared scene archive. Browser output
+activates on your first eligible interaction with the focused demo; that press
+also plays its click. Focus loss discards pending feedback.
+
+Build with `-Acceptance`, then run `python tests/verify_audio.py Windows Debug`
+and `python tests/verify_audio.py Web Debug` (also run Release). Native output
+capture requires `soundcard` and `numpy`; browser checks use Playwright and
+Chrome. Output evidence is written under
+`build/basic-rendering-scene/audio-<platform>-<configuration>/`.
+
 For build-only checks, with native host SDK/tools and OpenUSD provisioned:
 
 ```powershell

@@ -21,11 +21,15 @@ for profile in ("basic-rendering-scene", "non-rendering-scene"):
             targets = {target["name"] for config in model["configurations"] for target in config["targets"]}
             policy = json.loads((project / ("portable_rendering_project.json" if profile == "basic-rendering-scene" else "portable_project.json")).read_text())
             requested_input = "CoreInput" in policy["modules"]
-            excluded = {"Graphics", "Physics", "Audio", "Animation", "VFX", "Qt6::Core", "usd"}
+            requested_audio = "Audio" in policy["modules"]
+            excluded = {"Graphics", "Physics", "Animation", "VFX", "Qt6::Core", "usd"}
+            if not requested_audio:
+                excluded.update({"Audio", "miniaudio"})
             if not requested_input:
                 excluded.add("CoreInput")
             assert not targets & excluded, targets & excluded
             assert ("CoreInput" in targets) == requested_input
+            assert ("Audio" in targets) == requested_audio
             if platform == "web":
                 assert not targets & {"gainput", "gainputstatic"}
             if platform == "web" or profile == "non-rendering-scene":
