@@ -28,7 +28,7 @@ def verify(args):
         source.mkdir()
         for directory in ("content", "config"):
             shutil.copytree(project / directory, source / directory)
-        shutil.copy2(project / "portable_rendering_project.json", source)
+        shutil.copy2(project / "portable_original_project.json", source / "portable_rendering_project.json")
         declaration = source / "portable_rendering_project.json"
         destination = source / "build/prepared"
         command = [str(python), str(tool), "--project", str(source), "--output", str(destination), "--asset-tool", str(tools / "AssetToolCmd.exe"), "--pack-tool", str(tools / "AssetPackToolCmd.exe"), "--module", str(pathlib.Path(args.module).resolve()), "--declaration", str(declaration)]

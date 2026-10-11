@@ -1,0 +1,50 @@
+{
+    "version": 1,
+    "profile": "basic-rendering-scene",
+    "modules": [
+        "PlatformApp",
+        "CoreAssets",
+        "CoreScene",
+        "CoreSceneFormats",
+        "SceneRenderer",
+        "CoreInput",
+        "Audio"
+    ],
+    "projectModule": "MainGameModule",
+    "startupConfiguration": "/config/render_scene.json",
+    "supportedComponents": [
+        "nau::scene::SceneComponent",
+        "nau::scene::CameraComponent",
+        "nau::scene::StaticMeshComponent",
+        "MyMover",
+        "MyRotator",
+        "nau::scene::BillboardComponent"
+    ],
+    "audio": {
+        "click": "audio/click.wav"
+    },
+    "rendering": {
+        "materials": {
+            "22222222-3333-4444-5555-666666666661": "materials/portable_blue.json",
+            "22222222-3333-4444-5555-666666666662": "materials/portable_orange.json"
+        },
+        "defaultMaterial": "materials/portable_blue.json",
+        "lighting": {
+            "direction": [
+                0,
+                0,
+                1
+            ],
+            "ambient": [
+                0.2,
+                0.2,
+                0.2
+            ],
+            "directional": [
+                0.7,
+                0.7,
+                0.7
+            ]
+        }
+    }
+}

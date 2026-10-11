@@ -13,6 +13,11 @@ nau_add_module(${TargetName}
 target_precompile_headers(${TargetName} PRIVATE pch.h)
 
 if(NAU_BROWSER_PROJECT_PROFILE)
+  target_include_directories(${TargetName} PRIVATE "${CMAKE_BINARY_DIR}/generated")
+  if(TARGET SceneRenderer AND TARGET Audio AND TARGET CoreInput)
+    target_link_libraries(${TargetName} PRIVATE SceneRenderer)
+    target_compile_definitions(${TargetName} PRIVATE NAU_DEMO_PORTABLE_VECTORS)
+  endif()
   target_link_libraries(${TargetName} PUBLIC NauFrameworkScene CoreScene)
   if("CoreInput" IN_LIST NAU_PACKAGED_PROJECT_MODULES)
     target_link_libraries(${TargetName} PRIVATE CoreInput)

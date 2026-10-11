@@ -1,0 +1,19 @@
+#nausd_scene 1.0
+def NauComponent "BattlezoneCamera"
+{
+    custom string componentTypeName = "nau::scene::CameraComponent"
+    string uid = "b2000000-3333-4444-5555-666666666601"
+    string cameraName = "Battlezone camera"
+    float FieldOfView = 60
+    float ClipNearPlane = 0.1
+    float ClipFarPlane = 250
+    matrix4d xformOp:transform = ((1,0,0,0),(0,1,0,0),(0,0,1,0),(0,2.4,0,1))
+    uniform token[] xformOpOrder = ["xformOp:transform"]
+}
+def NauComponent "BattlezoneGame"
+{
+    custom string componentTypeName = "DemoBattlezone"
+    string uid = "b2000000-3333-4444-5555-666666666602"
+    string gameContent = "/content/game/battlezone.json"
+    asset gameData = @../game/battlezone.json@
+}

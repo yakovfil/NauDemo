@@ -1,0 +1,6 @@
+#nausd 1.0
+def NauAssetScene "Root"
+{
+    asset path = @battlezone.nausd_scene@
+    string uid = "b2000000-3333-4444-5555-666666666603"
+}

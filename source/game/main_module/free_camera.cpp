@@ -8,9 +8,11 @@
     #include "nau/scene/components/camera_component.h"
     #include "nau/scene/internal/scene_manager_internal.h"
     #include "nau/service/service_provider.h"
+    #include "nau_project_policy.h"
 
 void DemoFreeCamera::gamePreUpdate(std::chrono::milliseconds dt)
 {
+    if (std::string_view(nau::project::StartupConfiguration) == "/config/battlezone_scene.json") return;
     using namespace nau;
     using namespace nau::input;
     const auto held = [](Key key)

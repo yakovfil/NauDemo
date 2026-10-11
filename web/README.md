@@ -2,8 +2,9 @@
 
 NauDemo provides a portable scene application on Windows and web.
 `run_windows.bat` and `run_web.bat` select `portable_rendering_project.json`
-and display the cube/tetrahedron scene. Both default to Debug and accept Release
-as their first argument.
+and display the Battlezone-style wireframe game. Both default to Debug and accept
+Release as their first argument. A second argument, `original`, selects the
+existing cube/tetrahedron/billboard scene and its free-camera/click controls.
 
 The existing rendered Windows SDK build remains separately available through
 its existing presets/CMake route. Direct `build.ps1` calls without `-Declaration`
@@ -15,8 +16,10 @@ passive data; its window intentionally has no rendered scene.
 
 ### Scene rendering
 
-Select `portable_rendering_project.json` to display the separate editor-authored
-cube/tetrahedron fixture through the same portable entry on both platforms:
+Select `portable_rendering_project.json` to play the default retro game through
+the same portable entry on both platforms. W/S drive, A/D turn, Space or a new
+left-click fires, and R restarts after game over. Focus loss pauses gameplay.
+Use `portable_original_project.json` for the original rendering fixture:
 
 ```powershell
 ./build.ps1 -Platform Windows -Configuration Debug -Declaration ./portable_rendering_project.json -Run
@@ -39,14 +42,17 @@ This profile supports static indexed triangles, explicit opaque linear RGB
 materials, ambient/directional lighting and one selected engine camera. Positive
 non-uniform scale, nested/component transforms and live visibility/membership
 changes are supported. Unsupported geometry/material data fails validation.
-Textures, skinning, animation playback, transparency, scene lights and runtime
-mesh/material replacement are outside this profile. Its main scene and default
+PNG billboard cutouts and bounded world/screen vector lines are also supported.
+Skinning, animation playback, alpha blending, scene lights and runtime
+mesh/material replacement are outside this profile. Its rendered scene and default
 non-rendering declaration remain separate. See the shared packaged-project guide
 for the rendering declaration and content contract.
 
 Rendering acceptance helpers are in `tests/verify_production_rendering.py`,
 `verify_native_rendering.py` and `verify_web_rendering.py`. Run them from the
-checkout root after an `-Acceptance` build. They require Python with Pillow and
+checkout root after an `-Acceptance` build selecting `portable_original_project.json`.
+The default game uses `verify_battlezone.py` as documented in the root README.
+These helpers require Python with Pillow and
 Playwright, installed Chrome, and the Orca CLI for owned native-window captures.
 For example, use `python NauDemo/tests/verify_native_rendering.py
 Debug`; repeat with `Release` and use `verify_web_rendering.py` for Chrome.

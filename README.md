@@ -16,12 +16,30 @@ run_web.bat Release
 ```
 
 The launchers build the `basic-rendering-scene` declaration in
-`portable_rendering_project.json` and show the animated cube/tetrahedron scene.
+`portable_rendering_project.json` and open a playable Battlezone-style scene:
+green wireframe tanks and obstacles, a mountain/volcano/moon horizon, radar,
+crosshair, score and lives on black. This reproduces the retro appearance with
+simple combat rather than the original arcade simulation.
 Both default to Debug. Close the native window to stop Windows; use Ctrl+C to
 stop the browser server. Web activates Emscripten from `EMSDK` or
 `%USERPROFILE%/emsdk`.
 
-Move the scene camera with WASD, use Q/E to move down/up, and hold the left mouse
+Use W/S to drive, A/D to turn, and Space or left-click to fire. Each new press
+fires once when the cooldown permits. Destroy enemy tanks for 1000 points;
+obstacles block movement and shots. You have three lives, with R to restart
+after game over. Focus the browser scene to play. Gameplay pauses when focus
+is lost, and firing/explosion effects activate through your first trusted
+interaction. Both targets use the same packaged scene and shared game code.
+
+The original animated mesh/billboard scene remains available:
+
+```bat
+run_windows.bat Debug original
+run_web.bat Release original
+```
+
+Its declaration is `portable_original_project.json`. In that scene, move the
+camera with WASD, use Q/E to move down/up, and hold the left mouse
 button while dragging to look around. Click the browser scene to focus its
 controls. Releasing the button ends camera rotation; changing focus clears held
 controls. Windows and web use the same camera controller and sensitivity.
@@ -32,7 +50,7 @@ initial press. The sound comes from the shared scene archive. Browser output
 activates on your first eligible interaction with the focused demo; that press
 also plays its click. Focus loss discards pending feedback.
 
-Build with `-Acceptance`, then run `python tests/verify_audio.py Windows Debug`
+Build the original declaration with `-Acceptance`, then run `python tests/verify_audio.py Windows Debug`
 and `python tests/verify_audio.py Web Debug` (also run Release). Native output
 capture requires `soundcard` and `numpy`; browser checks use Playwright and
 Chrome. Output evidence is written under
@@ -59,6 +77,25 @@ non-rendering profile. The legacy SDK application remains available through
 platforms; `source/portable_main.cpp` is its common entry point.
 
 ## Validate relocated deliveries
+
+Build the default declaration, enable the observer and stage its package:
+
+```powershell
+./build.ps1 -Platform Windows -Configuration Debug -Declaration ./portable_rendering_project.json -Acceptance
+cmake --build build/basic-rendering-scene/windows-debug --config Debug --target NauBattlezoneProbePackage
+python ./tests/verify_battlezone.py --platform Windows --configuration Debug
+```
+
+For web, build with `./web/build.ps1` and stage `NauBattlezoneProbeWebPackage`.
+Run the same verifier with `--platform Web`; repeat both targets in Release.
+Evidence lives in `build/basic-rendering-scene/battlezone-<platform>-<configuration>/`.
+The verifier separates production screenshots from scene-state observations
+and checks combat, focus pause, restart, vector failures and actual audio output.
+Its native screenshot checks require Orca; Python dependencies are Playwright,
+Pillow, soundcard and NumPy. Visual references: [Battlezone](https://6502disassembly.com/va-battlezone/).
+
+Build the explicitly selected original declaration before running the existing
+rendering, billboard, free-camera and click-feedback suites:
 
 ```powershell
 python ./tests/verify_production_rendering.py Windows Debug

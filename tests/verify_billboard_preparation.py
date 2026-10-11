@@ -30,7 +30,7 @@ def verify():
         assert candidate.resolve().is_relative_to(root)
         candidate.mkdir()
         for name in ("content","config"): shutil.copytree(project/name,candidate/name)
-        for name in ("portable_rendering_project.json","portable_project.json"): shutil.copy2(project/name,candidate/name)
+        for name in ("portable_original_project.json","portable_project.json"): shutil.copy2(project/name,candidate/("portable_rendering_project.json" if name=="portable_original_project.json" else name))
         prepared=candidate/"build/prepared"
         command=[str(python),str(checkout/"NauEngineModules/tools/asset_tools/prepare_packaged_project.py"),"--project",str(candidate),"--output",str(prepared),"--asset-tool",str(tools/"AssetToolCmd.exe"),"--pack-tool",str(tools/"AssetPackToolCmd.exe"),"--module",str(project/"build/portable-host-components/bin/Release/MainGameModule.dll"),"--declaration",str(candidate/"portable_rendering_project.json")]
         def run(name,arguments=command,expected=True,env=environment):

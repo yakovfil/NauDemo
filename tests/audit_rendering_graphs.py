@@ -19,7 +19,7 @@ for profile in ("basic-rendering-scene", "non-rendering-scene"):
             index = json.loads(max(reply.glob("index-*.json"), key=lambda path: path.stat().st_mtime).read_text())
             model = json.loads((reply / index["reply"]["codemodel-v2"]["jsonFile"]).read_text())
             targets = {target["name"] for config in model["configurations"] for target in config["targets"]}
-            policy = json.loads((project / ("portable_rendering_project.json" if profile == "basic-rendering-scene" else "portable_project.json")).read_text())
+            policy = json.loads((project / ("portable_original_project.json" if profile == "basic-rendering-scene" else "portable_project.json")).read_text())
             requested_input = "CoreInput" in policy["modules"]
             requested_audio = "Audio" in policy["modules"]
             excluded = {"Graphics", "Physics", "Animation", "VFX", "Qt6::Core", "usd"}

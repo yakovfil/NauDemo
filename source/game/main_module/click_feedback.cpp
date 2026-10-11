@@ -9,6 +9,8 @@
 
 nau::async::Task<> DemoClickFeedback::preparePackagedScene()
 {
+    if (std::string_view(nau::project::StartupConfiguration) == "/config/battlezone_scene.json")
+        return nau::async::Task<>::makeResolved();
     auto clip = nau::getServiceProvider().get<nau::audio::IPortableAudio>().loadClip(nau::project::ClickSound);
     if (!clip)
         return nau::async::Task<>::makeRejected(clip.getError());
