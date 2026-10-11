@@ -1,0 +1,23 @@
+# Battlezone (1980), Atari; extracted from rev-2 disassembly
+# Source: https://6502disassembly.com/va-battlezone/Battlezone.html
+# Right-handed: +X right, +Y up, -Z forward; original units
+# ROM object 0x19; vertex 0x3c0a; draw 0x75e6
+o 19_missile_chunk_4
+v 36 -184 150
+v 84 -184 116
+v 136 -236 116
+v 136 -284 150
+v -84 -204 48
+v -6 -192 -20
+v 130 -324 -20
+v 116 -404 48
+l 2 3
+l 3 4
+l 4 8
+l 8 7
+l 7 6
+l 6 5
+l 5 1
+l 1 2
+l 2 6
+l 7 3

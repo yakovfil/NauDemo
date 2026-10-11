@@ -1,0 +1,284 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="480" viewBox="0 0 800 480">
+<rect width="800" height="480" fill="black"/>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(20,14) scale(2)">
+</g>
+<text x="10" y="82" fill="#aaaaaa" font-size="12">00 space</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(100,14) scale(2)">
+<path d="M 0 24 L 0 0"/>
+<path d="M 0 0 L 16 0"/>
+<path d="M 16 0 L 16 24"/>
+<path d="M 16 24 L 0 24"/>
+</g>
+<text x="90" y="82" fill="#aaaaaa" font-size="12">01 0</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(180,14) scale(2)">
+<path d="M 8 0 L 8 24"/>
+</g>
+<text x="170" y="82" fill="#aaaaaa" font-size="12">02 1</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(260,14) scale(2)">
+<path d="M 0 0 L 16 0"/>
+<path d="M 16 0 L 16 12"/>
+<path d="M 16 12 L 0 12"/>
+<path d="M 0 12 L 0 24"/>
+<path d="M 0 24 L 16 24"/>
+</g>
+<text x="250" y="82" fill="#aaaaaa" font-size="12">03 2</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(340,14) scale(2)">
+<path d="M 0 0 L 16 0"/>
+<path d="M 16 0 L 16 24"/>
+<path d="M 16 24 L 0 24"/>
+<path d="M 0 12 L 16 12"/>
+</g>
+<text x="330" y="82" fill="#aaaaaa" font-size="12">04 3</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(420,14) scale(2)">
+<path d="M 0 0 L 0 12"/>
+<path d="M 0 12 L 16 12"/>
+<path d="M 16 0 L 16 24"/>
+</g>
+<text x="410" y="82" fill="#aaaaaa" font-size="12">05 4</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(500,14) scale(2)">
+<path d="M 0 24 L 16 24"/>
+<path d="M 16 24 L 16 12"/>
+<path d="M 16 12 L 0 12"/>
+<path d="M 0 12 L 0 0"/>
+<path d="M 0 0 L 16 0"/>
+</g>
+<text x="490" y="82" fill="#aaaaaa" font-size="12">06 5</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(580,14) scale(2)">
+<path d="M 0 12 L 16 12"/>
+<path d="M 16 12 L 16 24"/>
+<path d="M 16 24 L 0 24"/>
+<path d="M 0 24 L 0 0"/>
+</g>
+<text x="570" y="82" fill="#aaaaaa" font-size="12">07 6</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(660,14) scale(2)">
+<path d="M 0 0 L 16 0"/>
+<path d="M 16 0 L 16 24"/>
+</g>
+<text x="650" y="82" fill="#aaaaaa" font-size="12">08 7</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(740,14) scale(2)">
+<path d="M 0 24 L 0 0"/>
+<path d="M 0 0 L 16 0"/>
+<path d="M 16 0 L 16 24"/>
+<path d="M 16 24 L 0 24"/>
+<path d="M 0 12 L 16 12"/>
+</g>
+<text x="730" y="82" fill="#aaaaaa" font-size="12">09 8</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(20,110) scale(2)">
+<path d="M 16 12 L 0 12"/>
+<path d="M 0 12 L 0 0"/>
+<path d="M 0 0 L 16 0"/>
+<path d="M 16 0 L 16 24"/>
+</g>
+<text x="10" y="178" fill="#aaaaaa" font-size="12">0a 9</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(100,110) scale(2)">
+<path d="M 0 24 L 0 8"/>
+<path d="M 0 8 L 8 0"/>
+<path d="M 8 0 L 16 8"/>
+<path d="M 16 8 L 16 24"/>
+<path d="M 0 16 L 16 16"/>
+</g>
+<text x="90" y="178" fill="#aaaaaa" font-size="12">0b A</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(180,110) scale(2)">
+<path d="M 0 24 L 0 0"/>
+<path d="M 0 0 L 12 0"/>
+<path d="M 12 0 L 16 4"/>
+<path d="M 16 4 L 16 8"/>
+<path d="M 16 8 L 12 12"/>
+<path d="M 12 12 L 0 12"/>
+<path d="M 12 12 L 16 16"/>
+<path d="M 16 16 L 16 20"/>
+<path d="M 16 20 L 12 24"/>
+<path d="M 12 24 L 0 24"/>
+</g>
+<text x="170" y="178" fill="#aaaaaa" font-size="12">0c B</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(260,110) scale(2)">
+<path d="M 0 24 L 0 0"/>
+<path d="M 0 0 L 16 0"/>
+<path d="M 0 24 L 16 24"/>
+</g>
+<text x="250" y="178" fill="#aaaaaa" font-size="12">0d C</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(340,110) scale(2)">
+<path d="M 0 24 L 0 0"/>
+<path d="M 0 0 L 8 0"/>
+<path d="M 8 0 L 16 8"/>
+<path d="M 16 8 L 16 16"/>
+<path d="M 16 16 L 8 24"/>
+<path d="M 8 24 L 0 24"/>
+</g>
+<text x="330" y="178" fill="#aaaaaa" font-size="12">0e D</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(420,110) scale(2)">
+<path d="M 0 24 L 16 24"/>
+<path d="M 0 24 L 0 0"/>
+<path d="M 0 0 L 16 0"/>
+<path d="M 12 12 L 0 12"/>
+</g>
+<text x="410" y="178" fill="#aaaaaa" font-size="12">0f E</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(500,110) scale(2)">
+<path d="M 0 24 L 0 0"/>
+<path d="M 0 0 L 16 0"/>
+<path d="M 12 12 L 0 12"/>
+</g>
+<text x="490" y="178" fill="#aaaaaa" font-size="12">10 F</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(580,110) scale(2)">
+<path d="M 0 24 L 0 0"/>
+<path d="M 0 0 L 16 0"/>
+<path d="M 16 0 L 16 8"/>
+<path d="M 8 16 L 16 16"/>
+<path d="M 16 16 L 16 24"/>
+<path d="M 16 24 L 0 24"/>
+</g>
+<text x="570" y="178" fill="#aaaaaa" font-size="12">11 G</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(660,110) scale(2)">
+<path d="M 0 24 L 0 0"/>
+<path d="M 0 12 L 16 12"/>
+<path d="M 16 0 L 16 24"/>
+</g>
+<text x="650" y="178" fill="#aaaaaa" font-size="12">12 H</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(740,110) scale(2)">
+<path d="M 0 24 L 16 24"/>
+<path d="M 0 0 L 16 0"/>
+<path d="M 8 0 L 8 24"/>
+</g>
+<text x="730" y="178" fill="#aaaaaa" font-size="12">13 I</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(20,206) scale(2)">
+<path d="M 0 16 L 8 24"/>
+<path d="M 8 24 L 16 24"/>
+<path d="M 16 24 L 16 0"/>
+</g>
+<text x="10" y="274" fill="#aaaaaa" font-size="12">14 J</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(100,206) scale(2)">
+<path d="M 0 24 L 0 0"/>
+<path d="M 12 0 L 0 12"/>
+<path d="M 0 12 L 12 24"/>
+</g>
+<text x="90" y="274" fill="#aaaaaa" font-size="12">15 K</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(180,206) scale(2)">
+<path d="M 0 0 L 0 24"/>
+<path d="M 0 24 L 16 24"/>
+</g>
+<text x="170" y="274" fill="#aaaaaa" font-size="12">16 L</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(260,206) scale(2)">
+<path d="M 0 24 L 0 0"/>
+<path d="M 0 0 L 8 8"/>
+<path d="M 8 8 L 16 0"/>
+<path d="M 16 0 L 16 24"/>
+</g>
+<text x="250" y="274" fill="#aaaaaa" font-size="12">17 M</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(340,206) scale(2)">
+<path d="M 0 24 L 0 0"/>
+<path d="M 0 0 L 16 24"/>
+<path d="M 16 24 L 16 0"/>
+</g>
+<text x="330" y="274" fill="#aaaaaa" font-size="12">18 N</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(420,206) scale(2)">
+<path d="M 0 24 L 0 0"/>
+<path d="M 0 0 L 16 0"/>
+<path d="M 16 0 L 16 24"/>
+<path d="M 16 24 L 0 24"/>
+</g>
+<text x="410" y="274" fill="#aaaaaa" font-size="12">19 O</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(500,206) scale(2)">
+<path d="M 0 24 L 0 0"/>
+<path d="M 0 0 L 16 0"/>
+<path d="M 16 0 L 16 12"/>
+<path d="M 16 12 L 0 12"/>
+</g>
+<text x="490" y="274" fill="#aaaaaa" font-size="12">1a P</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(580,206) scale(2)">
+<path d="M 0 24 L 0 0"/>
+<path d="M 0 0 L 16 0"/>
+<path d="M 16 0 L 16 16"/>
+<path d="M 16 16 L 8 24"/>
+<path d="M 8 24 L 0 24"/>
+<path d="M 8 16 L 16 24"/>
+</g>
+<text x="570" y="274" fill="#aaaaaa" font-size="12">1b Q</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(660,206) scale(2)">
+<path d="M 0 24 L 0 0"/>
+<path d="M 0 0 L 16 0"/>
+<path d="M 16 0 L 16 12"/>
+<path d="M 16 12 L 0 12"/>
+<path d="M 4 12 L 16 24"/>
+</g>
+<text x="650" y="274" fill="#aaaaaa" font-size="12">1c R</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(740,206) scale(2)">
+<path d="M 0 24 L 16 24"/>
+<path d="M 16 24 L 16 12"/>
+<path d="M 16 12 L 0 12"/>
+<path d="M 0 12 L 0 0"/>
+<path d="M 0 0 L 16 0"/>
+</g>
+<text x="730" y="274" fill="#aaaaaa" font-size="12">1d S</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(20,302) scale(2)">
+<path d="M 0 0 L 16 0"/>
+<path d="M 8 0 L 8 24"/>
+</g>
+<text x="10" y="370" fill="#aaaaaa" font-size="12">1e T</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(100,302) scale(2)">
+<path d="M 0 0 L 0 24"/>
+<path d="M 0 24 L 16 24"/>
+<path d="M 16 24 L 16 0"/>
+</g>
+<text x="90" y="370" fill="#aaaaaa" font-size="12">1f U</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(180,302) scale(2)">
+<path d="M 0 0 L 8 24"/>
+<path d="M 8 24 L 16 0"/>
+</g>
+<text x="170" y="370" fill="#aaaaaa" font-size="12">20 V</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(260,302) scale(2)">
+<path d="M 0 0 L 0 24"/>
+<path d="M 0 24 L 8 16"/>
+<path d="M 8 16 L 16 24"/>
+<path d="M 16 24 L 16 0"/>
+</g>
+<text x="250" y="370" fill="#aaaaaa" font-size="12">21 W</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(340,302) scale(2)">
+<path d="M 0 24 L 16 0"/>
+<path d="M 0 0 L 16 24"/>
+</g>
+<text x="330" y="370" fill="#aaaaaa" font-size="12">22 X</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(420,302) scale(2)">
+<path d="M 8 24 L 8 8"/>
+<path d="M 8 8 L 0 0"/>
+<path d="M 16 0 L 8 8"/>
+</g>
+<text x="410" y="370" fill="#aaaaaa" font-size="12">23 Y</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(500,302) scale(2)">
+<path d="M 0 0 L 16 0"/>
+<path d="M 16 0 L 0 24"/>
+<path d="M 0 24 L 16 24"/>
+</g>
+<text x="490" y="370" fill="#aaaaaa" font-size="12">24 Z</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(580,302) scale(2)">
+</g>
+<text x="570" y="370" fill="#aaaaaa" font-size="12">25 space</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(660,302) scale(2)">
+<path d="M 0 24 L 16 24"/>
+</g>
+<text x="650" y="370" fill="#aaaaaa" font-size="12">26 -</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(740,302) scale(2)">
+<path d="M 0 20 L 0 4"/>
+<path d="M 0 4 L 8 0"/>
+<path d="M 8 0 L 16 4"/>
+<path d="M 16 4 L 16 20"/>
+<path d="M 16 20 L 8 24"/>
+<path d="M 8 24 L 0 20"/>
+<path d="M 11 19 L 5 19"/>
+<path d="M 5 19 L 5 5"/>
+<path d="M 5 5 L 11 5"/>
+</g>
+<text x="730" y="370" fill="#aaaaaa" font-size="12">27 ©</text>
+<g stroke="#00ff50" stroke-width="1.5" fill="none" transform="translate(20,398) scale(2)">
+<path d="M 0 20 L 0 4"/>
+<path d="M 0 4 L 8 0"/>
+<path d="M 8 0 L 16 4"/>
+<path d="M 16 4 L 16 20"/>
+<path d="M 16 20 L 8 24"/>
+<path d="M 8 24 L 0 20"/>
+<path d="M 5 19 L 5 5"/>
+<path d="M 5 5 L 11 5"/>
+<path d="M 11 5 L 11 11"/>
+<path d="M 11 11 L 5 11"/>
+</g>
+<text x="10" y="466" fill="#aaaaaa" font-size="12">28 ℗</text>
+</svg>

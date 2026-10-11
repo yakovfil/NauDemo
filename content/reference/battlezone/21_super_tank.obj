@@ -1,0 +1,64 @@
+# Battlezone (1980), Atari; extracted from rev-2 disassembly
+# Source: https://6502disassembly.com/va-battlezone/Battlezone.html
+# Right-handed: +X right, +Y up, -Z forward; original units
+# ROM object 0x21; vertex 0x3f17; draw 0x75ff
+o 21_super_tank
+v -184 -320 -728
+v -276 -320 228
+v 276 -320 228
+v 184 -320 -728
+v -228 -92 228
+v 228 -92 228
+v 0 -276 -548
+v -136 -116 136
+v -136 -92 228
+v 136 -92 228
+v 136 -116 136
+v -92 44 136
+v -92 44 228
+v 92 44 228
+v 92 44 136
+v -44 -44 -640
+v -44 -44 -44
+v 44 -44 -44
+v 44 -44 -640
+v -44 0 -640
+v -44 0 44
+v 44 0 44
+v 44 0 -640
+v 0 44 228
+v 0 276 228
+l 1 2
+l 2 5
+l 5 1
+l 1 4
+l 4 3
+l 3 6
+l 6 4
+l 3 2
+l 5 6
+l 10 11
+l 11 7
+l 7 15
+l 15 14
+l 14 10
+l 10 9
+l 9 8
+l 8 7
+l 7 12
+l 12 13
+l 13 9
+l 13 14
+l 15 12
+l 20 23
+l 23 22
+l 22 21
+l 21 17
+l 17 16
+l 16 19
+l 19 18
+l 18 17
+l 16 20
+l 23 19
+l 18 22
+l 24 25

@@ -94,6 +94,12 @@ and checks combat, focus pause, restart, vector failures and actual audio output
 Its native screenshot checks require Orca; Python dependencies are Playwright,
 Pillow, soundcard and NumPy. Visual references: [Battlezone](https://6502disassembly.com/va-battlezone/).
 
+The battlefield tank, radar dish, tread animation, obstacles, shells and debris
+use extracted original Battlezone geometry. HUD and control text use the original
+vector glyphs. [Art provenance and regeneration](content/reference/battlezone/README.md)
+describe the source data, coordinate conversion and extractor. The mountain
+panorama, crosshair and radar display retain the demo's authored presentation.
+
 Build the explicitly selected original declaration before running the existing
 rendering, billboard, free-camera and click-feedback suites:
 

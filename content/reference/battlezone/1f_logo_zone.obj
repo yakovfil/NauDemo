@@ -1,0 +1,58 @@
+# Battlezone (1980), Atari; extracted from rev-2 disassembly
+# Source: https://6502disassembly.com/va-battlezone/Battlezone.html
+# Right-handed: +X right, +Y up, -Z forward; original units
+# ROM object 0x1f; vertex 0x77cd; draw 0x7661
+o 1f_logo_zone
+v -2400 -256 1024
+v -1120 -256 1024
+v -1760 -200 800
+v -1120 -32 112
+v -2400 -32 112
+v -1760 -88 336
+v -160 -256 1024
+v -160 -32 112
+v -800 -200 800
+v -480 -200 800
+v -480 -88 336
+v -800 -88 336
+v 0 -256 1024
+v 320 -144 560
+v 1280 -256 1024
+v 2080 -224 912
+v 1600 -200 800
+v 1600 -168 672
+v 1920 -144 560
+v 1600 -112 448
+v 1600 -88 336
+v 2080 -56 224
+v 1280 -32 112
+v 960 -144 560
+v 0 -32 112
+l 2 1
+l 1 6
+l 6 5
+l 5 4
+l 4 3
+l 3 2
+l 2 4
+l 4 8
+l 8 7
+l 7 2
+l 10 9
+l 9 12
+l 12 11
+l 11 10
+l 15 23
+l 23 24
+l 24 25
+l 25 13
+l 13 14
+l 14 15
+l 15 16
+l 16 17
+l 17 18
+l 18 19
+l 19 20
+l 20 21
+l 21 22
+l 22 23

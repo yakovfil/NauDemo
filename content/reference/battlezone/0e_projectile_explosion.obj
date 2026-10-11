@@ -1,0 +1,8 @@
+# Battlezone (1980), Atari; extracted from rev-2 disassembly
+# Source: https://6502disassembly.com/va-battlezone/Battlezone.html
+# Right-handed: +X right, +Y up, -Z forward; original units
+# ROM object 0x0e; vertex 0x3b3f; draw 0x753b
+o 0e_projectile_explosion
+v 0 0 0
+# Explosion anchor only; screen-space AVG effect is not a 3D mesh
+p 1

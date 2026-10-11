@@ -20,6 +20,10 @@ from verify_web_startup import Handler
 
 
 def mutate_required(raw, mode):
+    if mode == 'missing-glyph':
+        changed = raw.replace(b'"glyph_A"', b'"glyph_@"', 1)
+        assert changed != raw
+        return changed
     if mode == 'missing-game':
         return raw.replace(b'content/game/battlezone.json', b'content/game/missingxxx.json', 1)
     if mode == 'missing-sound':
@@ -140,12 +144,12 @@ def native(delivery,output):
         assert 'presentation cleanup complete' in text,text[-3000:]
         failures.append(mode)
     archive_path=delivery/'content.nau_pack';archive=archive_path.read_bytes()
-    for mode in ('missing-game','corrupt-game','missing-sound','corrupt-sound'):
+    for mode in ('missing-game','corrupt-game','missing-sound','corrupt-sound','missing-glyph'):
         archive_path.write_bytes(mutate_required(archive,mode))
         completed=subprocess.run([str(delivery/'NauDemoMain.exe')],cwd=delivery.parent,capture_output=True,text=True,timeout=25)
         message=completed.stdout+completed.stderr
         assert completed.returncode!=0,message[-2000:]
-        assert ('battlezone.json' if 'game' in mode else 'fire.wav') in message,message[-2000:]
+        assert ('battlezone.json' if 'game' in mode or 'glyph' in mode else 'fire.wav') in message,message[-2000:]
         (output/(mode+'.log')).write_text(message);failures.append(mode)
     archive_path.write_bytes(archive)
     return dict(outputPeak=peak,score=killed['score'],focusPause=True,restart=True,failures=failures,image=image_check(output/'production.png'))
@@ -193,7 +197,7 @@ def web(delivery,root,output):
                 state=test.evaluate('Module.nauRuntime.status.state');assert state==('Stopped' if mode in ('stop','stop-startup') else 'Failed'),(mode,state)
                 test.close()
             archive=(delivery/'NauDemoMain.data').read_bytes()
-            for mode in ('missing-game','corrupt-game','missing-sound','corrupt-sound'):
+            for mode in ('missing-game','corrupt-game','missing-sound','corrupt-sound','missing-glyph'):
                 test=browser.new_page();data=mutate_required(archive,mode)
                 test.route('**/NauDemoMain.data',lambda route:route.fulfill(body=data,content_type='application/octet-stream',headers={'Cross-Origin-Resource-Policy':'same-origin'}))
                 test.goto(url+'/index.html');test.wait_for_function('Module.nauRuntime?.status?.cleanupComplete',timeout=30000)

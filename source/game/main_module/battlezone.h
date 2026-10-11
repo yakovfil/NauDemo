@@ -50,6 +50,7 @@ private:
     std::map<std::string, Shape> m_shapes;
     demo::battlezone::Simulation m_game;
     nau::audio::Clip m_fire, m_explosion;
+    float m_artTime = 0, m_treadPhase = 0;
     unsigned m_epoch = 0;
     bool m_active = false;
 };

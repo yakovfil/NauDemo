@@ -1,0 +1,3362 @@
+{
+  "source": "https://6502disassembly.com/va-battlezone/Battlezone.html",
+  "source_sha256": "1804936f7f8045356b325e5a1b8dcea77f1092b6b5864289b74de1e8e971de0e",
+  "cell": [
+    16,
+    24
+  ],
+  "coordinates": "X right, Y up, origin bottom-left",
+  "glyphs": [
+    {
+      "index": 0,
+      "character": " ",
+      "address": "0x3326",
+      "segments": [],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x3326",
+          "word": 16396
+        },
+        {
+          "address": "0x3328",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 1,
+      "character": "0",
+      "address": "0x331e",
+      "segments": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            24
+          ]
+        ],
+        [
+          [
+            0,
+            24
+          ],
+          [
+            16,
+            24
+          ]
+        ],
+        [
+          [
+            16,
+            24
+          ],
+          [
+            16,
+            0
+          ]
+        ],
+        [
+          [
+            16,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x331e",
+          "word": 19648
+        },
+        {
+          "address": "0x3320",
+          "word": 16584
+        },
+        {
+          "address": "0x3322",
+          "word": 21696
+        },
+        {
+          "address": "0x3324",
+          "word": 16600
+        },
+        {
+          "address": "0x3326",
+          "word": 16396
+        },
+        {
+          "address": "0x3328",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "character": "1",
+      "address": "0x339e",
+      "segments": [
+        [
+          [
+            8,
+            24
+          ],
+          [
+            8,
+            0
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x339e",
+          "word": 19460
+        },
+        {
+          "address": "0x33a0",
+          "word": 59768
+        },
+        {
+          "address": "0x32f0",
+          "word": 21696
+        },
+        {
+          "address": "0x32f2",
+          "word": 16392
+        },
+        {
+          "address": "0x32f4",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "character": "2",
+      "address": "0x33a2",
+      "segments": [
+        [
+          [
+            0,
+            24
+          ],
+          [
+            16,
+            24
+          ]
+        ],
+        [
+          [
+            16,
+            24
+          ],
+          [
+            16,
+            12
+          ]
+        ],
+        [
+          [
+            16,
+            12
+          ],
+          [
+            0,
+            12
+          ]
+        ],
+        [
+          [
+            0,
+            12
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            0,
+            0
+          ],
+          [
+            16,
+            0
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x33a2",
+          "word": 19456
+        },
+        {
+          "address": "0x33a4",
+          "word": 16584
+        },
+        {
+          "address": "0x33a6",
+          "word": 23232
+        },
+        {
+          "address": "0x33a8",
+          "word": 16600
+        },
+        {
+          "address": "0x33aa",
+          "word": 23232
+        },
+        {
+          "address": "0x33ac",
+          "word": 16584
+        },
+        {
+          "address": "0x33ae",
+          "word": 16388
+        },
+        {
+          "address": "0x33b0",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "character": "3",
+      "address": "0x33b2",
+      "segments": [
+        [
+          [
+            0,
+            24
+          ],
+          [
+            16,
+            24
+          ]
+        ],
+        [
+          [
+            16,
+            24
+          ],
+          [
+            16,
+            0
+          ]
+        ],
+        [
+          [
+            16,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            0,
+            12
+          ],
+          [
+            16,
+            12
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x33b2",
+          "word": 19456
+        },
+        {
+          "address": "0x33b4",
+          "word": 16584
+        },
+        {
+          "address": "0x33b6",
+          "word": 21696
+        },
+        {
+          "address": "0x33b8",
+          "word": 16600
+        },
+        {
+          "address": "0x33ba",
+          "word": 17920
+        },
+        {
+          "address": "0x33bc",
+          "word": 16584
+        },
+        {
+          "address": "0x33be",
+          "word": 23044
+        },
+        {
+          "address": "0x33c0",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "character": "4",
+      "address": "0x33c2",
+      "segments": [
+        [
+          [
+            0,
+            24
+          ],
+          [
+            0,
+            12
+          ]
+        ],
+        [
+          [
+            0,
+            12
+          ],
+          [
+            16,
+            12
+          ]
+        ],
+        [
+          [
+            16,
+            24
+          ],
+          [
+            16,
+            0
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x33c2",
+          "word": 19456
+        },
+        {
+          "address": "0x33c4",
+          "word": 23232
+        },
+        {
+          "address": "0x33c6",
+          "word": 16584
+        },
+        {
+          "address": "0x33c8",
+          "word": 17920
+        },
+        {
+          "address": "0x33ca",
+          "word": 59887
+        },
+        {
+          "address": "0x33de",
+          "word": 21696
+        },
+        {
+          "address": "0x33e0",
+          "word": 16388
+        },
+        {
+          "address": "0x33e2",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "character": "5",
+      "address": "0x3352",
+      "segments": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            16,
+            0
+          ]
+        ],
+        [
+          [
+            16,
+            0
+          ],
+          [
+            16,
+            12
+          ]
+        ],
+        [
+          [
+            16,
+            12
+          ],
+          [
+            0,
+            12
+          ]
+        ],
+        [
+          [
+            0,
+            12
+          ],
+          [
+            0,
+            24
+          ]
+        ],
+        [
+          [
+            0,
+            24
+          ],
+          [
+            16,
+            24
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x3352",
+          "word": 16584
+        },
+        {
+          "address": "0x3354",
+          "word": 18112
+        },
+        {
+          "address": "0x3356",
+          "word": 16600
+        },
+        {
+          "address": "0x3358",
+          "word": 18112
+        },
+        {
+          "address": "0x335a",
+          "word": 16584
+        },
+        {
+          "address": "0x335c",
+          "word": 59829
+        },
+        {
+          "address": "0x336a",
+          "word": 21508
+        },
+        {
+          "address": "0x336c",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "character": "6",
+      "address": "0x33cc",
+      "segments": [
+        [
+          [
+            0,
+            12
+          ],
+          [
+            16,
+            12
+          ]
+        ],
+        [
+          [
+            16,
+            12
+          ],
+          [
+            16,
+            0
+          ]
+        ],
+        [
+          [
+            16,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            24
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x33cc",
+          "word": 17920
+        },
+        {
+          "address": "0x33ce",
+          "word": 16584
+        },
+        {
+          "address": "0x33d0",
+          "word": 23232
+        },
+        {
+          "address": "0x33d2",
+          "word": 16600
+        },
+        {
+          "address": "0x33d4",
+          "word": 19648
+        },
+        {
+          "address": "0x33d6",
+          "word": 21516
+        },
+        {
+          "address": "0x33d8",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "character": "7",
+      "address": "0x33da",
+      "segments": [
+        [
+          [
+            0,
+            24
+          ],
+          [
+            16,
+            24
+          ]
+        ],
+        [
+          [
+            16,
+            24
+          ],
+          [
+            16,
+            0
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x33da",
+          "word": 19456
+        },
+        {
+          "address": "0x33dc",
+          "word": 16584
+        },
+        {
+          "address": "0x33de",
+          "word": 21696
+        },
+        {
+          "address": "0x33e0",
+          "word": 16388
+        },
+        {
+          "address": "0x33e2",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 9,
+      "character": "8",
+      "address": "0x33e4",
+      "segments": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            24
+          ]
+        ],
+        [
+          [
+            0,
+            24
+          ],
+          [
+            16,
+            24
+          ]
+        ],
+        [
+          [
+            16,
+            24
+          ],
+          [
+            16,
+            0
+          ]
+        ],
+        [
+          [
+            16,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            0,
+            12
+          ],
+          [
+            16,
+            12
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x33e4",
+          "word": 19648
+        },
+        {
+          "address": "0x33e6",
+          "word": 59866
+        },
+        {
+          "address": "0x33b4",
+          "word": 16584
+        },
+        {
+          "address": "0x33b6",
+          "word": 21696
+        },
+        {
+          "address": "0x33b8",
+          "word": 16600
+        },
+        {
+          "address": "0x33ba",
+          "word": 17920
+        },
+        {
+          "address": "0x33bc",
+          "word": 16584
+        },
+        {
+          "address": "0x33be",
+          "word": 23044
+        },
+        {
+          "address": "0x33c0",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 10,
+      "character": "9",
+      "address": "0x33e8",
+      "segments": [
+        [
+          [
+            16,
+            12
+          ],
+          [
+            0,
+            12
+          ]
+        ],
+        [
+          [
+            0,
+            12
+          ],
+          [
+            0,
+            24
+          ]
+        ],
+        [
+          [
+            0,
+            24
+          ],
+          [
+            16,
+            24
+          ]
+        ],
+        [
+          [
+            16,
+            24
+          ],
+          [
+            16,
+            0
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x33e8",
+          "word": 17928
+        },
+        {
+          "address": "0x33ea",
+          "word": 16600
+        },
+        {
+          "address": "0x33ec",
+          "word": 18112
+        },
+        {
+          "address": "0x33ee",
+          "word": 59886
+        },
+        {
+          "address": "0x33dc",
+          "word": 16584
+        },
+        {
+          "address": "0x33de",
+          "word": 21696
+        },
+        {
+          "address": "0x33e0",
+          "word": 16388
+        },
+        {
+          "address": "0x33e2",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 11,
+      "character": "A",
+      "address": "0x3282",
+      "segments": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            16
+          ]
+        ],
+        [
+          [
+            0,
+            16
+          ],
+          [
+            8,
+            24
+          ]
+        ],
+        [
+          [
+            8,
+            24
+          ],
+          [
+            16,
+            16
+          ]
+        ],
+        [
+          [
+            16,
+            16
+          ],
+          [
+            16,
+            0
+          ]
+        ],
+        [
+          [
+            0,
+            8
+          ],
+          [
+            16,
+            8
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x3282",
+          "word": 18624
+        },
+        {
+          "address": "0x3284",
+          "word": 17604
+        },
+        {
+          "address": "0x3286",
+          "word": 23748
+        },
+        {
+          "address": "0x3288",
+          "word": 22720
+        },
+        {
+          "address": "0x328a",
+          "word": 17432
+        },
+        {
+          "address": "0x328c",
+          "word": 16584
+        },
+        {
+          "address": "0x328e",
+          "word": 23556
+        },
+        {
+          "address": "0x3290",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 12,
+      "character": "B",
+      "address": "0x3292",
+      "segments": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            24
+          ]
+        ],
+        [
+          [
+            0,
+            24
+          ],
+          [
+            12,
+            24
+          ]
+        ],
+        [
+          [
+            12,
+            24
+          ],
+          [
+            16,
+            20
+          ]
+        ],
+        [
+          [
+            16,
+            20
+          ],
+          [
+            16,
+            16
+          ]
+        ],
+        [
+          [
+            16,
+            16
+          ],
+          [
+            12,
+            12
+          ]
+        ],
+        [
+          [
+            12,
+            12
+          ],
+          [
+            0,
+            12
+          ]
+        ],
+        [
+          [
+            12,
+            12
+          ],
+          [
+            16,
+            8
+          ]
+        ],
+        [
+          [
+            16,
+            8
+          ],
+          [
+            16,
+            4
+          ]
+        ],
+        [
+          [
+            16,
+            4
+          ],
+          [
+            12,
+            0
+          ]
+        ],
+        [
+          [
+            12,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x3292",
+          "word": 19648
+        },
+        {
+          "address": "0x3294",
+          "word": 16582
+        },
+        {
+          "address": "0x3296",
+          "word": 24258
+        },
+        {
+          "address": "0x3298",
+          "word": 24256
+        },
+        {
+          "address": "0x329a",
+          "word": 24286
+        },
+        {
+          "address": "0x329c",
+          "word": 16602
+        },
+        {
+          "address": "0x329e",
+          "word": 16390
+        },
+        {
+          "address": "0x32a0",
+          "word": 24258
+        },
+        {
+          "address": "0x32a2",
+          "word": 24256
+        },
+        {
+          "address": "0x32a4",
+          "word": 24286
+        },
+        {
+          "address": "0x32a6",
+          "word": 16602
+        },
+        {
+          "address": "0x32a8",
+          "word": 59795
+        },
+        {
+          "address": "0x3326",
+          "word": 16396
+        },
+        {
+          "address": "0x3328",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 13,
+      "character": "C",
+      "address": "0x32aa",
+      "segments": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            24
+          ]
+        ],
+        [
+          [
+            0,
+            24
+          ],
+          [
+            16,
+            24
+          ]
+        ],
+        [
+          [
+            0,
+            0
+          ],
+          [
+            16,
+            0
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x32aa",
+          "word": 19648
+        },
+        {
+          "address": "0x32ac",
+          "word": 16584
+        },
+        {
+          "address": "0x32ae",
+          "word": 21528
+        },
+        {
+          "address": "0x32b0",
+          "word": 59862
+        },
+        {
+          "address": "0x33ac",
+          "word": 16584
+        },
+        {
+          "address": "0x33ae",
+          "word": 16388
+        },
+        {
+          "address": "0x33b0",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 14,
+      "character": "D",
+      "address": "0x32b2",
+      "segments": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            24
+          ]
+        ],
+        [
+          [
+            0,
+            24
+          ],
+          [
+            8,
+            24
+          ]
+        ],
+        [
+          [
+            8,
+            24
+          ],
+          [
+            16,
+            16
+          ]
+        ],
+        [
+          [
+            16,
+            16
+          ],
+          [
+            16,
+            8
+          ]
+        ],
+        [
+          [
+            16,
+            8
+          ],
+          [
+            8,
+            0
+          ]
+        ],
+        [
+          [
+            8,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x32b2",
+          "word": 19648
+        },
+        {
+          "address": "0x32b4",
+          "word": 16580
+        },
+        {
+          "address": "0x32b6",
+          "word": 23748
+        },
+        {
+          "address": "0x32b8",
+          "word": 23744
+        },
+        {
+          "address": "0x32ba",
+          "word": 23772
+        },
+        {
+          "address": "0x32bc",
+          "word": 16604
+        },
+        {
+          "address": "0x32be",
+          "word": 59795
+        },
+        {
+          "address": "0x3326",
+          "word": 16396
+        },
+        {
+          "address": "0x3328",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 15,
+      "character": "E",
+      "address": "0x32c0",
+      "segments": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            16,
+            0
+          ]
+        ],
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            24
+          ]
+        ],
+        [
+          [
+            0,
+            24
+          ],
+          [
+            16,
+            24
+          ]
+        ],
+        [
+          [
+            12,
+            12
+          ],
+          [
+            0,
+            12
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x32c0",
+          "word": 16584
+        },
+        {
+          "address": "0x32c2",
+          "word": 16408
+        },
+        {
+          "address": "0x32c4",
+          "word": 19648
+        },
+        {
+          "address": "0x32c6",
+          "word": 16584
+        },
+        {
+          "address": "0x32c8",
+          "word": 23070
+        },
+        {
+          "address": "0x32ca",
+          "word": 16602
+        },
+        {
+          "address": "0x32cc",
+          "word": 23052
+        },
+        {
+          "address": "0x32ce",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 16,
+      "character": "F",
+      "address": "0x32c4",
+      "segments": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            24
+          ]
+        ],
+        [
+          [
+            0,
+            24
+          ],
+          [
+            16,
+            24
+          ]
+        ],
+        [
+          [
+            12,
+            12
+          ],
+          [
+            0,
+            12
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x32c4",
+          "word": 19648
+        },
+        {
+          "address": "0x32c6",
+          "word": 16584
+        },
+        {
+          "address": "0x32c8",
+          "word": 23070
+        },
+        {
+          "address": "0x32ca",
+          "word": 16602
+        },
+        {
+          "address": "0x32cc",
+          "word": 23052
+        },
+        {
+          "address": "0x32ce",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 17,
+      "character": "G",
+      "address": "0x32d0",
+      "segments": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            24
+          ]
+        ],
+        [
+          [
+            0,
+            24
+          ],
+          [
+            16,
+            24
+          ]
+        ],
+        [
+          [
+            16,
+            24
+          ],
+          [
+            16,
+            16
+          ]
+        ],
+        [
+          [
+            8,
+            8
+          ],
+          [
+            16,
+            8
+          ]
+        ],
+        [
+          [
+            16,
+            8
+          ],
+          [
+            16,
+            0
+          ]
+        ],
+        [
+          [
+            16,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x32d0",
+          "word": 19648
+        },
+        {
+          "address": "0x32d2",
+          "word": 16584
+        },
+        {
+          "address": "0x32d4",
+          "word": 23744
+        },
+        {
+          "address": "0x32d6",
+          "word": 23580
+        },
+        {
+          "address": "0x32d8",
+          "word": 16580
+        },
+        {
+          "address": "0x32da",
+          "word": 23744
+        },
+        {
+          "address": "0x32dc",
+          "word": 59794
+        },
+        {
+          "address": "0x3324",
+          "word": 16600
+        },
+        {
+          "address": "0x3326",
+          "word": 16396
+        },
+        {
+          "address": "0x3328",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 18,
+      "character": "H",
+      "address": "0x32de",
+      "segments": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            24
+          ]
+        ],
+        [
+          [
+            0,
+            12
+          ],
+          [
+            16,
+            12
+          ]
+        ],
+        [
+          [
+            16,
+            24
+          ],
+          [
+            16,
+            0
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x32de",
+          "word": 19648
+        },
+        {
+          "address": "0x32e0",
+          "word": 23040
+        },
+        {
+          "address": "0x32e2",
+          "word": 16584
+        },
+        {
+          "address": "0x32e4",
+          "word": 17920
+        },
+        {
+          "address": "0x32e6",
+          "word": 59887
+        },
+        {
+          "address": "0x33de",
+          "word": 21696
+        },
+        {
+          "address": "0x33e0",
+          "word": 16388
+        },
+        {
+          "address": "0x33e2",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 19,
+      "character": "I",
+      "address": "0x32e8",
+      "segments": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            16,
+            0
+          ]
+        ],
+        [
+          [
+            0,
+            24
+          ],
+          [
+            16,
+            24
+          ]
+        ],
+        [
+          [
+            8,
+            24
+          ],
+          [
+            8,
+            0
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x32e8",
+          "word": 16584
+        },
+        {
+          "address": "0x32ea",
+          "word": 19480
+        },
+        {
+          "address": "0x32ec",
+          "word": 16584
+        },
+        {
+          "address": "0x32ee",
+          "word": 16412
+        },
+        {
+          "address": "0x32f0",
+          "word": 21696
+        },
+        {
+          "address": "0x32f2",
+          "word": 16392
+        },
+        {
+          "address": "0x32f4",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 20,
+      "character": "J",
+      "address": "0x32f6",
+      "segments": [
+        [
+          [
+            0,
+            8
+          ],
+          [
+            8,
+            0
+          ]
+        ],
+        [
+          [
+            8,
+            0
+          ],
+          [
+            16,
+            0
+          ]
+        ],
+        [
+          [
+            16,
+            0
+          ],
+          [
+            16,
+            24
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x32f6",
+          "word": 17408
+        },
+        {
+          "address": "0x32f8",
+          "word": 23748
+        },
+        {
+          "address": "0x32fa",
+          "word": 16580
+        },
+        {
+          "address": "0x32fc",
+          "word": 59828
+        },
+        {
+          "address": "0x3368",
+          "word": 19648
+        },
+        {
+          "address": "0x336a",
+          "word": 21508
+        },
+        {
+          "address": "0x336c",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 21,
+      "character": "K",
+      "address": "0x32fe",
+      "segments": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            24
+          ]
+        ],
+        [
+          [
+            12,
+            24
+          ],
+          [
+            0,
+            12
+          ]
+        ],
+        [
+          [
+            0,
+            12
+          ],
+          [
+            12,
+            0
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x32fe",
+          "word": 19648
+        },
+        {
+          "address": "0x3300",
+          "word": 16390
+        },
+        {
+          "address": "0x3302",
+          "word": 23258
+        },
+        {
+          "address": "0x3304",
+          "word": 23238
+        },
+        {
+          "address": "0x3306",
+          "word": 16390
+        },
+        {
+          "address": "0x3308",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 22,
+      "character": "L",
+      "address": "0x330a",
+      "segments": [
+        [
+          [
+            0,
+            24
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            0,
+            0
+          ],
+          [
+            16,
+            0
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x330a",
+          "word": 19456
+        },
+        {
+          "address": "0x330c",
+          "word": 21696
+        },
+        {
+          "address": "0x330e",
+          "word": 59862
+        },
+        {
+          "address": "0x33ac",
+          "word": 16584
+        },
+        {
+          "address": "0x33ae",
+          "word": 16388
+        },
+        {
+          "address": "0x33b0",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 23,
+      "character": "M",
+      "address": "0x3310",
+      "segments": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            24
+          ]
+        ],
+        [
+          [
+            0,
+            24
+          ],
+          [
+            8,
+            16
+          ]
+        ],
+        [
+          [
+            8,
+            16
+          ],
+          [
+            16,
+            24
+          ]
+        ],
+        [
+          [
+            16,
+            24
+          ],
+          [
+            16,
+            0
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x3310",
+          "word": 19648
+        },
+        {
+          "address": "0x3312",
+          "word": 23748
+        },
+        {
+          "address": "0x3314",
+          "word": 17604
+        },
+        {
+          "address": "0x3316",
+          "word": 59887
+        },
+        {
+          "address": "0x33de",
+          "word": 21696
+        },
+        {
+          "address": "0x33e0",
+          "word": 16388
+        },
+        {
+          "address": "0x33e2",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 24,
+      "character": "N",
+      "address": "0x3318",
+      "segments": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            24
+          ]
+        ],
+        [
+          [
+            0,
+            24
+          ],
+          [
+            16,
+            0
+          ]
+        ],
+        [
+          [
+            16,
+            0
+          ],
+          [
+            16,
+            24
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x3318",
+          "word": 19648
+        },
+        {
+          "address": "0x331a",
+          "word": 21704
+        },
+        {
+          "address": "0x331c",
+          "word": 59828
+        },
+        {
+          "address": "0x3368",
+          "word": 19648
+        },
+        {
+          "address": "0x336a",
+          "word": 21508
+        },
+        {
+          "address": "0x336c",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 25,
+      "character": "O",
+      "address": "0x331e",
+      "segments": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            24
+          ]
+        ],
+        [
+          [
+            0,
+            24
+          ],
+          [
+            16,
+            24
+          ]
+        ],
+        [
+          [
+            16,
+            24
+          ],
+          [
+            16,
+            0
+          ]
+        ],
+        [
+          [
+            16,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x331e",
+          "word": 19648
+        },
+        {
+          "address": "0x3320",
+          "word": 16584
+        },
+        {
+          "address": "0x3322",
+          "word": 21696
+        },
+        {
+          "address": "0x3324",
+          "word": 16600
+        },
+        {
+          "address": "0x3326",
+          "word": 16396
+        },
+        {
+          "address": "0x3328",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 26,
+      "character": "P",
+      "address": "0x332a",
+      "segments": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            24
+          ]
+        ],
+        [
+          [
+            0,
+            24
+          ],
+          [
+            16,
+            24
+          ]
+        ],
+        [
+          [
+            16,
+            24
+          ],
+          [
+            16,
+            12
+          ]
+        ],
+        [
+          [
+            16,
+            12
+          ],
+          [
+            0,
+            12
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x332a",
+          "word": 19648
+        },
+        {
+          "address": "0x332c",
+          "word": 16584
+        },
+        {
+          "address": "0x332e",
+          "word": 23232
+        },
+        {
+          "address": "0x3330",
+          "word": 16600
+        },
+        {
+          "address": "0x3332",
+          "word": 59750
+        },
+        {
+          "address": "0x32cc",
+          "word": 23052
+        },
+        {
+          "address": "0x32ce",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 27,
+      "character": "Q",
+      "address": "0x3334",
+      "segments": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            24
+          ]
+        ],
+        [
+          [
+            0,
+            24
+          ],
+          [
+            16,
+            24
+          ]
+        ],
+        [
+          [
+            16,
+            24
+          ],
+          [
+            16,
+            8
+          ]
+        ],
+        [
+          [
+            16,
+            8
+          ],
+          [
+            8,
+            0
+          ]
+        ],
+        [
+          [
+            8,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            8,
+            8
+          ],
+          [
+            16,
+            0
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x3334",
+          "word": 19648
+        },
+        {
+          "address": "0x3336",
+          "word": 16584
+        },
+        {
+          "address": "0x3338",
+          "word": 22720
+        },
+        {
+          "address": "0x333a",
+          "word": 23772
+        },
+        {
+          "address": "0x333c",
+          "word": 16604
+        },
+        {
+          "address": "0x333e",
+          "word": 17412
+        },
+        {
+          "address": "0x3340",
+          "word": 23748
+        },
+        {
+          "address": "0x3342",
+          "word": 59863
+        },
+        {
+          "address": "0x33ae",
+          "word": 16388
+        },
+        {
+          "address": "0x33b0",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 28,
+      "character": "R",
+      "address": "0x3344",
+      "segments": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            24
+          ]
+        ],
+        [
+          [
+            0,
+            24
+          ],
+          [
+            16,
+            24
+          ]
+        ],
+        [
+          [
+            16,
+            24
+          ],
+          [
+            16,
+            12
+          ]
+        ],
+        [
+          [
+            16,
+            12
+          ],
+          [
+            0,
+            12
+          ]
+        ],
+        [
+          [
+            4,
+            12
+          ],
+          [
+            16,
+            0
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x3344",
+          "word": 19648
+        },
+        {
+          "address": "0x3346",
+          "word": 16584
+        },
+        {
+          "address": "0x3348",
+          "word": 23232
+        },
+        {
+          "address": "0x334a",
+          "word": 16600
+        },
+        {
+          "address": "0x334c",
+          "word": 16386
+        },
+        {
+          "address": "0x334e",
+          "word": 23238
+        },
+        {
+          "address": "0x3350",
+          "word": 59863
+        },
+        {
+          "address": "0x33ae",
+          "word": 16388
+        },
+        {
+          "address": "0x33b0",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 29,
+      "character": "S",
+      "address": "0x3352",
+      "segments": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            16,
+            0
+          ]
+        ],
+        [
+          [
+            16,
+            0
+          ],
+          [
+            16,
+            12
+          ]
+        ],
+        [
+          [
+            16,
+            12
+          ],
+          [
+            0,
+            12
+          ]
+        ],
+        [
+          [
+            0,
+            12
+          ],
+          [
+            0,
+            24
+          ]
+        ],
+        [
+          [
+            0,
+            24
+          ],
+          [
+            16,
+            24
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x3352",
+          "word": 16584
+        },
+        {
+          "address": "0x3354",
+          "word": 18112
+        },
+        {
+          "address": "0x3356",
+          "word": 16600
+        },
+        {
+          "address": "0x3358",
+          "word": 18112
+        },
+        {
+          "address": "0x335a",
+          "word": 16584
+        },
+        {
+          "address": "0x335c",
+          "word": 59829
+        },
+        {
+          "address": "0x336a",
+          "word": 21508
+        },
+        {
+          "address": "0x336c",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 30,
+      "character": "T",
+      "address": "0x335e",
+      "segments": [
+        [
+          [
+            0,
+            24
+          ],
+          [
+            16,
+            24
+          ]
+        ],
+        [
+          [
+            8,
+            24
+          ],
+          [
+            8,
+            0
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x335e",
+          "word": 19456
+        },
+        {
+          "address": "0x3360",
+          "word": 59766
+        },
+        {
+          "address": "0x32ec",
+          "word": 16584
+        },
+        {
+          "address": "0x32ee",
+          "word": 16412
+        },
+        {
+          "address": "0x32f0",
+          "word": 21696
+        },
+        {
+          "address": "0x32f2",
+          "word": 16392
+        },
+        {
+          "address": "0x32f4",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 31,
+      "character": "U",
+      "address": "0x3362",
+      "segments": [
+        [
+          [
+            0,
+            24
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            0,
+            0
+          ],
+          [
+            16,
+            0
+          ]
+        ],
+        [
+          [
+            16,
+            0
+          ],
+          [
+            16,
+            24
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x3362",
+          "word": 19456
+        },
+        {
+          "address": "0x3364",
+          "word": 21696
+        },
+        {
+          "address": "0x3366",
+          "word": 16584
+        },
+        {
+          "address": "0x3368",
+          "word": 19648
+        },
+        {
+          "address": "0x336a",
+          "word": 21508
+        },
+        {
+          "address": "0x336c",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 32,
+      "character": "V",
+      "address": "0x336e",
+      "segments": [
+        [
+          [
+            0,
+            24
+          ],
+          [
+            8,
+            0
+          ]
+        ],
+        [
+          [
+            8,
+            0
+          ],
+          [
+            16,
+            24
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x336e",
+          "word": 19456
+        },
+        {
+          "address": "0x3370",
+          "word": 21700
+        },
+        {
+          "address": "0x3372",
+          "word": 19652
+        },
+        {
+          "address": "0x3374",
+          "word": 59829
+        },
+        {
+          "address": "0x336a",
+          "word": 21508
+        },
+        {
+          "address": "0x336c",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 33,
+      "character": "W",
+      "address": "0x3376",
+      "segments": [
+        [
+          [
+            0,
+            24
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            0,
+            0
+          ],
+          [
+            8,
+            8
+          ]
+        ],
+        [
+          [
+            8,
+            8
+          ],
+          [
+            16,
+            0
+          ]
+        ],
+        [
+          [
+            16,
+            0
+          ],
+          [
+            16,
+            24
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x3376",
+          "word": 19456
+        },
+        {
+          "address": "0x3378",
+          "word": 21696
+        },
+        {
+          "address": "0x337a",
+          "word": 17604
+        },
+        {
+          "address": "0x337c",
+          "word": 23748
+        },
+        {
+          "address": "0x337e",
+          "word": 59828
+        },
+        {
+          "address": "0x3368",
+          "word": 19648
+        },
+        {
+          "address": "0x336a",
+          "word": 21508
+        },
+        {
+          "address": "0x336c",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 34,
+      "character": "X",
+      "address": "0x3380",
+      "segments": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            16,
+            24
+          ]
+        ],
+        [
+          [
+            0,
+            24
+          ],
+          [
+            16,
+            0
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x3380",
+          "word": 19656
+        },
+        {
+          "address": "0x3382",
+          "word": 16408
+        },
+        {
+          "address": "0x3384",
+          "word": 21704
+        },
+        {
+          "address": "0x3386",
+          "word": 59888
+        },
+        {
+          "address": "0x33e0",
+          "word": 16388
+        },
+        {
+          "address": "0x33e2",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 35,
+      "character": "Y",
+      "address": "0x3388",
+      "segments": [
+        [
+          [
+            8,
+            0
+          ],
+          [
+            8,
+            16
+          ]
+        ],
+        [
+          [
+            8,
+            16
+          ],
+          [
+            0,
+            24
+          ]
+        ],
+        [
+          [
+            16,
+            24
+          ],
+          [
+            8,
+            16
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x3388",
+          "word": 16388
+        },
+        {
+          "address": "0x338a",
+          "word": 18624
+        },
+        {
+          "address": "0x338c",
+          "word": 17628
+        },
+        {
+          "address": "0x338e",
+          "word": 16392
+        },
+        {
+          "address": "0x3390",
+          "word": 23772
+        },
+        {
+          "address": "0x3392",
+          "word": 22536
+        },
+        {
+          "address": "0x3394",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 36,
+      "character": "Z",
+      "address": "0x3396",
+      "segments": [
+        [
+          [
+            0,
+            24
+          ],
+          [
+            16,
+            24
+          ]
+        ],
+        [
+          [
+            16,
+            24
+          ],
+          [
+            0,
+            0
+          ]
+        ],
+        [
+          [
+            0,
+            0
+          ],
+          [
+            16,
+            0
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x3396",
+          "word": 19456
+        },
+        {
+          "address": "0x3398",
+          "word": 16584
+        },
+        {
+          "address": "0x339a",
+          "word": 21720
+        },
+        {
+          "address": "0x339c",
+          "word": 59862
+        },
+        {
+          "address": "0x33ac",
+          "word": 16584
+        },
+        {
+          "address": "0x33ae",
+          "word": 16388
+        },
+        {
+          "address": "0x33b0",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 37,
+      "character": " ",
+      "address": "0x3326",
+      "segments": [],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x3326",
+          "word": 16396
+        },
+        {
+          "address": "0x3328",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 38,
+      "character": "-",
+      "address": "0x33ac",
+      "segments": [
+        [
+          [
+            0,
+            0
+          ],
+          [
+            16,
+            0
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x33ac",
+          "word": 16584
+        },
+        {
+          "address": "0x33ae",
+          "word": 16388
+        },
+        {
+          "address": "0x33b0",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 39,
+      "character": "\u00a9",
+      "address": "0x3454",
+      "segments": [
+        [
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            20
+          ]
+        ],
+        [
+          [
+            0,
+            20
+          ],
+          [
+            8,
+            24
+          ]
+        ],
+        [
+          [
+            8,
+            24
+          ],
+          [
+            16,
+            20
+          ]
+        ],
+        [
+          [
+            16,
+            20
+          ],
+          [
+            16,
+            4
+          ]
+        ],
+        [
+          [
+            16,
+            4
+          ],
+          [
+            8,
+            0
+          ]
+        ],
+        [
+          [
+            8,
+            0
+          ],
+          [
+            0,
+            4
+          ]
+        ],
+        [
+          [
+            11,
+            5
+          ],
+          [
+            5,
+            5
+          ]
+        ],
+        [
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            19
+          ]
+        ],
+        [
+          [
+            5,
+            19
+          ],
+          [
+            11,
+            19
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x3454",
+          "word": 43554
+        },
+        {
+          "address": "0x3444",
+          "word": 16896
+        },
+        {
+          "address": "0x3446",
+          "word": 18624
+        },
+        {
+          "address": "0x3448",
+          "word": 17092
+        },
+        {
+          "address": "0x344a",
+          "word": 24260
+        },
+        {
+          "address": "0x344c",
+          "word": 22720
+        },
+        {
+          "address": "0x344e",
+          "word": 24284
+        },
+        {
+          "address": "0x3450",
+          "word": 17116
+        },
+        {
+          "address": "0x3452",
+          "word": 49152
+        },
+        {
+          "address": "0x3456",
+          "word": 1
+        },
+        {
+          "address": "0x3458",
+          "word": 11
+        },
+        {
+          "address": "0x345a",
+          "word": 16605
+        },
+        {
+          "address": "0x345c",
+          "word": 18368
+        },
+        {
+          "address": "0x345e",
+          "word": 16579
+        },
+        {
+          "address": "0x3460",
+          "word": 8173
+        },
+        {
+          "address": "0x3462",
+          "word": 13
+        },
+        {
+          "address": "0x3464",
+          "word": 49152
+        }
+      ]
+    },
+    {
+      "index": 40,
+      "character": "\u2117",
+      "address": "0x3466",
+      "segments": [
+        [
+          [
+            0,
+            4
+          ],
+          [
+            0,
+            20
+          ]
+        ],
+        [
+          [
+            0,
+            20
+          ],
+          [
+            8,
+            24
+          ]
+        ],
+        [
+          [
+            8,
+            24
+          ],
+          [
+            16,
+            20
+          ]
+        ],
+        [
+          [
+            16,
+            20
+          ],
+          [
+            16,
+            4
+          ]
+        ],
+        [
+          [
+            16,
+            4
+          ],
+          [
+            8,
+            0
+          ]
+        ],
+        [
+          [
+            8,
+            0
+          ],
+          [
+            0,
+            4
+          ]
+        ],
+        [
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            19
+          ]
+        ],
+        [
+          [
+            5,
+            19
+          ],
+          [
+            11,
+            19
+          ]
+        ],
+        [
+          [
+            11,
+            19
+          ],
+          [
+            11,
+            13
+          ]
+        ],
+        [
+          [
+            11,
+            13
+          ],
+          [
+            5,
+            13
+          ]
+        ]
+      ],
+      "advance": [
+        24,
+        0
+      ],
+      "instructions": [
+        {
+          "address": "0x3466",
+          "word": 43554
+        },
+        {
+          "address": "0x3444",
+          "word": 16896
+        },
+        {
+          "address": "0x3446",
+          "word": 18624
+        },
+        {
+          "address": "0x3448",
+          "word": 17092
+        },
+        {
+          "address": "0x344a",
+          "word": 24260
+        },
+        {
+          "address": "0x344c",
+          "word": 22720
+        },
+        {
+          "address": "0x344e",
+          "word": 24284
+        },
+        {
+          "address": "0x3450",
+          "word": 17116
+        },
+        {
+          "address": "0x3452",
+          "word": 49152
+        },
+        {
+          "address": "0x3468",
+          "word": 1
+        },
+        {
+          "address": "0x346a",
+          "word": 5
+        },
+        {
+          "address": "0x346c",
+          "word": 18368
+        },
+        {
+          "address": "0x346e",
+          "word": 16579
+        },
+        {
+          "address": "0x3470",
+          "word": 24000
+        },
+        {
+          "address": "0x3472",
+          "word": 16605
+        },
+        {
+          "address": "0x3474",
+          "word": 8179
+        },
+        {
+          "address": "0x3476",
+          "word": 19
+        },
+        {
+          "address": "0x3478",
+          "word": 49152
+        }
+      ]
+    }
+  ]
+}

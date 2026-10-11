@@ -52,81 +52,6 @@ namespace
             return NauMakeError("Missing or oversized game data {}", path);
         return serialization::jsonParse(*stream);
     }
-    // A small authored stroke alphabet; no external font or UI renderer is needed.
-    const std::map<char, std::string> Glyphs = {
-        {'0',    "012347560"},
-        {'1',           "17"},
-        {'2',     "01236574"},
-        {'3',   "0123475/63"},
-        {'4',     "06/24/63"},
-        {'5',     "21063475"},
-        {'6',  "21065743/63"},
-        {'7',         "0124"},
-        {'8', "012347560/63"},
-        {'9',  "60123475/63"},
-        {'A',    "501234/63"},
-        {'B', "501236/63475"},
-        {'C',      "2106574"},
-        {'D',     "50123475"},
-        {'E',   "2106574/63"},
-        {'F',      "5012/63"},
-        {'G',  "21065743/39"},
-        {'H',     "05/24/63"},
-        {'I',   "012/17/574"},
-        {'J',       "234756"},
-        {'K',     "05/62/64"},
-        {'L',         "0574"},
-        {'M',        "50924"},
-        {'N',         "5042"},
-        {'O',    "012347560"},
-        {'P',       "501236"},
-        {'Q', "012347560/94"},
-        {'R',    "501236/64"},
-        {'S',     "21063475"},
-        {'T',       "012/17"},
-        {'U',       "057432"},
-        {'V',          "072"},
-        {'W',        "05942"},
-        {'X',        "04/25"},
-        {'Y',     "09/29/97"},
-        {'Z',       "012574"},
-        {'-',           "63"},
-        {':',           "89"},
-        {'/',           "25"}
-    };
-    const std::array<std::array<float, 2>, 10> GlyphPoints = {
-        {{0, 0}, {.5f, 0}, {1, 0}, {1, .5f}, {1, 1}, {0, 1}, {0, .5f}, {.5f, 1}, {.5f, .25f}, {.5f, .5f}}
-    };
-    void text(nau::render::VectorPresentation& p, const std::string& value, float x, float y, float size)
-    {
-        for (char c : value)
-        {
-            auto found = Glyphs.find(c);
-            if (found != Glyphs.end())
-            {
-                int previous = -1;
-                for (char n : found->second)
-                {
-                    if (n == '/')
-                    {
-                        previous = -1;
-                        continue;
-                    }
-                    const int next = n - '0';
-                    if (previous >= 0)
-                    {
-                        const auto a = GlyphPoints[previous], b = GlyphPoints[next];
-                        p.overlay.push_back({
-                            {x + a[0] * size, y + a[1] * size * 1.5f, 0},
-                            {x + b[0] * size, y + b[1] * size * 1.5f, 0}
-                        });
-                    }
-                    previous = next;
-                }
-            }
-            x += size * 1.5f;
-        }
-    }
 }  // namespace
 
 nau::async::Task<> DemoBattlezone::activateComponentAsync()
@@ -184,9 +109,13 @@ nau::async::Task<> DemoBattlezone::activateComponentAsync()
         }
         m_shapes.emplace(name, std::move(shape));
     }
-    for (auto name : {"tank", "box", "pyramid"})
+    for (auto name : {"tank", "box", "pyramid", "radar", "projectile", "chunk0", "chunk1", "chunk2",
+                      "tread0", "tread1", "tread2", "tread3", "tread4", "tread5", "tread6", "tread7"})
         if (!m_shapes.contains(name))
             co_await async::Task<>::makeRejected(NauMakeError("Missing game shape {}:{}", m_content, name));
+    for (char c : std::string_view{"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-"})
+        if (!m_shapes.contains(std::string{"glyph_"} + c))
+            co_await async::Task<>::makeRejected(NauMakeError("Missing game glyph {}:{}", m_content, c));
     for (size_t i = 0; i < layout->getSize(); ++i)
     {
         auto item = layout->getAt(i);
@@ -247,7 +176,13 @@ void DemoBattlezone::updateComponent(float dt)
     controls.turn = float(isKeyboardButtonHold(0, Key::D)) - float(isKeyboardButtonHold(0, Key::A));
     controls.fire = keyboardPressCount(0, Key::Space) || mousePressCount(0, MouseKey::ButtonLeft);
     controls.restart = keyboardPressCount(0, Key::R) != 0;
+    const auto previousEnemy = m_game.enemy;
     m_game.update(dt, controls);
+    if (m_game.lives && std::isfinite(dt))
+    {
+        m_artTime = std::fmod(m_artTime + std::clamp(dt, 0.f, .0833333f), 1000.f);
+        m_treadPhase = std::fmod(m_treadPhase + demo::battlezone::distance(previousEnemy, m_game.enemy) * 4.f, 4.f);
+    }
     if (epoch != inputResetGeneration() || getApplication().isClosing())
     {
         m_game.pause();
@@ -292,13 +227,13 @@ nau::Result<nau::render::VectorPresentation> DemoBattlezone::vectorPresentation(
     p.blackBackground = true;
     if (!m_active)
         return p;
-    const auto shape = [&](const std::string& name, demo::battlezone::Point location, float heading, float scale)
+    const auto shape = [&](const std::string& name, demo::battlezone::Point location, float heading, float scale, float height = 0.f)
     {
         const auto& data = m_shapes.at(name);
         const auto point = [&](unsigned index)
         {
             auto v = data.vertices[index];
-            return std::array<float, 3>{location.x + scale * (v[0] * std::cos(heading) - v[2] * std::sin(heading)), v[1] * scale, location.z + scale * (v[0] * std::sin(heading) + v[2] * std::cos(heading))};
+            return std::array<float, 3>{location.x + scale * (v[0] * std::cos(heading) - v[2] * std::sin(heading)), height + v[1] * scale, location.z + scale * (v[0] * std::sin(heading) + v[2] * std::cos(heading))};
         };
         for (auto edge : data.edges)
             p.world.push_back({point(edge[0]), point(edge[1])});
@@ -314,17 +249,39 @@ nau::Result<nau::render::VectorPresentation> DemoBattlezone::vectorPresentation(
         shape(name, obstacle.position, 0, obstacle.radius / radius);
     }
     if (m_game.enemyDestroyed == 0)
+    {
         shape("tank", m_game.enemy, -m_game.enemyHeading, 1);
+        const auto facing = demo::battlezone::direction(m_game.enemyHeading);
+        const bool front = demo::battlezone::dot(m_game.player - m_game.enemy, facing) >= 0;
+        shape("tread" + std::to_string((front ? 4 : 0) + unsigned(m_treadPhase)), m_game.enemy, -m_game.enemyHeading, 1);
+        const auto mount = m_game.enemy + facing * -1.28f;
+        shape("radar", mount, -m_game.enemyHeading + m_artTime * 2.f, 1);
+    }
     for (const auto& shot : m_game.projectiles)
-        p.world.push_back({
-            {                         shot.position.x, .9f,                          shot.position.z},
-            {shot.position.x - shot.velocity.x * .05f, .9f, shot.position.z - shot.velocity.z * .05f}
-        });
+        shape("projectile", shot.position, -std::atan2(shot.velocity.x, -shot.velocity.z), 1, 1.04f);
+    unsigned chunk = 0;
     for (const auto& fragment : m_game.fragments)
-        p.world.push_back({
-            {      fragment.position.x,       fragment.height,       fragment.position.z},
-            {fragment.position.x + .8f, fragment.height + .4f, fragment.position.z + .3f}
-        });
+        shape("chunk" + std::to_string(chunk++ % 3), fragment.position, fragment.life * 6.f, .5f, fragment.height);
+    const auto text = [&](VectorPresentation& output, const std::string& value, float x, float y, float size)
+    {
+        for (char c : value)
+        {
+            if (c != ' ')
+            {
+                const auto& glyph = m_shapes.at(std::string{"glyph_"} + c);
+                for (const auto& edge : glyph.edges)
+                {
+                    const auto& a = glyph.vertices[edge[0]];
+                    const auto& b = glyph.vertices[edge[1]];
+                    output.overlay.push_back({
+                        {x + a[0] * size, y + a[1] * size, 0},
+                        {x + b[0] * size, y + b[1] * size, 0}
+                    });
+                }
+            }
+            x += size * 1.5f;
+        }
+    };
     // Wrapped panorama is heading-relative and deliberately dimmer than the battlefield.
     const float offset = m_game.heading * 400 / 3.14159265f;
     for (int i = -16; i <= 16; ++i)
@@ -383,8 +340,8 @@ nau::Result<nau::render::VectorPresentation> DemoBattlezone::vectorPresentation(
         p.overlay.push_back(line);
     text(p, "SCORE " + std::to_string(m_game.score), 30, 25, 12);
     text(p, "LIVES " + std::to_string(m_game.lives), 610, 25, 12);
-    text(p, "W/S DRIVE  A/D TURN", 35, 548, 9);
-    text(p, "SPACE/CLICK FIRE", 35, 572, 9);
+    text(p, "W S DRIVE  A D TURN", 35, 548, 9);
+    text(p, "SPACE OR CLICK FIRE", 35, 572, 9);
     for (int i = 0; i < 32; ++i)
     {
         float a = i * 6.283185f / 32, b = (i + 1) * 6.283185f / 32;
